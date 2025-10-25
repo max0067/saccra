@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}Codes Promo{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête -->
+    <div class="mb-8 fade-in">
+        <h1 class="text-5xl font-bold text-purple-900 mb-2">🎁 Gestion des Codes Promo</h1>
+        <p class="text-gray-600">Créer et gérer les codes promotionnels</p>
+    </div>
+
+    <!-- Navigation Admin -->
+    <div class="mb-6 flex space-x-4">
+        <a href="{{ url_for('admin.dashboard') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Statistiques</a>
+        <a href="{{ url_for('admin.users') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Utilisateurs</a>
+        <a href="{{ url_for('admin.promo_codes') }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg shadow">Codes Promo</a>
+    </div>
+
+    <!-- Formulaire de Création -->
+    <div class="card-mystical rounded-xl p-6 shadow-lg mb-8 fade-in">
+        <h2 class="text-2xl font-bold text-purple-900 mb-4">✨ Créer un Nouveau Code</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Code -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Code Promo</label>
+                <input type="text" id="newCode" placeholder="BIENVENUE2024"
+                       class="w-full px-4 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 uppercase">
+                <p class="text-xs text-gray-500 mt-1">Min 3 caractères, sera converti en MAJUSCULES</p>
+            </div>
+
+            <!-- Type de Récompense -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Type de Récompense</label>
+                <select id="rewardType"
+                        class="w-full px-4 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <option value="credits">Crédits d'interprétation</option>
+                    <option value="premium_days">Jours Premium</option>
+                </select>
+            </div>
+
+            <!-- Valeur -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Valeur</label>
+                <input type="number" id="rewardValue" placeholder="10" min="1" value="10"
+                       class="w-full px-4 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <p class="text-xs text-gray-500 mt-1">Nombre de crédits ou jours selon le type</p>
+            </div>
+
+            <!-- Utilisations Max -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Utilisations Maximum</label>
+                <input type="number" id="maxUses" placeholder="Illimité" min="1"
+                       class="w-full px-4 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <p class="text-xs text-gray-500 mt-1">Laisser vide pour illimité</p>
+            </div>
+
+            <!-- Expiration -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Expiration (jours)</label>
+                <input type="number" id="expiresDays" placeholder="Pas d'expiration" min="1"
+                       class="w-full px-4 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <p class="text-xs text-gray-500 mt-1">Nombre de jours avant expiration, vide = jamais</p>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">Description (optionnelle)</label>
+                <input type="text" id="description" placeholder="Campagne de lancement"
+                       class="w-full px-4 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <p class="text-xs text-gray-500 mt-1">Note interne pour identifier le code</p>
+            </div>
+        </div>
+
+        <div class="mt-6">
+            <button onclick="createPromoCode()"
+                    class="btn-primary text-white px-8 py-3 rounded-lg font-semibold shadow-lg">
+                🎁 Créer le Code Promo
+            </button>
+        </div>
+    </div>
+
+    <!-- Liste des Codes Existants -->
+    <div class="card-mystical rounded-xl p-6 shadow-lg fade-in">
+        <h2 class="text-2xl font-bold text-purple-900 mb-4">📋 Codes Promo Existants</h2>
+
+        {% if codes %}
+        <div class="space-y-4">
+            {% for code in codes %}
+            <div class="border border-purple-200 rounded-lg p-4 {% if not code.is_active %}opacity-50{% endif %}" id="code-{{ code.id }}">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <h3 class="text-2xl font-bold text-purple-900 font-mono">{{ code.code }}</h3>
+                            {% if code.is_active %}
+                            <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Actif</span>
+                            {% else %}
+                            <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">Inactif</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-600">Récompense:</span>
+                                <span class="font-semibold text-purple-700">
+                                    {% if code.reward_type == 'credits' %}
+                                        {{ code.reward_value }} crédits 💰
+                                    {% elif code.reward_type == 'premium_days' %}
+                                        {{ code.reward_value }} jours Premium ✨
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            <div>
+                                <span class="text-gray-600">Utilisations:</span>
+                                <span class="font-semibold">
+                                    {{ code.current_uses }}{% if code.max_uses %} / {{ code.max_uses }}{% else %} / ∞{% endif %}
+                                </span>
+                            </div>
+
+                            <div>
+                                <span class="text-gray-600">Expiration:</span>
+                                <span class="font-semibold">
+                                    {% if code.expires_at %}
+                                        {{ code.expires_at.strftime('%d/%m/%Y') }}
+                                    {% else %}
+                                        Jamais
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            <div>
+                                <span class="text-gray-600">Créé:</span>
+                                <span class="font-semibold">
+                                    {{ code.created_at.strftime('%d/%m/%Y') }}
+                                </span>
+                            </div>
+                        </div>
+
+                        {% if code.description %}
+                        <div class="mt-2 text-sm text-gray-600 italic">
+                            📝 {{ code.description }}
+                        </div>
+                        {% endif %}
+
+                        <!-- Validité -->
+                        <div class="mt-2">
+                            {% if not code.is_valid() %}
+                            <span class="text-red-600 text-sm font-medium">
+                                ⚠️ Code invalide
+                                {% if code.expires_at and code.expires_at < now() %}(expiré){% endif %}
+                                {% if code.max_uses and code.current_uses >= code.max_uses %}(limite atteinte){% endif %}
+                            </span>
+                            {% else %}
+                            <span class="text-green-600 text-sm font-medium">✅ Code valide</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 ml-4">
+                        <!-- Toggle Actif/Inactif -->
+                        <button onclick="togglePromoCode({{ code.id }})"
+                                class="px-4 py-2 {% if code.is_active %}bg-orange-100 text-orange-700 hover:bg-orange-200{% else %}bg-green-100 text-green-700 hover:bg-green-200{% endif %} rounded-lg text-sm font-medium">
+                            {% if code.is_active %}Désactiver{% else %}Activer{% endif %}
+                        </button>
+
+                        <!-- Supprimer -->
+                        <button onclick="deletePromoCode({{ code.id }}, '{{ code.code }}')"
+                                class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm font-medium">
+                            🗑️ Supprimer
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-12 text-gray-500">
+            <div class="text-6xl mb-4">🎁</div>
+            <p class="text-lg">Aucun code promo créé pour le moment</p>
+            <p class="text-sm">Utilise le formulaire ci-dessus pour en créer un</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Créer un code promo
+async function createPromoCode() {
+    const code = document.getElementById('newCode').value.trim().toUpperCase();
+    const rewardType = document.getElementById('rewardType').value;
+    const rewardValue = parseInt(document.getElementById('rewardValue').value);
+    const maxUses = parseInt(document.getElementById('maxUses').value) || null;
+    const expiresDays = parseInt(document.getElementById('expiresDays').value) || null;
+    const description = document.getElementById('description').value.trim();
+
+    if (!code || code.length < 3) {
+        alert('Le code doit contenir au moins 3 caractères');
+        return;
+    }
+
+    if (!rewardValue || rewardValue <= 0) {
+        alert('La valeur de récompense doit être positive');
+        return;
+    }
+
+    try {
+        const response = await fetch('/admin/promo-codes/create', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                code: code,
+                reward_type: rewardType,
+                reward_value: rewardValue,
+                max_uses: maxUses,
+                expires_days: expiresDays,
+                description: description
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Erreur: ' + data.error);
+        }
+    } catch (e) {
+        alert('Erreur: ' + e.message);
+    }
+}
+
+// Toggle actif/inactif
+async function togglePromoCode(codeId) {
+    try {
+        const response = await fetch(`/admin/promo-codes/${codeId}/toggle`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Erreur: ' + data.error);
+        }
+    } catch (e) {
+        alert('Erreur: ' + e.message);
+    }
+}
+
+// Supprimer un code
+async function deletePromoCode(codeId, codeName) {
+    if (!confirm(`Supprimer le code "${codeName}" ?\n\nCette action est irréversible.`)) return;
+
+    try {
+        const response = await fetch(`/admin/promo-codes/${codeId}/delete`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            document.getElementById(`code-${codeId}`).remove();
+            alert(data.message);
+        } else {
+            alert('Erreur: ' + data.error);
+        }
+    } catch (e) {
+        alert('Erreur: ' + e.message);
+    }
+}
+</script>
+{% endblock %}

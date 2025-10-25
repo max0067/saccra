@@ -34,6 +34,10 @@ class User(UserMixin, db.Model):
     stripe_customer_id = db.Column(db.String(100))
     stripe_subscription_id = db.Column(db.String(100))
 
+    # Admin et crédits
+    is_admin = db.Column(db.Boolean, default=False)
+    credits = db.Column(db.Integer, default=0)  # Crédits d'interprétation bonus
+
     # Métadonnées
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_login = db.Column(db.DateTime)
@@ -58,6 +62,9 @@ class User(UserMixin, db.Model):
         """Vérifie si l'utilisateur peut faire une interprétation"""
         if self.is_premium and self.premium_until and self.premium_until > datetime.utcnow():
             return True
+        # Vérifier les crédits bonus d'abord
+        if self.credits > 0:
+            return True
         return self.get_monthly_interpretations_count() < 3
 
     def get_remaining_free_interpretations(self):
@@ -66,6 +73,14 @@ class User(UserMixin, db.Model):
             return -1  # Illimité
         count = self.get_monthly_interpretations_count()
         return max(0, 3 - count)
+
+    def use_interpretation(self):
+        """Consomme un crédit d'interprétation (si applicable)"""
+        if self.is_premium:
+            return  # Premium = illimité
+        if self.credits > 0:
+            self.credits -= 1
+            db.session.commit()
 
 
 class Interpretation(db.Model):
@@ -114,3 +129,56 @@ class SpiritualProfile(db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class PromoCode(db.Model):
+    """Code promo pour offrir des avantages"""
+    __tablename__ = 'promo_codes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(50), unique=True, nullable=False, index=True)
+
+    # Type de récompense
+    reward_type = db.Column(db.String(20), nullable=False)  # credits, premium_days, discount
+    reward_value = db.Column(db.Integer, nullable=False)  # nombre de crédits, jours, ou % de réduction
+
+    # Limites d'utilisation
+    max_uses = db.Column(db.Integer)  # None = illimité
+    current_uses = db.Column(db.Integer, default=0)
+    expires_at = db.Column(db.DateTime)  # None = pas d'expiration
+
+    # Statut
+    is_active = db.Column(db.Boolean, default=True)
+
+    # Métadonnées
+    created_by = db.Column(db.Integer, db.ForeignKey('users.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    description = db.Column(db.String(200))  # Note interne
+
+    def is_valid(self):
+        """Vérifie si le code promo est valide"""
+        if not self.is_active:
+            return False
+        if self.expires_at and self.expires_at < datetime.utcnow():
+            return False
+        if self.max_uses and self.current_uses >= self.max_uses:
+            return False
+        return True
+
+    def use_code(self, user):
+        """Applique le code promo à un utilisateur"""
+        if not self.is_valid():
+            return False
+
+        if self.reward_type == 'credits':
+            user.credits += self.reward_value
+        elif self.reward_type == 'premium_days':
+            if user.premium_until and user.premium_until > datetime.utcnow():
+                user.premium_until += timedelta(days=self.reward_value)
+            else:
+                user.premium_until = datetime.utcnow() + timedelta(days=self.reward_value)
+            user.is_premium = True
+
+        self.current_uses += 1
+        db.session.commit()
+        return True

@@ -78,6 +78,12 @@
                         <a href="{{ url_for('interpretations.sign') }}" class="text-gray-700 hover:text-purple-700 transition">Signes</a>
                         <a href="{{ url_for('interpretations.tarot') }}" class="text-gray-700 hover:text-purple-700 transition">Tirage</a>
 
+                        {% if current_user.is_admin %}
+                        <a href="{{ url_for('admin.dashboard') }}" class="px-4 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white rounded-full text-sm font-medium hover:shadow-lg transition">
+                            👑 Admin
+                        </a>
+                        {% endif %}
+
                         {% if not current_user.is_premium %}
                         <a href="{{ url_for('premium.subscribe') }}" class="px-4 py-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white rounded-full text-sm font-medium hover:shadow-lg transition">
                             ✨ Premium

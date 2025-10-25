@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête -->
+    <div class="mb-8 fade-in">
+        <h1 class="text-5xl font-bold text-purple-900 mb-2">🔮 Dashboard Admin</h1>
+        <p class="text-gray-600">Gestion de la plateforme SACRA</p>
+    </div>
+
+    <!-- Navigation Admin -->
+    <div class="mb-6 flex space-x-4">
+        <a href="{{ url_for('admin.dashboard') }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg shadow">Statistiques</a>
+        <a href="{{ url_for('admin.users') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Utilisateurs</a>
+        <a href="{{ url_for('admin.promo_codes') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Codes Promo</a>
+    </div>
+
+    <!-- Statistiques Globales -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total Utilisateurs -->
+        <div class="card-mystical rounded-xl p-6 shadow-lg fade-in">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm mb-1">Total Utilisateurs</p>
+                    <p class="text-3xl font-bold text-purple-900">{{ stats.total_users }}</p>
+                </div>
+                <div class="text-4xl">👥</div>
+            </div>
+            <div class="mt-4 flex items-center text-sm">
+                <span class="text-green-600">+{{ stats.new_users_week }}</span>
+                <span class="text-gray-500 ml-1">cette semaine</span>
+            </div>
+        </div>
+
+        <!-- Utilisateurs Premium -->
+        <div class="card-mystical rounded-xl p-6 shadow-lg fade-in" style="animation-delay: 0.1s">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm mb-1">Premium</p>
+                    <p class="text-3xl font-bold text-purple-900">{{ stats.premium_users }}</p>
+                </div>
+                <div class="text-4xl">✨</div>
+            </div>
+            <div class="mt-4 text-sm text-gray-600">
+                {{ ((stats.premium_users / stats.total_users * 100) if stats.total_users > 0 else 0) | round(1) }}% des utilisateurs
+            </div>
+        </div>
+
+        <!-- Total Interprétations -->
+        <div class="card-mystical rounded-xl p-6 shadow-lg fade-in" style="animation-delay: 0.2s">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm mb-1">Interprétations</p>
+                    <p class="text-3xl font-bold text-purple-900">{{ stats.total_interpretations }}</p>
+                </div>
+                <div class="text-4xl">🌙</div>
+            </div>
+            <div class="mt-4 text-sm text-gray-600">
+                {{ (stats.total_interpretations / stats.total_users if stats.total_users > 0 else 0) | round(1) }} par utilisateur
+            </div>
+        </div>
+
+        <!-- Codes Promo Actifs -->
+        <div class="card-mystical rounded-xl p-6 shadow-lg fade-in" style="animation-delay: 0.3s">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm mb-1">Codes Promo</p>
+                    <p class="text-3xl font-bold text-purple-900">{{ stats.active_promo_codes }}</p>
+                </div>
+                <div class="text-4xl">🎁</div>
+            </div>
+            <div class="mt-4 text-sm text-gray-600">
+                codes actifs
+            </div>
+        </div>
+    </div>
+
+    <!-- Répartition des Interprétations -->
+    <div class="card-mystical rounded-xl p-6 shadow-lg mb-8 fade-in">
+        <h2 class="text-2xl font-bold text-purple-900 mb-4">📊 Répartition des Interprétations</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-700 font-medium">Rêves 🌙</span>
+                    <span class="text-2xl font-bold text-purple-800">{{ stats.dream_count }}</span>
+                </div>
+                <div class="w-full bg-purple-200 rounded-full h-2">
+                    <div class="bg-purple-600 h-2 rounded-full" style="width: {{ (stats.dream_count / stats.total_interpretations * 100 if stats.total_interpretations > 0 else 0) | round }}%"></div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-gradient-to-br from-pink-50 to-pink-100 rounded-lg">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-700 font-medium">Signes ✨</span>
+                    <span class="text-2xl font-bold text-pink-800">{{ stats.sign_count }}</span>
+                </div>
+                <div class="w-full bg-pink-200 rounded-full h-2">
+                    <div class="bg-pink-600 h-2 rounded-full" style="width: {{ (stats.sign_count / stats.total_interpretations * 100 if stats.total_interpretations > 0 else 0) | round }}%"></div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-lg">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-gray-700 font-medium">Tarot 🔮</span>
+                    <span class="text-2xl font-bold text-indigo-800">{{ stats.tarot_count }}</span>
+                </div>
+                <div class="w-full bg-indigo-200 rounded-full h-2">
+                    <div class="bg-indigo-600 h-2 rounded-full" style="width: {{ (stats.tarot_count / stats.total_interpretations * 100 if stats.total_interpretations > 0 else 0) | round }}%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Derniers Utilisateurs -->
+    <div class="card-mystical rounded-xl p-6 shadow-lg fade-in">
+        <h2 class="text-2xl font-bold text-purple-900 mb-4">👥 Derniers Utilisateurs Inscrits</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-purple-200">
+                        <th class="text-left py-3 px-4 text-gray-600 font-medium">Email</th>
+                        <th class="text-left py-3 px-4 text-gray-600 font-medium">Nom</th>
+                        <th class="text-left py-3 px-4 text-gray-600 font-medium">Statut</th>
+                        <th class="text-left py-3 px-4 text-gray-600 font-medium">Inscrit le</th>
+                        <th class="text-left py-3 px-4 text-gray-600 font-medium">Interprétations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in recent_users %}
+                    <tr class="border-b border-gray-100 hover:bg-purple-50 transition">
+                        <td class="py-3 px-4">{{ user.email }}</td>
+                        <td class="py-3 px-4">{{ user.first_name or '-' }}</td>
+                        <td class="py-3 px-4">
+                            {% if user.is_admin %}
+                                <span class="px-2 py-1 bg-red-100 text-red-700 text-xs rounded-full">Admin</span>
+                            {% elif user.is_premium %}
+                                <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">Premium</span>
+                            {% else %}
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">Gratuit</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-4 text-gray-600 text-sm">
+                            {{ user.created_at.strftime('%d/%m/%Y') }}
+                        </td>
+                        <td class="py-3 px-4 text-gray-600">
+                            {{ user.interpretations.count() }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4 text-center">
+            <a href="{{ url_for('admin.users') }}" class="text-purple-600 hover:text-purple-800 font-medium">Voir tous les utilisateurs →</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

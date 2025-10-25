@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block title %}Gestion Utilisateurs{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête -->
+    <div class="mb-8 fade-in">
+        <h1 class="text-5xl font-bold text-purple-900 mb-2">👥 Gestion des Utilisateurs</h1>
+        <p class="text-gray-600">Gérer les comptes, crédits et abonnements</p>
+    </div>
+
+    <!-- Navigation Admin -->
+    <div class="mb-6 flex space-x-4">
+        <a href="{{ url_for('admin.dashboard') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Statistiques</a>
+        <a href="{{ url_for('admin.users') }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg shadow">Utilisateurs</a>
+        <a href="{{ url_for('admin.promo_codes') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Codes Promo</a>
+    </div>
+
+    <!-- Filtres et Recherche -->
+    <div class="card-mystical rounded-xl p-6 shadow-lg mb-6 fade-in">
+        <div class="flex flex-col md:flex-row gap-4">
+            <!-- Recherche -->
+            <div class="flex-1">
+                <input type="text" id="searchInput" placeholder="Rechercher par email ou nom..."
+                       value="{{ search }}"
+                       class="w-full px-4 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+            </div>
+
+            <!-- Filtres -->
+            <div class="flex gap-2">
+                <a href="{{ url_for('admin.users', filter='all') }}"
+                   class="px-4 py-2 rounded-lg {% if filter_type == 'all' %}bg-purple-600 text-white{% else %}bg-white text-gray-700 border border-gray-300{% endif %}">
+                    Tous
+                </a>
+                <a href="{{ url_for('admin.users', filter='premium') }}"
+                   class="px-4 py-2 rounded-lg {% if filter_type == 'premium' %}bg-purple-600 text-white{% else %}bg-white text-gray-700 border border-gray-300{% endif %}">
+                    Premium
+                </a>
+                <a href="{{ url_for('admin.users', filter='free') }}"
+                   class="px-4 py-2 rounded-lg {% if filter_type == 'free' %}bg-purple-600 text-white{% else %}bg-white text-gray-700 border border-gray-300{% endif %}">
+                    Gratuit
+                </a>
+                <a href="{{ url_for('admin.users', filter='admin') }}"
+                   class="px-4 py-2 rounded-lg {% if filter_type == 'admin' %}bg-purple-600 text-white{% else %}bg-white text-gray-700 border border-gray-300{% endif %}">
+                    Admins
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Liste des Utilisateurs -->
+    <div class="card-mystical rounded-xl p-6 shadow-lg fade-in">
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b-2 border-purple-200">
+                        <th class="text-left py-3 px-4 text-gray-700 font-bold">Email</th>
+                        <th class="text-left py-3 px-4 text-gray-700 font-bold">Nom</th>
+                        <th class="text-left py-3 px-4 text-gray-700 font-bold">Statut</th>
+                        <th class="text-left py-3 px-4 text-gray-700 font-bold">Crédits</th>
+                        <th class="text-left py-3 px-4 text-gray-700 font-bold">Interp.</th>
+                        <th class="text-left py-3 px-4 text-gray-700 font-bold">Inscrit</th>
+                        <th class="text-right py-3 px-4 text-gray-700 font-bold">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users.items %}
+                    <tr class="border-b border-gray-100 hover:bg-purple-50 transition" id="user-{{ user.id }}">
+                        <td class="py-3 px-4">
+                            <div class="flex items-center">
+                                {{ user.email }}
+                                {% if user.is_admin %}
+                                <span class="ml-2 text-red-500" title="Administrateur">👑</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="py-3 px-4">{{ user.first_name or '-' }}</td>
+                        <td class="py-3 px-4">
+                            {% if user.is_premium %}
+                                <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full">Premium</span>
+                                {% if user.premium_until %}
+                                <div class="text-xs text-gray-500 mt-1">Jusqu'au {{ user.premium_until.strftime('%d/%m/%Y') }}</div>
+                                {% endif %}
+                            {% else %}
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">Gratuit</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="font-bold text-purple-700" id="credits-{{ user.id }}">{{ user.credits }}</span>
+                        </td>
+                        <td class="py-3 px-4 text-gray-600">
+                            {{ user.interpretations.count() }}
+                        </td>
+                        <td class="py-3 px-4 text-gray-600 text-sm">
+                            {{ user.created_at.strftime('%d/%m/%Y') }}
+                        </td>
+                        <td class="py-3 px-4">
+                            <div class="flex justify-end gap-2">
+                                <!-- Ajouter Crédits -->
+                                <button onclick="addCredits({{ user.id }})"
+                                        class="px-3 py-1 bg-green-100 text-green-700 rounded hover:bg-green-200 text-sm"
+                                        title="Ajouter des crédits">
+                                    💰
+                                </button>
+
+                                <!-- Toggle Premium -->
+                                <button onclick="togglePremium({{ user.id }})"
+                                        class="px-3 py-1 bg-purple-100 text-purple-700 rounded hover:bg-purple-200 text-sm"
+                                        title="{% if user.is_premium %}Désactiver{% else %}Activer{% endif %} Premium">
+                                    ✨
+                                </button>
+
+                                <!-- Toggle Admin -->
+                                {% if user.id != current_user.id %}
+                                <button onclick="toggleAdmin({{ user.id }})"
+                                        class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded hover:bg-yellow-200 text-sm"
+                                        title="{% if user.is_admin %}Retirer{% else %}Promouvoir{% endif %} Admin">
+                                    👑
+                                </button>
+
+                                <!-- Supprimer -->
+                                <button onclick="deleteUser({{ user.id }}, '{{ user.email }}')"
+                                        class="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 text-sm"
+                                        title="Supprimer utilisateur">
+                                    🗑️
+                                </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if users.has_prev or users.has_next %}
+        <div class="mt-6 flex justify-center gap-2">
+            {% if users.has_prev %}
+            <a href="{{ url_for('admin.users', page=users.prev_num, filter=filter_type, search=search) }}"
+               class="px-4 py-2 bg-white border border-purple-300 text-purple-600 rounded-lg hover:bg-purple-50">
+                ← Précédent
+            </a>
+            {% endif %}
+
+            <span class="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg">
+                Page {{ users.page }} / {{ users.pages }}
+            </span>
+
+            {% if users.has_next %}
+            <a href="{{ url_for('admin.users', page=users.next_num, filter=filter_type, search=search) }}"
+               class="px-4 py-2 bg-white border border-purple-300 text-purple-600 rounded-lg hover:bg-purple-50">
+                Suivant →
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+// Recherche
+document.getElementById('searchInput').addEventListener('input', function(e) {
+    const search = e.target.value;
+    const url = new URL(window.location);
+    if (search) {
+        url.searchParams.set('search', search);
+    } else {
+        url.searchParams.delete('search');
+    }
+    window.location = url;
+});
+
+// Ajouter des crédits
+async function addCredits(userId) {
+    const credits = prompt('Combien de crédits veux-tu ajouter ?', '10');
+    if (!credits || isNaN(credits) || credits <= 0) return;
+
+    try {
+        const response = await fetch(`/admin/users/${userId}/add-credits`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ credits: parseInt(credits) })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            document.getElementById(`credits-${userId}`).textContent = data.new_credits;
+            alert(data.message);
+        } else {
+            alert('Erreur: ' + data.error);
+        }
+    } catch (e) {
+        alert('Erreur: ' + e.message);
+    }
+}
+
+// Toggle Premium
+async function togglePremium(userId) {
+    const days = prompt('Nombre de jours de Premium (laisser vide pour désactiver)', '30');
+
+    try {
+        const response = await fetch(`/admin/users/${userId}/toggle-premium`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ days: parseInt(days) || 30 })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Erreur: ' + data.error);
+        }
+    } catch (e) {
+        alert('Erreur: ' + e.message);
+    }
+}
+
+// Toggle Admin
+async function toggleAdmin(userId) {
+    if (!confirm('Es-tu sûr de vouloir modifier le statut admin de cet utilisateur ?')) return;
+
+    try {
+        const response = await fetch(`/admin/users/${userId}/toggle-admin`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Erreur: ' + data.error);
+        }
+    } catch (e) {
+        alert('Erreur: ' + e.message);
+    }
+}
+
+// Supprimer utilisateur
+async function deleteUser(userId, email) {
+    if (!confirm(`Es-tu VRAIMENT sûr de vouloir supprimer ${email} ?\n\nCette action est IRRÉVERSIBLE.`)) return;
+
+    try {
+        const response = await fetch(`/admin/users/${userId}/delete`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            document.getElementById(`user-${userId}`).remove();
+            alert(data.message);
+        } else {
+            alert('Erreur: ' + data.error);
+        }
+    } catch (e) {
+        alert('Erreur: ' + e.message);
+    }
+}
+</script>
+{% endblock %}

@@ -98,6 +98,36 @@
 
     </div>
 
+    <!-- Code Promo et Crédits -->
+    <div class="card-mystical rounded-xl p-6 shadow-lg mb-8 fade-in">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-2xl font-bold text-purple-900">🎁 Codes Promo & Crédits</h2>
+            {% if current_user.credits > 0 %}
+            <div class="px-4 py-2 bg-green-100 rounded-lg">
+                <span class="text-green-700 font-bold text-lg">{{ current_user.credits }}</span>
+                <span class="text-green-600 text-sm ml-1">crédits bonus</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="flex gap-3">
+            <input type="text" id="promoCode" placeholder="Entre ton code promo..."
+                   class="flex-1 px-4 py-3 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 uppercase">
+            <button onclick="applyPromoCode()"
+                    class="px-6 py-3 btn-primary text-white rounded-lg font-medium hover:shadow-lg transition">
+                Appliquer
+            </button>
+        </div>
+
+        {% if current_user.credits > 0 %}
+        <p class="text-sm text-gray-600 mt-3">
+            💡 Tu as <strong>{{ current_user.credits }} crédit{% if current_user.credits > 1 %}s{% endif %} bonus</strong> qui {% if current_user.credits > 1 %}seront utilisés{% else %}sera utilisé{% endif %} avant tes interprétations gratuites mensuelles.
+        </p>
+        {% endif %}
+
+        <div id="promoMessage" class="mt-3 hidden"></div>
+    </div>
+
     <!-- Dernières interprétations -->
     {% if recent_interpretations %}
     <div class="card-mystical rounded-2xl p-8 shadow-lg">
@@ -140,4 +170,53 @@
     {% endif %}
 
 </div>
+
+<script>
+// Appliquer un code promo
+async function applyPromoCode() {
+    const code = document.getElementById('promoCode').value.trim().toUpperCase();
+    const messageDiv = document.getElementById('promoMessage');
+
+    if (!code) {
+        showMessage('Merci d\'entrer un code promo', 'error');
+        return;
+    }
+
+    try {
+        const response = await fetch('/premium/apply-promo-code', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ code: code })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showMessage(data.message, 'success');
+            document.getElementById('promoCode').value = '';
+
+            // Recharger après 2 secondes pour voir les nouveaux crédits
+            setTimeout(() => location.reload(), 2000);
+        } else {
+            showMessage(data.error, 'error');
+        }
+    } catch (e) {
+        showMessage('Erreur: ' + e.message, 'error');
+    }
+}
+
+function showMessage(message, type) {
+    const messageDiv = document.getElementById('promoMessage');
+    messageDiv.className = 'mt-3 p-3 rounded-lg ' + (type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700');
+    messageDiv.textContent = message;
+    messageDiv.classList.remove('hidden');
+}
+
+// Permettre d'appliquer le code avec Enter
+document.getElementById('promoCode').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        applyPromoCode();
+    }
+});
+</script>
 {% endblock %}

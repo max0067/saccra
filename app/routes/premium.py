@@ -1,9 +1,9 @@
 """
-Routes Premium : abonnements Stripe
+Routes Premium : abonnements Stripe et codes promo
 """
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from app.models import db
+from app.models import db, PromoCode
 from datetime import datetime, timedelta
 import stripe
 import os
@@ -136,3 +136,42 @@ def webhook():
         # Désactiver le premium
 
     return jsonify({'status': 'success'})
+
+
+@bp.route('/apply-promo-code', methods=['POST'])
+@login_required
+def apply_promo_code():
+    """Appliquer un code promo"""
+    data = request.get_json()
+    code_str = data.get('code', '').strip().upper()
+
+    if not code_str:
+        return jsonify({'success': False, 'error': 'Code promo vide'}), 400
+
+    # Trouver le code
+    promo = PromoCode.query.filter_by(code=code_str).first()
+
+    if not promo:
+        return jsonify({'success': False, 'error': 'Code promo invalide'}), 404
+
+    if not promo.is_valid():
+        return jsonify({'success': False, 'error': 'Ce code a expiré ou n\'est plus valide'}), 400
+
+    # Appliquer le code
+    success = promo.use_code(current_user)
+
+    if success:
+        message = ''
+        if promo.reward_type == 'credits':
+            message = '{} crédits ajoutés à ton compte ! 🎁'.format(promo.reward_value)
+        elif promo.reward_type == 'premium_days':
+            message = '{} jours de Premium offerts ! ✨'.format(promo.reward_value)
+
+        return jsonify({
+            'success': True,
+            'message': message,
+            'new_credits': current_user.credits,
+            'is_premium': current_user.is_premium
+        })
+    else:
+        return jsonify({'success': False, 'error': 'Impossible d\'appliquer ce code'}), 400
