@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Historique - SACRA{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+
+    <div class="max-w-4xl mx-auto">
+
+        <!-- En-tête -->
+        <div class="mb-12 fade-in">
+            <h1 class="text-5xl font-bold text-purple-900 mb-2">Ton historique 📖</h1>
+            <p class="text-xl text-gray-700">Toutes tes interprétations spirituelles</p>
+        </div>
+
+        {% if interpretations %}
+
+        <!-- Liste des interprétations -->
+        <div class="space-y-6">
+            {% for interp in interpretations %}
+            <div class="card-mystical rounded-2xl p-6 shadow-lg fade-in">
+
+                <!-- En-tête -->
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="text-3xl">
+                            {% if interp.type == 'dream' %}🌙
+                            {% elif interp.type == 'sign' %}✨
+                            {% elif interp.type == 'tarot' %}🔮
+                            {% endif %}
+                        </div>
+                        <div>
+                            <p class="font-bold text-purple-900 text-lg">
+                                {% if interp.type == 'dream' %}Rêve
+                                {% elif interp.type == 'sign' %}Signe
+                                {% elif interp.type == 'tarot' %}Tirage
+                                {% endif %}
+                            </p>
+                            <p class="text-sm text-gray-600">{{ interp.created_at.strftime('%d %B %Y à %H:%M') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contenu utilisateur -->
+                <div class="mb-4 p-4 bg-purple-50 rounded-lg">
+                    <p class="text-gray-700 italic">{{ interp.user_input }}</p>
+                </div>
+
+                <!-- Interprétation -->
+                {% set response = interp.get_response_dict() %}
+                <div class="space-y-3">
+                    {% if response.symbolism %}
+                    <div>
+                        <p class="text-sm font-semibold text-purple-800 mb-1">Symbolisme</p>
+                        <p class="text-gray-700 text-sm">{{ response.symbolism }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if response.spiritual_message %}
+                    <div>
+                        <p class="text-sm font-semibold text-purple-800 mb-1">Message spirituel</p>
+                        <p class="text-gray-700 text-sm">{{ response.spiritual_message }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if response.personal_advice %}
+                    <div>
+                        <p class="text-sm font-semibold text-purple-800 mb-1">Conseil</p>
+                        <p class="text-gray-700 text-sm">{{ response.personal_advice }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if response.interpretation %}
+                    <div>
+                        <p class="text-sm font-semibold text-purple-800 mb-1">Interprétation</p>
+                        <p class="text-gray-700 text-sm">{{ response.interpretation }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+
+        <!-- Aucune interprétation -->
+        <div class="card-mystical rounded-2xl p-12 text-center shadow-lg">
+            <div class="text-6xl mb-4">🌙</div>
+            <h2 class="text-2xl font-bold text-purple-900 mb-3">Aucune interprétation pour le moment</h2>
+            <p class="text-gray-700 mb-6">Commence ton voyage spirituel dès maintenant</p>
+            <div class="flex justify-center gap-4">
+                <a href="{{ url_for('interpretations.dream') }}" class="px-6 py-3 btn-primary text-white rounded-lg font-medium">
+                    Interpréter un rêve
+                </a>
+                <a href="{{ url_for('interpretations.sign') }}" class="px-6 py-3 btn-primary text-white rounded-lg font-medium">
+                    Décoder un signe
+                </a>
+            </div>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}

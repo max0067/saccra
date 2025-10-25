@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}Profil spirituel - SACRA{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+
+    <div class="max-w-2xl mx-auto">
+
+        <!-- En-tête -->
+        <div class="text-center mb-12 fade-in">
+            <div class="text-6xl mb-4">✨</div>
+            <h1 class="text-5xl font-bold text-purple-900 mb-4">Ton profil spirituel</h1>
+            <p class="text-xl text-gray-700">Quelques questions pour révéler ton essence</p>
+        </div>
+
+        <!-- Formulaire -->
+        <div class="card-mystical rounded-2xl p-8 shadow-xl">
+
+            <form method="POST" action="{{ url_for('interpretations.spiritual_profile') }}">
+
+                <!-- Prénom -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">Prénom</label>
+                    <input
+                        type="text"
+                        name="first_name"
+                        value="{{ current_user.first_name or '' }}"
+                        required
+                        class="w-full px-4 py-3 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                        placeholder="Ton prénom"
+                    >
+                </div>
+
+                <!-- Date de naissance -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">Date de naissance</label>
+                    <input
+                        type="date"
+                        name="birth_date"
+                        value="{% if current_user.birth_date %}{{ current_user.birth_date.strftime('%Y-%m-%d') }}{% endif %}"
+                        class="w-full px-4 py-3 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    >
+                    <p class="text-sm text-gray-500 mt-1">Optionnel - pour calculer ton chemin de vie</p>
+                </div>
+
+                <!-- Couleur préférée -->
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">Couleur qui te parle le plus</label>
+                    <select
+                        name="favorite_color"
+                        required
+                        class="w-full px-4 py-3 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    >
+                        <option value="">Choisis une couleur</option>
+                        <option value="Violet" {% if current_user.favorite_color == 'Violet' %}selected{% endif %}>💜 Violet - Spiritualité</option>
+                        <option value="Bleu" {% if current_user.favorite_color == 'Bleu' %}selected{% endif %}>💙 Bleu - Paix intérieure</option>
+                        <option value="Vert" {% if current_user.favorite_color == 'Vert' %}selected{% endif %}>💚 Vert - Guérison</option>
+                        <option value="Doré" {% if current_user.favorite_color == 'Doré' %}selected{% endif %}>💛 Doré - Lumière divine</option>
+                        <option value="Rose" {% if current_user.favorite_color == 'Rose' %}selected{% endif %}>💗 Rose - Amour inconditionnel</option>
+                        <option value="Blanc" {% if current_user.favorite_color == 'Blanc' %}selected{% endif %}>🤍 Blanc - Pureté</option>
+                        <option value="Argent" {% if current_user.favorite_color == 'Argent' %}selected{% endif %}>🩶 Argent - Intuition</option>
+                    </select>
+                </div>
+
+                <!-- Élément -->
+                <div class="mb-8">
+                    <label class="block text-gray-700 font-medium mb-3">Élément qui te représente</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="card-mystical rounded-xl p-4 cursor-pointer hover:shadow-lg transition">
+                            <input type="radio" name="element" value="air" {% if current_user.element == 'air' %}checked{% endif %} required class="mr-2">
+                            <span class="text-2xl">💨</span> Air<br>
+                            <span class="text-xs text-gray-600">Communication, liberté</span>
+                        </label>
+                        <label class="card-mystical rounded-xl p-4 cursor-pointer hover:shadow-lg transition">
+                            <input type="radio" name="element" value="feu" {% if current_user.element == 'feu' %}checked{% endif %} required class="mr-2">
+                            <span class="text-2xl">🔥</span> Feu<br>
+                            <span class="text-xs text-gray-600">Passion, transformation</span>
+                        </label>
+                        <label class="card-mystical rounded-xl p-4 cursor-pointer hover:shadow-lg transition">
+                            <input type="radio" name="element" value="eau" {% if current_user.element == 'eau' %}checked{% endif %} required class="mr-2">
+                            <span class="text-2xl">💧</span> Eau<br>
+                            <span class="text-xs text-gray-600">Émotions, intuition</span>
+                        </label>
+                        <label class="card-mystical rounded-xl p-4 cursor-pointer hover:shadow-lg transition">
+                            <input type="radio" name="element" value="terre" {% if current_user.element == 'terre' %}checked{% endif %} required class="mr-2">
+                            <span class="text-2xl">🌍</span> Terre<br>
+                            <span class="text-xs text-gray-600">Ancrage, stabilité</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full py-4 btn-primary text-white rounded-lg font-medium text-lg shadow-lg"
+                >
+                    Révéler mon profil spirituel ✨
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

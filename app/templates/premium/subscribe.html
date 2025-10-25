@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}Premium - SACRA{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+
+    <div class="max-w-4xl mx-auto">
+
+        <!-- En-tête -->
+        <div class="text-center mb-12 fade-in">
+            <div class="text-6xl mb-4">✨</div>
+            <h1 class="text-5xl font-bold text-purple-900 mb-4">Passe en Premium</h1>
+            <p class="text-xl text-gray-700">Accès illimité à ton guide spirituel</p>
+        </div>
+
+        <!-- Comparaison -->
+        <div class="grid md:grid-cols-2 gap-6 mb-12">
+
+            <!-- Gratuit -->
+            <div class="card-mystical rounded-2xl p-8 shadow-lg">
+                <h3 class="text-2xl font-bold text-gray-700 mb-4">Gratuit 🌙</h3>
+                <p class="text-4xl font-bold text-purple-900 mb-6">0€</p>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-start">
+                        <span class="text-green-500 mr-2">✓</span>
+                        <span class="text-gray-700">3 interprétations par mois</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-500 mr-2">✓</span>
+                        <span class="text-gray-700">Rêves, signes, tirages</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-500 mr-2">✓</span>
+                        <span class="text-gray-700">Profil spirituel</span>
+                    </li>
+                    <li class="flex items-start opacity-50">
+                        <span class="text-gray-400 mr-2">✗</span>
+                        <span class="text-gray-500">Historique complet</span>
+                    </li>
+                    <li class="flex items-start opacity-50">
+                        <span class="text-gray-400 mr-2">✗</span>
+                        <span class="text-gray-500">Interprétations illimitées</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Premium -->
+            <div class="card-mystical rounded-2xl p-8 shadow-2xl border-4 border-yellow-400 relative">
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 px-4 py-1 bg-yellow-500 text-white rounded-full text-sm font-bold">
+                    POPULAIRE
+                </div>
+                <h3 class="text-2xl font-bold text-purple-900 mb-4">Premium ✨</h3>
+                <div class="mb-6">
+                    <p class="text-4xl font-bold text-purple-900">9,90€<span class="text-lg text-gray-600">/mois</span></p>
+                    <p class="text-lg text-gray-600">ou 49€/an <span class="text-sm">(économie de 17%)</span></p>
+                </div>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-start">
+                        <span class="text-green-500 mr-2">✓</span>
+                        <span class="text-gray-700 font-medium">Interprétations illimitées</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-500 mr-2">✓</span>
+                        <span class="text-gray-700">Historique complet</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-500 mr-2">✓</span>
+                        <span class="text-gray-700">Journal spirituel personnel</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-500 mr-2">✓</span>
+                        <span class="text-gray-700">Guide IA avec contexte</span>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-green-500 mr-2">✓</span>
+                        <span class="text-gray-700">Support prioritaire</span>
+                    </li>
+                </ul>
+
+                <!-- Boutons d'abonnement -->
+                <div class="space-y-3">
+                    <button
+                        onclick="subscribe('monthly')"
+                        class="w-full py-4 bg-gradient-to-r from-purple-500 to-purple-700 text-white rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transition"
+                    >
+                        S'abonner - 9,90€/mois
+                    </button>
+                    <button
+                        onclick="subscribe('yearly')"
+                        class="w-full py-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transition"
+                    >
+                        S'abonner - 49€/an (meilleur prix)
+                    </button>
+                </div>
+
+                <p class="text-xs text-center text-gray-500 mt-4">
+                    Paiement sécurisé par Stripe • Annulation à tout moment
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Témoignages -->
+        <div class="card-mystical rounded-2xl p-8 shadow-lg">
+            <h3 class="text-2xl font-bold text-purple-900 mb-6 text-center">Ils ont transformé leur vie avec SACRA ✨</h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <p class="text-gray-700 italic mb-3">"SACRA m'a aidée à comprendre des signes que je recevais depuis des mois. Merci 🙏"</p>
+                    <p class="text-sm text-gray-600">- Marie, 32 ans</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-gray-700 italic mb-3">"L'interprétation de mes rêves a été incroyablement précise. Je recommande !"</p>
+                    <p class="text-sm text-gray-600">- Thomas, 28 ans</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-gray-700 italic mb-3">"Le tirage intuitif m'a donné une guidance claire pour avancer. J'adore ✨"</p>
+                    <p class="text-sm text-gray-600">- Sophie, 41 ans</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+const stripe = Stripe('{{ config.STRIPE_PUBLIC_KEY }}');
+
+async function subscribe(plan) {
+    try {
+        const response = await fetch('{{ url_for("premium.create_checkout_session") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ plan: plan })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            alert(data.error);
+            return;
+        }
+
+        // Rediriger vers Stripe Checkout
+        const result = await stripe.redirectToCheckout({
+            sessionId: data.sessionId
+        });
+
+        if (result.error) {
+            alert(result.error.message);
+        }
+
+    } catch (error) {
+        alert('Une erreur est survenue. Réessaye dans quelques instants.');
+        console.error(error);
+    }
+}
+</script>
+
+{% endblock %}

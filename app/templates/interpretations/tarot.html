@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Tirage intuitif - SACRA{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+
+    <div class="max-w-5xl mx-auto">
+
+        <!-- En-tête -->
+        <div class="text-center mb-12 fade-in">
+            <div class="text-6xl mb-4">🔮</div>
+            <h1 class="text-5xl font-bold text-purple-900 mb-4">Tirage intuitif</h1>
+            <p class="text-xl text-gray-700">Tire 3 cartes et reçois ta guidance spirituelle</p>
+        </div>
+
+        <!-- Instructions -->
+        <div id="instructions" class="card-mystical rounded-xl p-6 text-center mb-8">
+            <p class="text-gray-700 text-lg">
+                Respire profondément, concentre-toi sur ta question intérieure, puis choisis 3 cartes.
+            </p>
+        </div>
+
+        <!-- Cartes -->
+        <div id="cardsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+            <!-- Les cartes seront générées par JavaScript -->
+        </div>
+
+        <!-- Cartes sélectionnées -->
+        <div id="selectedCards" class="hidden mb-8">
+            <div class="card-mystical rounded-xl p-6">
+                <h3 class="text-xl font-bold text-purple-900 mb-4 text-center">Tes 3 cartes</h3>
+                <div id="selectedCardsDisplay" class="flex justify-center gap-4 flex-wrap"></div>
+                <button
+                    id="interpretBtn"
+                    class="w-full mt-6 py-4 btn-primary text-white rounded-lg font-medium text-lg shadow-lg"
+                >
+                    Recevoir mon interprétation ✨
+                </button>
+            </div>
+        </div>
+
+        <!-- Résultat -->
+        <div id="result" class="hidden fade-in">
+            <div class="card-mystical rounded-2xl p-8 shadow-xl">
+
+                <h2 class="text-3xl font-bold text-purple-900 mb-6 text-center">Ton tirage 🔮</h2>
+
+                <!-- Cartes tirées -->
+                <div class="flex justify-center gap-6 mb-8 flex-wrap">
+                    <div id="card1Result" class="text-center"></div>
+                    <div id="card2Result" class="text-center"></div>
+                    <div id="card3Result" class="text-center"></div>
+                </div>
+
+                <hr class="my-6 border-purple-200">
+
+                <!-- Interprétation -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3">Interprétation du tirage</h3>
+                    <p id="interpretation" class="text-gray-700 leading-relaxed"></p>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3">Message spirituel</h3>
+                    <p id="spiritualMessage" class="text-gray-700 leading-relaxed"></p>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3">Conseil pour toi</h3>
+                    <p id="personalAdvice" class="text-gray-700 leading-relaxed font-medium"></p>
+                </div>
+
+                <div class="flex gap-4 mt-8">
+                    <button
+                        onclick="location.reload()"
+                        class="flex-1 px-6 py-3 bg-purple-100 hover:bg-purple-200 text-purple-800 rounded-lg font-medium transition"
+                    >
+                        Nouveau tirage
+                    </button>
+                    <a
+                        href="{{ url_for('main.dashboard') }}"
+                        class="flex-1 px-6 py-3 btn-primary text-white rounded-lg font-medium text-center"
+                    >
+                        Retour au dashboard
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Loader -->
+        <div id="loader" class="hidden text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-purple-200 border-t-purple-600"></div>
+            <p class="text-gray-700 mt-4">L'univers interprète ton tirage...</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+const CARDS = [
+    {id: 1, name: "La Lumière", energy: "clarté, révélation, éveil", emoji: "☀️"},
+    {id: 2, name: "L'Ancrage", energy: "stabilité, enracinement, sécurité", emoji: "🌳"},
+    {id: 3, name: "La Transformation", energy: "changement, renaissance, métamorphose", emoji: "🦋"},
+    {id: 4, name: "L'Amour", energy: "connexion, compassion, ouverture du cœur", emoji: "💖"},
+    {id: 5, name: "La Sagesse", energy: "connaissance intérieure, intuition, guidance", emoji: "🦉"},
+    {id: 6, name: "La Force", energy: "courage, volonté, persévérance", emoji: "🦁"},
+    {id: 7, name: "La Paix", energy: "harmonie, sérénité, équilibre", emoji: "🕊️"},
+    {id: 8, name: "L'Abondance", energy: "prospérité, gratitude, générosité", emoji: "🌟"},
+    {id: 9, name: "La Protection", energy: "sécurité spirituelle, bouclier énergétique", emoji: "🛡️"},
+    {id: 10, name: "Le Renouveau", energy: "nouveau départ, espoir, fraîcheur", emoji: "🌱"},
+    {id: 11, name: "La Créativité", energy: "expression, inspiration, manifestation", emoji: "🎨"},
+    {id: 12, name: "La Guérison", energy: "soin, régénération, libération", emoji: "💫"},
+];
+
+let selectedCards = [];
+
+// Générer les cartes
+const cardsGrid = document.getElementById('cardsGrid');
+CARDS.forEach(card => {
+    const cardEl = document.createElement('div');
+    cardEl.className = 'card-mystical rounded-xl p-6 text-center cursor-pointer hover:shadow-xl hover:-translate-y-2 transition-all';
+    cardEl.innerHTML = `
+        <div class="text-4xl mb-2">${card.emoji}</div>
+        <p class="font-semibold text-purple-900">${card.name}</p>
+        <p class="text-xs text-gray-600 mt-1">${card.energy}</p>
+    `;
+    cardEl.onclick = () => selectCard(card, cardEl);
+    cardsGrid.appendChild(cardEl);
+});
+
+function selectCard(card, element) {
+    if (selectedCards.find(c => c.id === card.id)) {
+        // Désélectionner
+        selectedCards = selectedCards.filter(c => c.id !== card.id);
+        element.classList.remove('ring-4', 'ring-purple-500');
+    } else {
+        if (selectedCards.length >= 3) {
+            alert('Tu as déjà sélectionné 3 cartes');
+            return;
+        }
+        selectedCards.push(card);
+        element.classList.add('ring-4', 'ring-purple-500');
+    }
+
+    updateSelectedDisplay();
+}
+
+function updateSelectedDisplay() {
+    const display = document.getElementById('selectedCardsDisplay');
+    const container = document.getElementById('selectedCards');
+
+    if (selectedCards.length > 0) {
+        container.classList.remove('hidden');
+        display.innerHTML = selectedCards.map((card, i) => `
+            <div class="text-center">
+                <div class="text-3xl mb-1">${card.emoji}</div>
+                <p class="text-sm font-medium text-purple-900">${card.name}</p>
+            </div>
+        `).join('');
+    } else {
+        container.classList.add('hidden');
+    }
+}
+
+document.getElementById('interpretBtn').addEventListener('click', async () => {
+    if (selectedCards.length !== 3) {
+        alert('Sélectionne exactement 3 cartes');
+        return;
+    }
+
+    const btn = document.getElementById('interpretBtn');
+    const loader = document.getElementById('loader');
+    const result = document.getElementById('result');
+
+    btn.disabled = true;
+    btn.textContent = 'Interprétation en cours...';
+    loader.classList.remove('hidden');
+    result.classList.add('hidden');
+    document.getElementById('cardsGrid').style.display = 'none';
+    document.getElementById('selectedCards').style.display = 'none';
+
+    try {
+        const response = await fetch('{{ url_for("interpretations.tarot") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ cards: selectedCards.map(c => c.id) })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            alert(data.error);
+            btn.disabled = false;
+            btn.textContent = 'Recevoir mon interprétation ✨';
+            loader.classList.add('hidden');
+            return;
+        }
+
+        // Afficher les cartes
+        data.interpretation.cards.forEach((card, i) => {
+            const cardDisplay = document.getElementById(`card${i+1}Result`);
+            const matchingCard = CARDS.find(c => c.id === card.id);
+            cardDisplay.innerHTML = `
+                <div class="text-5xl mb-2">${matchingCard.emoji}</div>
+                <p class="font-bold text-purple-900 text-lg">${card.name}</p>
+                <p class="text-sm text-gray-600">${card.energy}</p>
+            `;
+        });
+
+        document.getElementById('interpretation').textContent = data.interpretation.interpretation;
+        document.getElementById('spiritualMessage').textContent = data.interpretation.spiritual_message;
+        document.getElementById('personalAdvice').textContent = data.interpretation.personal_advice;
+
+        loader.classList.add('hidden');
+        result.classList.remove('hidden');
+        result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    } catch (error) {
+        alert('Une erreur est survenue. Réessaye dans quelques instants.');
+        btn.disabled = false;
+        btn.textContent = 'Recevoir mon interprétation ✨';
+        loader.classList.add('hidden');
+    }
+});
+</script>
+
+{% endblock %}
