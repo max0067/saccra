@@ -1,0 +1,73 @@
+# Configuration Apache/Passenger pour SACRA
+# Pour hébergement o2switch
+
+# Activer Passenger
+PassengerEnabled On
+
+# Chemin de l'application (À MODIFIER avec ton vrai chemin)
+PassengerAppRoot /home/TON_USER/sacra.fr
+
+# Python de l'environnement virtuel (À MODIFIER avec ton vrai chemin)
+PassengerPython /home/TON_USER/sacra.fr/venv/bin/python3
+
+# Environnement de production
+PassengerAppEnv production
+
+# Nombre de processus (ajuster selon tes besoins)
+PassengerMinInstances 1
+PassengerMaxPoolSize 6
+
+# Redirection HTTPS (recommandé pour la sécurité)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Forcer HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Rediriger www vers non-www (optionnel)
+    RewriteCond %{HTTP_HOST} ^www\.sacra\.fr$ [NC]
+    RewriteRule ^(.*)$ https://sacra.fr/$1 [L,R=301]
+</IfModule>
+
+# Sécurité : bloquer l'accès aux fichiers sensibles
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "\.env$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<FilesMatch "\.db$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Optimisation : activer la compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Cache des fichiers statiques
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+
+# Désactiver le listing des répertoires
+Options -Indexes
+
+# Protection contre les injections
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
