@@ -6,7 +6,7 @@ echo "🚀 Déploiement de SACCRA..."
 echo "======================================"
 
 # Aller dans le répertoire du projet
-cd ~/saccra || exit 1
+cd ~/saccra.fr || exit 1
 
 # Sauvegarder la branche actuelle
 CURRENT_BRANCH=$(git branch --show-current)
