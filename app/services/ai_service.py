@@ -4,6 +4,10 @@ Service d'interprétation IA avec OpenAI (via requests pour Python 3.6)
 import os
 import json
 import requests
+from dotenv import load_dotenv
+
+# Charger les variables d'environnement
+load_dotenv()
 from datetime import datetime
 
 # Configuration OpenAI
