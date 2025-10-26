@@ -1,0 +1,16 @@
+# Configuration Apache/Passenger pour SACCRA sur o2switch
+# IMPORTANT: Copie ce fichier vers .htaccess et remplace les placeholders
+
+# Activer Passenger
+PassengerEnabled On
+
+# Chemin de l'application (remplace TON_USER par ton nom d'utilisateur)
+PassengerAppRoot /home/TON_USER/saccra.fr
+
+# Python de l'environnement virtuel (remplace TON_USER par ton nom d'utilisateur)
+PassengerPython /home/TON_USER/saccra.fr/venv/bin/python3
+
+# Redirection HTTPS
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

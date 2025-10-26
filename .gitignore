@@ -20,6 +20,9 @@ instance/
 .env
 .venv
 
+# Apache/Passenger (configuration spécifique au serveur)
+.htaccess
+
 # IDE
 .vscode/
 .idea/

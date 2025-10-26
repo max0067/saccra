@@ -1,8 +1,53 @@
 # 🚀 Guide de Déploiement SACCRA
 
-## Installation du script sur o2switch
+## Configuration initiale sur o2switch
 
-### 1. Copier le script sur le serveur
+### 1. Configurer le fichier .htaccess
+
+**IMPORTANT:** Le fichier `.htaccess` contient des chemins spécifiques à ton serveur et ne doit jamais être commité dans Git.
+
+```bash
+# Se connecter au serveur
+ssh wrbh3411@ssh.o2switch.net
+cd ~/saccra.fr
+
+# Copier l'exemple et l'adapter
+cp .htaccess.example .htaccess
+
+# Éditer avec ton nom d'utilisateur
+nano .htaccess
+# Remplace TOUS les "TON_USER" par "wrbh3411"
+# Remplace "sacra.fr" par "saccra.fr" si nécessaire
+
+# Vérifier que le fichier est correct
+cat .htaccess | grep PassengerAppRoot
+# Doit afficher: PassengerAppRoot /home/wrbh3411/saccra.fr
+```
+
+**Contenu du .htaccess correct:**
+```apache
+PassengerEnabled On
+PassengerAppRoot /home/wrbh3411/saccra.fr
+PassengerPython /home/wrbh3411/saccra.fr/venv/bin/python3
+
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+```
+
+### 2. Configurer les variables d'environnement
+
+```bash
+# Créer/éditer le fichier .env
+nano .env
+
+# Ajouter ta clé API OpenAI
+OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxx
+OPENAI_MODEL=gpt-4o-mini
+SECRET_KEY=votre-secret-key-tres-securisee
+```
+
+### 3. Copier le script de déploiement sur le serveur
 
 ```bash
 # Option A : Via SCP depuis ton ordinateur local
