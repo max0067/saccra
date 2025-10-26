@@ -4,8 +4,10 @@ Modèles de données pour SACRA
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from datetime import datetime, timedelta
 import json
+import os
 
 db = SQLAlchemy()
 
@@ -52,6 +54,39 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         """Vérifie le mot de passe"""
         return check_password_hash(self.password_hash, password)
+
+    def generate_reset_token(self, expires_sec=1800):
+        """
+        Génère un token de réinitialisation de mot de passe
+
+        Args:
+            expires_sec: int - Durée de validité en secondes (défaut 30 min)
+
+        Returns:
+            str: Token signé
+        """
+        secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production-sacra-2025')
+        s = Serializer(secret_key, expires_sec)
+        return s.dumps({'user_id': self.id}).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_token(token):
+        """
+        Vérifie un token de réinitialisation et retourne l'utilisateur
+
+        Args:
+            token: str - Token à vérifier
+
+        Returns:
+            User or None: L'utilisateur si le token est valide, None sinon
+        """
+        secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production-sacra-2025')
+        s = Serializer(secret_key)
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
 
     def get_monthly_interpretations_count(self):
         """Compte les interprétations du mois en cours"""

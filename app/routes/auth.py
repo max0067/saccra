@@ -4,7 +4,7 @@ Routes d'authentification : login, register, logout
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models import db, User
-from app.services.email_service import send_welcome_email
+from app.services.email_service import send_welcome_email, send_password_reset_email
 from datetime import datetime
 
 bp = Blueprint('auth', __name__)
@@ -82,3 +82,72 @@ def logout():
     logout_user()
     flash('À bientôt 🌙', 'info')
     return redirect(url_for('main.index'))
+
+
+@bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    """Page 'Mot de passe oublié'"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip().lower()
+
+        # Chercher l'utilisateur
+        user = User.query.filter_by(email=email).first()
+
+        # Toujours afficher le même message (sécurité)
+        flash('Si cet email existe, tu recevras un lien de réinitialisation', 'info')
+
+        if user:
+            # Générer le token
+            token = user.generate_reset_token()
+
+            # Créer l'URL de réinitialisation
+            reset_url = url_for('auth.reset_password', token=token, _external=True)
+
+            # Envoyer l'email (ne pas bloquer si ça échoue)
+            try:
+                send_password_reset_email(user.email, reset_url)
+            except Exception as e:
+                print('Erreur envoi email reset: {}'.format(str(e)))
+
+        return redirect(url_for('auth.login'))
+
+    return render_template('auth/forgot_password.html')
+
+
+@bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    """Page de réinitialisation avec token"""
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+
+    # Vérifier le token
+    user = User.verify_reset_token(token)
+
+    if not user:
+        flash('Ce lien de réinitialisation est invalide ou a expiré', 'error')
+        return redirect(url_for('auth.forgot_password'))
+
+    if request.method == 'POST':
+        password = request.form.get('password', '')
+        password_confirm = request.form.get('password_confirm', '')
+
+        # Validation
+        if not password or len(password) < 6:
+            flash('Le mot de passe doit contenir au moins 6 caractères', 'error')
+            return render_template('auth/reset_password.html', token=token)
+
+        if password != password_confirm:
+            flash('Les mots de passe ne correspondent pas', 'error')
+            return render_template('auth/reset_password.html', token=token)
+
+        # Changer le mot de passe
+        user.set_password(password)
+        db.session.commit()
+
+        flash('Ton mot de passe a été changé avec succès ! 🎉', 'success')
+        return redirect(url_for('auth.login'))
+
+    return render_template('auth/reset_password.html', token=token)

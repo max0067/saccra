@@ -24,7 +24,12 @@
                 </div>
 
                 <div class="mb-6">
-                    <label class="block text-gray-700 font-medium mb-2">Mot de passe</label>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-gray-700 font-medium">Mot de passe</label>
+                        <a href="{{ url_for('auth.forgot_password') }}" class="text-sm text-purple-600 hover:underline">
+                            Mot de passe oublié ?
+                        </a>
+                    </div>
                     <input
                         type="password"
                         name="password"
