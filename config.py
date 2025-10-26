@@ -21,9 +21,9 @@ class Config:
     STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY') or ''
     STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET') or ''
 
-    # Prix
-    MONTHLY_PRICE_ID = os.environ.get('STRIPE_MONTHLY_PRICE_ID') or ''
-    YEARLY_PRICE_ID = os.environ.get('STRIPE_YEARLY_PRICE_ID') or ''
+    # Prix Stripe
+    STRIPE_MONTHLY_PRICE_ID = os.environ.get('STRIPE_MONTHLY_PRICE_ID') or ''
+    STRIPE_YEARLY_PRICE_ID = os.environ.get('STRIPE_YEARLY_PRICE_ID') or ''
 
     # Limites freemium
     FREE_INTERPRETATIONS_PER_MONTH = 3
