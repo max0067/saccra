@@ -7,7 +7,7 @@ from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime, timedelta
 from sqlalchemy import func
-from app.models import db, User, Interpretation, PromoCode, SpiritualProfile
+from app.models import db, User, Interpretation, PromoCode, SpiritualProfile, SiteContent
 
 bp = Blueprint('admin', __name__)
 
@@ -293,4 +293,101 @@ def delete_promo_code(code_id):
     return jsonify({
         'success': True,
         'message': 'Code promo {} supprimé'.format(code)
+    })
+
+
+@bp.route('/site-contents')
+@login_required
+@admin_required
+def site_contents():
+    """Gestion des contenus du site"""
+
+    contents = SiteContent.query.order_by(SiteContent.category, SiteContent.key).all()
+
+    # Grouper par catégorie
+    contents_by_category = {}
+    for content in contents:
+        category = content.category or 'Général'
+        if category not in contents_by_category:
+            contents_by_category[category] = []
+        contents_by_category[category].append(content)
+
+    return render_template('admin/site_contents.html', contents_by_category=contents_by_category)
+
+
+@bp.route('/site-contents/create', methods=['POST'])
+@login_required
+@admin_required
+def create_site_content():
+    """Créer un nouveau contenu"""
+
+    data = request.get_json()
+    key = data.get('key', '').strip()
+    category = data.get('category', 'Général').strip()
+    value = data.get('value', '').strip()
+    description = data.get('description', '').strip()
+
+    if not key or not value:
+        return jsonify({'success': False, 'error': 'Clé et valeur obligatoires'}), 400
+
+    # Vérifier que la clé n'existe pas
+    if SiteContent.query.filter_by(key=key).first():
+        return jsonify({'success': False, 'error': 'Cette clé existe déjà'}), 400
+
+    content = SiteContent(
+        key=key,
+        category=category,
+        value=value,
+        description=description
+    )
+    db.session.add(content)
+    db.session.commit()
+
+    return jsonify({
+        'success': True,
+        'message': 'Contenu créé',
+        'content': {
+            'id': content.id,
+            'key': content.key,
+            'value': content.value
+        }
+    })
+
+
+@bp.route('/site-contents/<int:content_id>/update', methods=['POST'])
+@login_required
+@admin_required
+def update_site_content(content_id):
+    """Mettre à jour un contenu"""
+
+    content = SiteContent.query.get_or_404(content_id)
+    data = request.get_json()
+    new_value = data.get('value', '').strip()
+
+    if not new_value:
+        return jsonify({'success': False, 'error': 'Valeur obligatoire'}), 400
+
+    content.value = new_value
+    content.updated_at = datetime.utcnow()
+    db.session.commit()
+
+    return jsonify({
+        'success': True,
+        'message': 'Contenu mis à jour'
+    })
+
+
+@bp.route('/site-contents/<int:content_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_site_content(content_id):
+    """Supprimer un contenu"""
+
+    content = SiteContent.query.get_or_404(content_id)
+    db.session.delete(content)
+    db.session.commit()
+
+    return jsonify({
+        'success': True,
+        'message': 'Contenu supprimé'
     })

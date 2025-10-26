@@ -182,3 +182,16 @@ class PromoCode(db.Model):
         self.current_uses += 1
         db.session.commit()
         return True
+
+
+class SiteContent(db.Model):
+    """Contenu éditable du site (CMS simple)"""
+    __tablename__ = 'site_contents'
+
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(100), unique=True, nullable=False, index=True)
+    category = db.Column(db.String(50), default='Général')
+    value = db.Column(db.Text, nullable=False)
+    description = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
