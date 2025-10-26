@@ -108,9 +108,14 @@ def tarot():
             return jsonify({'error': 'Sélectionne exactement 3 cartes'}), 400
 
         try:
-            # Convertir les IDs en noms de cartes
+            # Convertir les IDs en noms de cartes (IDs commencent à 1, index à 0)
             TAROT_CARDS = get_tarot_cards()
-            card_names = [TAROT_CARDS[int(cid)] for cid in selected_cards if 0 <= int(cid) < len(TAROT_CARDS)]
+            card_names = [TAROT_CARDS[int(cid) - 1] for cid in selected_cards if 1 <= int(cid) <= len(TAROT_CARDS)]
+
+            # Vérifier qu'on a bien 3 cartes après conversion
+            if len(card_names) != 3:
+                return jsonify({'error': 'Il faut exactement 3 cartes'}), 400
+
             interpretation_result = interpret_tarot(card_names)
 
             interpretation = Interpretation(
