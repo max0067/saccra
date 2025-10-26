@@ -159,6 +159,16 @@ TAROT_CARDS = [
     {"id": 10, "name": "Le Renouveau", "energy": "nouveau départ, espoir, fraîcheur"},
     {"id": 11, "name": "La Créativité", "energy": "expression, inspiration, manifestation"},
     {"id": 12, "name": "La Guérison", "energy": "soin, régénération, libération"},
+    {"id": 13, "name": "La Libération", "energy": "détachement, lâcher-prise, liberté"},
+    {"id": 14, "name": "L'Intuition", "energy": "clairvoyance, guidance intérieure, ressenti"},
+    {"id": 15, "name": "La Manifestation", "energy": "concrétisation, matérialisation, réalisation"},
+    {"id": 16, "name": "Le Passage", "energy": "transition, cycle, évolution"},
+    {"id": 17, "name": "La Connexion", "energy": "liens, rencontres, synchronicité"},
+    {"id": 18, "name": "L'Éveil", "energy": "conscience, illumination, révélation"},
+    {"id": 19, "name": "La Gratitude", "energy": "reconnaissance, appréciation, joie"},
+    {"id": 20, "name": "Le Courage", "energy": "audace, dépassement, bravoure"},
+    {"id": 21, "name": "La Purification", "energy": "nettoyage, clarté, renouvellement"},
+    {"id": 22, "name": "L'Union", "energy": "fusion, complétude, harmonie"},
 ]
 
 
