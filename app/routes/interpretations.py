@@ -4,7 +4,7 @@ Routes d'interprétations : rêves, signes, tirages, profil spirituel
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash
 from flask_login import login_required, current_user
 from app.models import db, Interpretation
-from app.services.ai_service import interpret_dream, interpret_sign, interpret_tarot, calculate_spiritual_profile
+from app.services.ai_service import interpret_dream, interpret_sign, interpret_tarot, calculate_spiritual_profile, get_tarot_cards
 from datetime import datetime
 import json
 
@@ -108,7 +108,10 @@ def tarot():
             return jsonify({'error': 'Sélectionne exactement 3 cartes'}), 400
 
         try:
-            interpretation_result = interpret_tarot(selected_cards)
+            # Convertir les IDs en noms de cartes
+            TAROT_CARDS = get_tarot_cards()
+            card_names = [TAROT_CARDS[int(cid)] for cid in selected_cards if 0 <= int(cid) < len(TAROT_CARDS)]
+            interpretation_result = interpret_tarot(card_names)
 
             interpretation = Interpretation(
                 user_id=current_user.id,
