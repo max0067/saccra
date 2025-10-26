@@ -145,30 +145,30 @@ Ton doit être mystique, inspirant et rassurant. Exemples :
         raise Exception('Erreur OpenAI : {}'.format(str(e)))
 
 
-# Base de données de cartes pour le tirage intuitif
+# Les 22 Arcanes Majeurs du Tarot de Marseille
 TAROT_CARDS = [
-    {"id": 1, "name": "La Lumière", "energy": "clarté, révélation, éveil"},
-    {"id": 2, "name": "L'Ancrage", "energy": "stabilité, enracinement, sécurité"},
-    {"id": 3, "name": "La Transformation", "energy": "changement, renaissance, métamorphose"},
-    {"id": 4, "name": "L'Amour", "energy": "connexion, compassion, ouverture du cœur"},
-    {"id": 5, "name": "La Sagesse", "energy": "connaissance intérieure, intuition, guidance"},
-    {"id": 6, "name": "La Force", "energy": "courage, volonté, persévérance"},
-    {"id": 7, "name": "La Paix", "energy": "harmonie, sérénité, équilibre"},
-    {"id": 8, "name": "L'Abondance", "energy": "prospérité, gratitude, générosité"},
-    {"id": 9, "name": "La Protection", "energy": "sécurité spirituelle, bouclier énergétique"},
-    {"id": 10, "name": "Le Renouveau", "energy": "nouveau départ, espoir, fraîcheur"},
-    {"id": 11, "name": "La Créativité", "energy": "expression, inspiration, manifestation"},
-    {"id": 12, "name": "La Guérison", "energy": "soin, régénération, libération"},
-    {"id": 13, "name": "La Libération", "energy": "détachement, lâcher-prise, liberté"},
-    {"id": 14, "name": "L'Intuition", "energy": "clairvoyance, guidance intérieure, ressenti"},
-    {"id": 15, "name": "La Manifestation", "energy": "concrétisation, matérialisation, réalisation"},
-    {"id": 16, "name": "Le Passage", "energy": "transition, cycle, évolution"},
-    {"id": 17, "name": "La Connexion", "energy": "liens, rencontres, synchronicité"},
-    {"id": 18, "name": "L'Éveil", "energy": "conscience, illumination, révélation"},
-    {"id": 19, "name": "La Gratitude", "energy": "reconnaissance, appréciation, joie"},
-    {"id": 20, "name": "Le Courage", "energy": "audace, dépassement, bravoure"},
-    {"id": 21, "name": "La Purification", "energy": "nettoyage, clarté, renouvellement"},
-    {"id": 22, "name": "L'Union", "energy": "fusion, complétude, harmonie"},
+    {"id": 1, "name": "Le Bateleur", "energy": "commencement, créativité, potentiel"},
+    {"id": 2, "name": "La Papesse", "energy": "intuition, mystère, sagesse intérieure"},
+    {"id": 3, "name": "L'Impératrice", "energy": "abondance, fertilité, créativité"},
+    {"id": 4, "name": "L'Empereur", "energy": "autorité, structure, stabilité"},
+    {"id": 5, "name": "Le Pape", "energy": "tradition, enseignement, spiritualité"},
+    {"id": 6, "name": "L'Amoureux", "energy": "choix, union, amour"},
+    {"id": 7, "name": "Le Chariot", "energy": "victoire, volonté, maîtrise"},
+    {"id": 8, "name": "La Justice", "energy": "équilibre, vérité, karma"},
+    {"id": 9, "name": "L'Hermite", "energy": "sagesse, introspection, solitude"},
+    {"id": 10, "name": "La Roue de Fortune", "energy": "cycles, destinée, changement"},
+    {"id": 11, "name": "La Force", "energy": "courage, patience, maîtrise intérieure"},
+    {"id": 12, "name": "Le Pendu", "energy": "lâcher-prise, sacrifice, perspective"},
+    {"id": 13, "name": "L'Arcane sans nom", "energy": "transformation, fin, renaissance"},
+    {"id": 14, "name": "Tempérance", "energy": "équilibre, modération, guérison"},
+    {"id": 15, "name": "Le Diable", "energy": "attachement, passion, matérialité"},
+    {"id": 16, "name": "La Maison Dieu", "energy": "révélation, bouleversement, libération"},
+    {"id": 17, "name": "L'Étoile", "energy": "espoir, inspiration, guidance"},
+    {"id": 18, "name": "La Lune", "energy": "illusion, intuition, inconscient"},
+    {"id": 19, "name": "Le Soleil", "energy": "joie, succès, vitalité"},
+    {"id": 20, "name": "Le Jugement", "energy": "renaissance, révélation, pardon"},
+    {"id": 21, "name": "Le Monde", "energy": "accomplissement, totalité, voyage"},
+    {"id": 22, "name": "Le Mat", "energy": "liberté, spontanéité, nouveau départ"},
 ]
 
 
