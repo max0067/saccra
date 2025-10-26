@@ -1,14 +1,45 @@
 """
-Service d'interprétation IA avec OpenAI
+Service d'interprétation IA avec OpenAI (via requests pour Python 3.6)
 """
-import openai
 import os
 import json
+import requests
 from datetime import datetime
 
 # Configuration OpenAI
-openai.api_key = os.environ.get('OPENAI_API_KEY', '')
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
 MODEL = os.environ.get('OPENAI_MODEL', 'gpt-4o-mini')
+
+
+def call_openai_api(messages, temperature=0.8, max_tokens=500):
+    """
+    Appelle l'API OpenAI directement avec requests (compatible Python 3.6)
+    """
+    headers = {
+        'Authorization': 'Bearer {}'.format(OPENAI_API_KEY),
+        'Content-Type': 'application/json'
+    }
+
+    data = {
+        'model': MODEL,
+        'messages': messages,
+        'temperature': temperature,
+        'max_tokens': max_tokens
+    }
+
+    response = requests.post(
+        'https://api.openai.com/v1/chat/completions',
+        headers=headers,
+        json=data,
+        timeout=30
+    )
+
+    if response.status_code != 200:
+        raise Exception('Erreur API OpenAI: {}'.format(response.text))
+
+    result = response.json()
+    return result['choices'][0]['message']['content'].strip()
+
 
 def interpret_dream(dream_text):
     """
@@ -39,34 +70,25 @@ Exemples de ton :
 
 Sois toujours positif, inspirant et encourage l'introspection."""
 
-    user_prompt = f"Interprète ce rêve : {dream_text}"
+    user_prompt = "Interprète ce rêve : {}".format(dream_text)
 
     try:
-        response = openai.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            temperature=0.8,
-            max_tokens=500
-        )
-
-        content = response.choices[0].message.content.strip()
-
-        # Parser le JSON
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+        content = call_openai_api(messages, temperature=0.8, max_tokens=500)
         result = json.loads(content)
         return result
 
     except json.JSONDecodeError:
-        # Si l'IA ne retourne pas du JSON valide, on structure la réponse
         return {
             "symbolism": "Ton rêve porte des symboles puissants qui méritent attention.",
-            "spiritual_message": content[:200] if content else "L'univers t'envoie un message à travers ce rêve.",
+            "spiritual_message": content[:200] if 'content' in locals() else "L'univers t'envoie un message à travers ce rêve.",
             "personal_advice": "Prends un moment pour méditer sur ces images."
         }
     except Exception as e:
-        raise Exception(f"Erreur OpenAI : {str(e)}")
+        raise Exception('Erreur OpenAI : {}'.format(str(e)))
 
 
 def interpret_sign(sign_text):
@@ -98,31 +120,25 @@ Ton doit être mystique, inspirant et rassurant. Exemples :
 - "Cette plume sur ton chemin confirme que tu es guidé(e) et protégé(e)."
 """
 
-    user_prompt = f"Interprète ce signe : {sign_text}"
+    user_prompt = "Interprète ce signe : {}".format(sign_text)
 
     try:
-        response = openai.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            temperature=0.8,
-            max_tokens=500
-        )
-
-        content = response.choices[0].message.content.strip()
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+        content = call_openai_api(messages, temperature=0.8, max_tokens=500)
         result = json.loads(content)
         return result
 
     except json.JSONDecodeError:
         return {
             "symbolism": "Ce signe porte une signification profonde pour ton chemin.",
-            "spiritual_message": content[:200] if content else "L'univers communique avec toi à travers ce signe.",
+            "spiritual_message": content[:200] if 'content' in locals() else "L'univers communique avec toi à travers ce signe.",
             "personal_advice": "Reste attentif aux prochains messages qui se présenteront."
         }
     except Exception as e:
-        raise Exception(f"Erreur OpenAI : {str(e)}")
+        raise Exception('Erreur OpenAI : {}'.format(str(e)))
 
 
 # Base de données de cartes pour le tirage intuitif
@@ -141,9 +157,11 @@ TAROT_CARDS = [
     {"id": 12, "name": "La Guérison", "energy": "soin, régénération, libération"},
 ]
 
+
 def get_tarot_cards():
     """Retourne la liste des cartes de tirage"""
     return TAROT_CARDS
+
 
 def interpret_tarot(card_ids):
     """
@@ -168,7 +186,7 @@ def interpret_tarot(card_ids):
 
     # Construire la description du tirage
     cards_description = "\n".join([
-        f"Carte {i+1}: {card['name']} - Énergie : {card['energy']}"
+        "Carte {}: {} - Énergie : {}".format(i+1, card['name'], card['energy'])
         for i, card in enumerate(selected_cards)
     ])
 
@@ -185,20 +203,14 @@ Réponds TOUJOURS au format JSON suivant :
 
 Ton doit être mystique, poétique et rassurant. Crée une histoire avec les 3 cartes."""
 
-    user_prompt = f"Interprète ce tirage de 3 cartes :\n\n{cards_description}"
+    user_prompt = "Interprète ce tirage de 3 cartes :\n\n{}".format(cards_description)
 
     try:
-        response = openai.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            temperature=0.9,
-            max_tokens=600
-        )
-
-        content = response.choices[0].message.content.strip()
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+        content = call_openai_api(messages, temperature=0.9, max_tokens=600)
         result = json.loads(content)
 
         # Ajouter les cartes au résultat
@@ -210,11 +222,11 @@ Ton doit être mystique, poétique et rassurant. Crée une histoire avec les 3 c
         return {
             "cards": selected_cards,
             "interpretation": "Les cartes tirées révèlent un chemin d'évolution personnelle profonde.",
-            "spiritual_message": content[:200] if content else "Ton âme connaît déjà les réponses.",
+            "spiritual_message": content[:200] if 'content' in locals() else "Ton âme connaît déjà les réponses.",
             "personal_advice": "Fais confiance à ton intuition pour les prochaines étapes."
         }
     except Exception as e:
-        raise Exception(f"Erreur OpenAI : {str(e)}")
+        raise Exception('Erreur OpenAI : {}'.format(str(e)))
 
 
 def calculate_spiritual_profile(first_name, birth_date, favorite_color, element):
@@ -248,25 +260,19 @@ Réponds TOUJOURS au format JSON suivant :
 }
 """
 
-    user_prompt = f"""Détermine le profil spirituel de :
-Prénom : {first_name}
-Date de naissance : {birth_date_str}
-Couleur préférée : {favorite_color}
-Élément : {element}
-"""
+    user_prompt = """Détermine le profil spirituel de :
+Prénom : {}
+Date de naissance : {}
+Couleur préférée : {}
+Élément : {}
+""".format(first_name, birth_date_str, favorite_color, element)
 
     try:
-        response = openai.chat.completions.create(
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            temperature=0.7,
-            max_tokens=400
-        )
-
-        content = response.choices[0].message.content.strip()
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ]
+        content = call_openai_api(messages, temperature=0.7, max_tokens=400)
         result = json.loads(content)
         return result
 
