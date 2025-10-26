@@ -8,8 +8,13 @@ from functools import wraps
 from datetime import datetime, timedelta
 from sqlalchemy import func
 from app.models import db, User, Interpretation, PromoCode, SpiritualProfile, SiteContent
+import stripe
+import os
 
 bp = Blueprint('admin', __name__)
+
+# Configuration Stripe
+stripe.api_key = os.environ.get('STRIPE_SECRET_KEY', '')
 
 
 def admin_required(f):
@@ -391,3 +396,55 @@ def delete_site_content(content_id):
         'success': True,
         'message': 'Contenu supprimé'
     })
+
+
+@bp.route('/users/<int:user_id>/payments')
+@login_required
+@admin_required
+def user_payments(user_id):
+    """Récupérer l'historique des paiements d'un utilisateur depuis Stripe"""
+
+    user = User.query.get_or_404(user_id)
+
+    # Vérifier si l'utilisateur a un customer_id Stripe
+    if not user.stripe_customer_id:
+        return jsonify({
+            'success': True,
+            'payments': []
+        })
+
+    try:
+        # Récupérer les charges (payments) depuis Stripe
+        charges = stripe.Charge.list(
+            customer=user.stripe_customer_id,
+            limit=100
+        )
+
+        payments = []
+        for charge in charges.data:
+            payments.append({
+                'id': charge.id,
+                'amount': '{:.2f}'.format(charge.amount / 100),
+                'currency': charge.currency,
+                'status': charge.status,
+                'description': charge.description or 'Abonnement SACRA Premium',
+                'date': datetime.fromtimestamp(charge.created).strftime('%d/%m/%Y à %H:%M'),
+                'receipt_url': charge.receipt_url
+            })
+
+        return jsonify({
+            'success': True,
+            'payments': payments,
+            'customer_id': user.stripe_customer_id
+        })
+
+    except stripe.error.StripeError as e:
+        return jsonify({
+            'success': False,
+            'error': 'Erreur Stripe: {}'.format(str(e))
+        }), 500
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': 'Erreur: {}'.format(str(e))
+        }), 500

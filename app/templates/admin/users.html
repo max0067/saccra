@@ -59,6 +59,7 @@
                         <th class="text-left py-3 px-4 text-gray-700 font-bold">Email</th>
                         <th class="text-left py-3 px-4 text-gray-700 font-bold">Nom</th>
                         <th class="text-left py-3 px-4 text-gray-700 font-bold">Statut</th>
+                        <th class="text-left py-3 px-4 text-gray-700 font-bold">Stripe</th>
                         <th class="text-left py-3 px-4 text-gray-700 font-bold">Crédits</th>
                         <th class="text-left py-3 px-4 text-gray-700 font-bold">Interp.</th>
                         <th class="text-left py-3 px-4 text-gray-700 font-bold">Inscrit</th>
@@ -85,6 +86,28 @@
                                 {% endif %}
                             {% else %}
                                 <span class="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full">Gratuit</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-4">
+                            {% if user.stripe_customer_id or user.stripe_subscription_id %}
+                                <div class="text-xs">
+                                    {% if user.stripe_customer_id %}
+                                    <div class="text-gray-600 mb-1" title="Customer ID">
+                                        👤 {{ user.stripe_customer_id[:15] }}...
+                                    </div>
+                                    {% endif %}
+                                    {% if user.stripe_subscription_id %}
+                                    <div class="text-gray-600 mb-2" title="Subscription ID">
+                                        📋 {{ user.stripe_subscription_id[:15] }}...
+                                    </div>
+                                    {% endif %}
+                                    <button onclick="viewPayments({{ user.id }}, '{{ user.email }}')"
+                                            class="px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-xs">
+                                        💳 Voir paiements
+                                    </button>
+                                </div>
+                            {% else %}
+                                <span class="text-gray-400 text-xs">-</span>
                             {% endif %}
                         </td>
                         <td class="py-3 px-4">
@@ -157,6 +180,23 @@
             {% endif %}
         </div>
         {% endif %}
+    </div>
+</div>
+
+<!-- Modal Historique des Paiements -->
+<div id="paymentsModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-purple-900">💳 Historique des Paiements</h2>
+            <button onclick="closePaymentsModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+        </div>
+
+        <div id="paymentsContent" class="space-y-4">
+            <div class="text-center py-8">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+                <p class="text-gray-600 mt-4">Chargement...</p>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -263,5 +303,88 @@ async function deleteUser(userId, email) {
         alert('Erreur: ' + e.message);
     }
 }
+
+// Voir l'historique des paiements
+async function viewPayments(userId, email) {
+    const modal = document.getElementById('paymentsModal');
+    const content = document.getElementById('paymentsContent');
+
+    // Afficher la modal avec loader
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    content.innerHTML = `
+        <div class="text-center py-8">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto"></div>
+            <p class="text-gray-600 mt-4">Chargement des paiements de ${email}...</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(`/admin/users/${userId}/payments`);
+        const data = await response.json();
+
+        if (data.success) {
+            if (data.payments.length === 0) {
+                content.innerHTML = `
+                    <div class="text-center py-8">
+                        <p class="text-gray-600">Aucun paiement trouvé pour cet utilisateur.</p>
+                    </div>
+                `;
+            } else {
+                let html = '<div class="space-y-3">';
+                data.payments.forEach(payment => {
+                    const statusColor = payment.status === 'succeeded' ? 'green' : payment.status === 'pending' ? 'yellow' : 'red';
+                    const statusText = payment.status === 'succeeded' ? 'Réussi' : payment.status === 'pending' ? 'En attente' : 'Échoué';
+
+                    html += `
+                        <div class="border border-gray-200 rounded-lg p-4 hover:bg-purple-50 transition">
+                            <div class="flex justify-between items-start">
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="px-2 py-1 bg-${statusColor}-100 text-${statusColor}-700 text-xs rounded-full">
+                                            ${statusText}
+                                        </span>
+                                        <span class="text-sm text-gray-600">${payment.date}</span>
+                                    </div>
+                                    <div class="text-lg font-bold text-purple-900">${payment.amount} ${payment.currency.toUpperCase()}</div>
+                                    ${payment.description ? `<div class="text-sm text-gray-600 mt-1">${payment.description}</div>` : ''}
+                                    <div class="text-xs text-gray-500 mt-2">ID: ${payment.id}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                content.innerHTML = html;
+            }
+        } else {
+            content.innerHTML = `
+                <div class="text-center py-8">
+                    <p class="text-red-600">Erreur: ${data.error}</p>
+                </div>
+            `;
+        }
+    } catch (e) {
+        content.innerHTML = `
+            <div class="text-center py-8">
+                <p class="text-red-600">Erreur: ${e.message}</p>
+            </div>
+        `;
+    }
+}
+
+// Fermer la modal
+function closePaymentsModal() {
+    const modal = document.getElementById('paymentsModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+// Fermer la modal en cliquant à l'extérieur
+document.getElementById('paymentsModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closePaymentsModal();
+    }
+});
 </script>
 {% endblock %}
