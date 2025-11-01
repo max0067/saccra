@@ -102,19 +102,35 @@ def tarot():
             }), 403
 
         data = request.get_json()
-        selected_cards = data.get('cards', [])  # IDs des cartes sélectionnées
+        first_name = data.get('first_name', '').strip()
+        age = data.get('age', '').strip()
+        city = data.get('city', '').strip()
+        question = data.get('question', '').strip()
 
-        if len(selected_cards) != 3:
-            return jsonify({'error': 'Sélectionne exactement 3 cartes'}), 400
+        if not first_name or not question:
+            return jsonify({'error': 'Merci de remplir au moins ton prénom et ta question'}), 400
 
         try:
-            # interpret_tarot attend directement les IDs des cartes
-            interpretation_result = interpret_tarot(selected_cards)
+            # L'IA tire 3 cartes aléatoires et interprète
+            interpretation_result = interpret_tarot(
+                first_name=first_name,
+                age=age,
+                city=city,
+                question=question
+            )
+
+            # Sauvegarder l'input utilisateur
+            user_input = {
+                'first_name': first_name,
+                'age': age,
+                'city': city,
+                'question': question
+            }
 
             interpretation = Interpretation(
                 user_id=current_user.id,
                 type='tarot',
-                user_input=json.dumps(selected_cards),
+                user_input=json.dumps(user_input, ensure_ascii=False),
                 ai_response=json.dumps(interpretation_result, ensure_ascii=False)
             )
             db.session.add(interpretation)
@@ -127,7 +143,7 @@ def tarot():
             })
 
         except Exception as e:
-            return jsonify({'error': f'Erreur lors de l\'interprétation : {str(e)}'}), 500
+            return jsonify({'error': 'Erreur lors de l\'interprétation : {}'.format(str(e))}), 500
 
     return render_template('interpretations/tarot.html')
 

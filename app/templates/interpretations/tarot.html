@@ -1,43 +1,87 @@
 {% extends "base.html" %}
 
-{% block title %}Tirage intuitif - SACRA{% endblock %}
+{% block title %}Tirage de Tarot - SACRA{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-12">
 
-    <div class="max-w-5xl mx-auto">
+    <div class="max-w-3xl mx-auto">
 
         <!-- En-tête -->
         <div class="text-center mb-12 fade-in">
             <div class="text-6xl mb-4">🔮</div>
-            <h1 class="text-5xl font-bold text-purple-900 mb-4">Tirage intuitif</h1>
-            <p class="text-xl text-gray-700">Tire 3 cartes et reçois ta guidance spirituelle</p>
+            <h1 class="text-5xl font-bold text-purple-900 mb-4">Tirage de Tarot</h1>
+            <p class="text-xl text-gray-700">Reçois ta guidance spirituelle personnalisée</p>
         </div>
 
-        <!-- Instructions -->
-        <div id="instructions" class="card-mystical rounded-xl p-6 text-center mb-8">
-            <p class="text-gray-700 text-lg">
-                Respire profondément, concentre-toi sur ta question intérieure, puis choisis 3 cartes.
+        <!-- Formulaire -->
+        <div id="tarotForm" class="card-mystical rounded-xl p-8 shadow-lg mb-8 fade-in">
+            <p class="text-gray-700 text-center mb-6">
+                Partage quelques informations pour que l'univers puisse te guider au mieux 🌙
             </p>
-        </div>
 
-        <!-- Cartes -->
-        <div id="cardsGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-            <!-- Les cartes seront générées par JavaScript -->
-        </div>
+            <form id="form">
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Prénom</label>
+                        <input
+                            type="text"
+                            id="firstName"
+                            required
+                            class="w-full px-4 py-3 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                            placeholder="Ton prénom"
+                        >
+                    </div>
 
-        <!-- Cartes sélectionnées -->
-        <div id="selectedCards" class="hidden mb-8">
-            <div class="card-mystical rounded-xl p-6">
-                <h3 class="text-xl font-bold text-purple-900 mb-4 text-center">Tes 3 cartes</h3>
-                <div id="selectedCardsDisplay" class="flex justify-center gap-4 flex-wrap"></div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Âge</label>
+                        <input
+                            type="number"
+                            id="age"
+                            min="1"
+                            max="120"
+                            class="w-full px-4 py-3 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                            placeholder="Ton âge (optionnel)"
+                        >
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">Ville</label>
+                    <input
+                        type="text"
+                        id="city"
+                        class="w-full px-4 py-3 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                        placeholder="Ta ville (optionnel)"
+                    >
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">Ta question ou intention</label>
+                    <textarea
+                        id="question"
+                        required
+                        rows="4"
+                        class="w-full px-4 py-3 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                        placeholder="Ex: Quelle direction prendre dans ma vie professionnelle ? Que dois-je savoir sur ma relation amoureuse ?..."
+                    ></textarea>
+                    <p class="text-sm text-gray-500 mt-2">Formule une question claire pour une guidance précise</p>
+                </div>
+
                 <button
-                    id="interpretBtn"
-                    class="w-full mt-6 py-4 btn-primary text-white rounded-lg font-medium text-lg shadow-lg"
+                    type="submit"
+                    id="submitBtn"
+                    class="w-full py-4 btn-primary text-white rounded-lg font-medium text-lg shadow-lg"
                 >
-                    Recevoir mon interprétation ✨
+                    Recevoir mon tirage de tarot ✨
                 </button>
-            </div>
+            </form>
+        </div>
+
+        <!-- Loader -->
+        <div id="loader" class="hidden text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-purple-200 border-t-purple-600"></div>
+            <p class="text-gray-700 mt-4">L'univers tire tes cartes et interprète ton tirage...</p>
         </div>
 
         <!-- Résultat -->
@@ -45,6 +89,11 @@
             <div class="card-mystical rounded-2xl p-8 shadow-xl">
 
                 <h2 class="text-3xl font-bold text-purple-900 mb-6 text-center">Ton tirage 🔮</h2>
+
+                <!-- Infos personnelles -->
+                <div id="userInfo" class="text-center mb-6 p-4 bg-purple-50 rounded-lg">
+                    <p class="text-gray-700"></p>
+                </div>
 
                 <!-- Cartes tirées -->
                 <div class="flex justify-center gap-6 mb-8 flex-wrap">
@@ -89,12 +138,6 @@
             </div>
         </div>
 
-        <!-- Loader -->
-        <div id="loader" class="hidden text-center py-12">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-purple-200 border-t-purple-600"></div>
-            <p class="text-gray-700 mt-4">L'univers interprète ton tirage...</p>
-        </div>
-
     </div>
 
 </div>
@@ -126,72 +169,29 @@ const CARDS = [
     {id: 22, name: "Le Mat", energy: "liberté, spontanéité, nouveau départ", emoji: "🎒"},
 ];
 
-let selectedCards = [];
+document.getElementById('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-// Générer les cartes
-const cardsGrid = document.getElementById('cardsGrid');
-CARDS.forEach(card => {
-    const cardEl = document.createElement('div');
-    cardEl.className = 'card-mystical rounded-xl p-6 text-center cursor-pointer hover:shadow-xl hover:-translate-y-2 transition-all';
-    cardEl.innerHTML = `
-        <div class="text-4xl mb-2">${card.emoji}</div>
-        <p class="font-semibold text-purple-900">${card.name}</p>
-        <p class="text-xs text-gray-600 mt-1">${card.energy}</p>
-    `;
-    cardEl.onclick = () => selectCard(card, cardEl);
-    cardsGrid.appendChild(cardEl);
-});
+    const firstName = document.getElementById('firstName').value.trim();
+    const age = document.getElementById('age').value.trim();
+    const city = document.getElementById('city').value.trim();
+    const question = document.getElementById('question').value.trim();
 
-function selectCard(card, element) {
-    if (selectedCards.find(c => c.id === card.id)) {
-        // Désélectionner
-        selectedCards = selectedCards.filter(c => c.id !== card.id);
-        element.classList.remove('ring-4', 'ring-purple-500');
-    } else {
-        if (selectedCards.length >= 3) {
-            alert('Tu as déjà sélectionné 3 cartes');
-            return;
-        }
-        selectedCards.push(card);
-        element.classList.add('ring-4', 'ring-purple-500');
-    }
-
-    updateSelectedDisplay();
-}
-
-function updateSelectedDisplay() {
-    const display = document.getElementById('selectedCardsDisplay');
-    const container = document.getElementById('selectedCards');
-
-    if (selectedCards.length > 0) {
-        container.classList.remove('hidden');
-        display.innerHTML = selectedCards.map((card, i) => `
-            <div class="text-center">
-                <div class="text-3xl mb-1">${card.emoji}</div>
-                <p class="text-sm font-medium text-purple-900">${card.name}</p>
-            </div>
-        `).join('');
-    } else {
-        container.classList.add('hidden');
-    }
-}
-
-document.getElementById('interpretBtn').addEventListener('click', async () => {
-    if (selectedCards.length !== 3) {
-        alert('Sélectionne exactement 3 cartes');
+    if (!firstName || !question) {
+        alert('Merci de remplir au moins ton prénom et ta question');
         return;
     }
 
-    const btn = document.getElementById('interpretBtn');
+    const tarotForm = document.getElementById('tarotForm');
     const loader = document.getElementById('loader');
     const result = document.getElementById('result');
+    const submitBtn = document.getElementById('submitBtn');
 
-    btn.disabled = true;
-    btn.textContent = 'Interprétation en cours...';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Interprétation en cours...';
+    tarotForm.style.display = 'none';
     loader.classList.remove('hidden');
     result.classList.add('hidden');
-    document.getElementById('cardsGrid').style.display = 'none';
-    document.getElementById('selectedCards').style.display = 'none';
 
     try {
         const response = await fetch('{{ url_for("interpretations.tarot") }}', {
@@ -199,18 +199,30 @@ document.getElementById('interpretBtn').addEventListener('click', async () => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ cards: selectedCards.map(c => c.id) })
+            body: JSON.stringify({
+                first_name: firstName,
+                age: age,
+                city: city,
+                question: question
+            })
         });
 
         const data = await response.json();
 
         if (data.error) {
             alert(data.error);
-            btn.disabled = false;
-            btn.textContent = 'Recevoir mon interprétation ✨';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Recevoir mon tirage de tarot ✨';
+            tarotForm.style.display = 'block';
             loader.classList.add('hidden');
             return;
         }
+
+        // Afficher les infos utilisateur
+        let userInfoText = `Tirage pour ${firstName}`;
+        if (age) userInfoText += `, ${age} ans`;
+        if (city) userInfoText += ` de ${city}`;
+        document.getElementById('userInfo').querySelector('p').textContent = userInfoText;
 
         // Afficher les cartes
         data.interpretation.cards.forEach((card, i) => {
@@ -233,8 +245,9 @@ document.getElementById('interpretBtn').addEventListener('click', async () => {
 
     } catch (error) {
         alert('Une erreur est survenue. Réessaye dans quelques instants.');
-        btn.disabled = false;
-        btn.textContent = 'Recevoir mon interprétation ✨';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Recevoir mon tirage de tarot ✨';
+        tarotForm.style.display = 'block';
         loader.classList.add('hidden');
     }
 });

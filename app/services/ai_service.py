@@ -177,12 +177,15 @@ def get_tarot_cards():
     return TAROT_CARDS
 
 
-def interpret_tarot(card_ids):
+def interpret_tarot(first_name, age=None, city=None, question=None):
     """
-    Interprète un tirage de 3 cartes
+    Tire 3 cartes aléatoires et interprète le tirage de façon personnalisée
 
     Args:
-        card_ids: list of int (3 IDs de cartes)
+        first_name: str - Prénom de la personne
+        age: str - Âge (optionnel)
+        city: str - Ville (optionnel)
+        question: str - Question ou intention du tirage
 
     Returns:
         dict: {
@@ -192,11 +195,10 @@ def interpret_tarot(card_ids):
             'personal_advice': str
         }
     """
-    # Récupérer les cartes sélectionnées
-    selected_cards = [card for card in TAROT_CARDS if card['id'] in card_ids]
+    import random
 
-    if len(selected_cards) != 3:
-        raise ValueError("Il faut exactement 3 cartes")
+    # Tirer 3 cartes aléatoires
+    selected_cards = random.sample(TAROT_CARDS, 3)
 
     # Construire la description du tirage
     cards_description = "\n".join([
@@ -204,20 +206,29 @@ def interpret_tarot(card_ids):
         for i, card in enumerate(selected_cards)
     ])
 
-    system_prompt = """Tu es une tarologue spirituelle experte qui interprète les tirages intuitifs.
+    # Construire l'intro personnalisée
+    user_intro = "Prénom : {}".format(first_name)
+    if age:
+        user_intro += "\nÂge : {}".format(age)
+    if city:
+        user_intro += "\nVille : {}".format(city)
+    if question:
+        user_intro += "\nQuestion/Intention : {}".format(question)
 
-Tu dois créer une interprétation cohérente et fluide du tirage de 3 cartes, en les reliant entre elles pour créer un message unifié.
+    system_prompt = """Tu es une tarologue spirituelle experte qui interprète les tirages de Tarot de Marseille.
+
+Tu dois créer une interprétation cohérente et PERSONNALISÉE basée sur les informations de la personne et sa question.
 
 Réponds TOUJOURS au format JSON suivant :
 {
-    "interpretation": "Un paragraphe fluide qui relie les 3 cartes entre elles (4-5 phrases)",
-    "spiritual_message": "Le message principal que l'univers t'envoie (2-3 phrases)",
-    "personal_advice": "Un conseil concret et bienveillant pour avancer (1-2 phrases)"
+    "interpretation": "Un paragraphe fluide qui relie les 3 cartes entre elles en répondant à la question de la personne (4-5 phrases). Adresse-toi à la personne par son prénom.",
+    "spiritual_message": "Le message principal que l'univers envoie à cette personne concernant sa question (2-3 phrases)",
+    "personal_advice": "Un conseil concret et bienveillant adapté à sa situation (1-2 phrases)"
 }
 
-Ton doit être mystique, poétique et rassurant. Crée une histoire avec les 3 cartes."""
+Ton ton doit être mystique, poétique et rassurant. Utilise le prénom de la personne et fais référence à sa question."""
 
-    user_prompt = "Interprète ce tirage de 3 cartes :\n\n{}".format(cards_description)
+    user_prompt = "{}\n\nCartes tirées :\n{}".format(user_intro, cards_description)
 
     try:
         messages = [
@@ -235,7 +246,7 @@ Ton doit être mystique, poétique et rassurant. Crée une histoire avec les 3 c
     except json.JSONDecodeError:
         return {
             "cards": selected_cards,
-            "interpretation": "Les cartes tirées révèlent un chemin d'évolution personnelle profonde.",
+            "interpretation": "{}, les cartes tirées révèlent un chemin d'évolution personnelle profonde concernant ta question.".format(first_name),
             "spiritual_message": content[:200] if 'content' in locals() else "Ton âme connaît déjà les réponses.",
             "personal_advice": "Fais confiance à ton intuition pour les prochaines étapes."
         }
