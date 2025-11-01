@@ -50,6 +50,107 @@
     </div>
     {% endif %}
 
+    <!-- Statistiques d'utilisation -->
+    {% if total_interpretations > 0 %}
+    <div class="card-mystical rounded-2xl p-8 mb-8 shadow-lg fade-in">
+        <h2 class="text-3xl font-bold text-purple-900 mb-6">Tes statistiques 📊</h2>
+
+        <div class="grid md:grid-cols-4 gap-4">
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 text-center">
+                <p class="text-sm text-gray-600 mb-2">Total</p>
+                <p class="text-4xl font-bold text-purple-900">{{ total_interpretations }}</p>
+                <p class="text-xs text-gray-600 mt-1">interprétations</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 text-center">
+                <p class="text-sm text-gray-600 mb-2">🌙 Rêves</p>
+                <p class="text-4xl font-bold text-blue-900">{{ dream_count }}</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl p-6 text-center">
+                <p class="text-sm text-gray-600 mb-2">✨ Signes</p>
+                <p class="text-4xl font-bold text-pink-900">{{ sign_count }}</p>
+            </div>
+
+            <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 text-center">
+                <p class="text-sm text-gray-600 mb-2">🔮 Tirages</p>
+                <p class="text-4xl font-bold text-indigo-900">{{ tarot_count }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Dernière interprétation complète -->
+    {% if last_interpretation %}
+    <div class="card-mystical rounded-2xl p-8 mb-8 shadow-lg fade-in">
+        <h2 class="text-3xl font-bold text-purple-900 mb-4">Ta dernière interprétation
+            {% if last_interpretation.type == 'dream' %}🌙
+            {% elif last_interpretation.type == 'sign' %}✨
+            {% elif last_interpretation.type == 'tarot' %}🔮
+            {% endif %}
+        </h2>
+
+        <p class="text-sm text-gray-500 mb-4">{{ last_interpretation.created_at.strftime('%d %B %Y à %H:%M') }}</p>
+
+        <!-- Input utilisateur -->
+        <div class="mb-6 p-4 bg-purple-50 rounded-lg border-l-4 border-purple-400">
+            <p class="text-sm font-semibold text-purple-800 mb-2">
+                {% if last_interpretation.type == 'dream' %}Ton rêve
+                {% elif last_interpretation.type == 'sign' %}Le signe
+                {% elif last_interpretation.type == 'tarot' %}Ta question
+                {% endif %}
+            </p>
+            <p class="text-gray-700 italic">{{ last_interpretation.user_input }}</p>
+        </div>
+
+        <!-- Réponse IA -->
+        {% set response = last_interpretation.get_response_dict() %}
+        <div class="space-y-4">
+            {% if response.symbolism %}
+            <div class="bg-white rounded-lg p-4 border border-purple-100">
+                <p class="text-sm font-semibold text-purple-800 mb-2">🔮 Symbolisme</p>
+                <p class="text-gray-700">{{ response.symbolism }}</p>
+            </div>
+            {% endif %}
+
+            {% if response.interpretation %}
+            <div class="bg-white rounded-lg p-4 border border-purple-100">
+                <p class="text-sm font-semibold text-purple-800 mb-2">🔮 Interprétation</p>
+                <p class="text-gray-700">{{ response.interpretation }}</p>
+            </div>
+            {% endif %}
+
+            {% if response.spiritual_message %}
+            <div class="bg-white rounded-lg p-4 border border-purple-100">
+                <p class="text-sm font-semibold text-purple-800 mb-2">✨ Message spirituel</p>
+                <p class="text-gray-700">{{ response.spiritual_message }}</p>
+            </div>
+            {% endif %}
+
+            {% if response.personal_advice %}
+            <div class="bg-white rounded-lg p-4 border border-purple-100">
+                <p class="text-sm font-semibold text-purple-800 mb-2">💫 Conseil personnel</p>
+                <p class="text-gray-700 font-medium">{{ response.personal_advice }}</p>
+            </div>
+            {% endif %}
+
+            {% if response.cards %}
+            <div class="bg-white rounded-lg p-4 border border-purple-100">
+                <p class="text-sm font-semibold text-purple-800 mb-3">🎴 Cartes tirées</p>
+                <div class="flex gap-3 flex-wrap">
+                    {% for card in response.cards %}
+                    <div class="px-3 py-2 bg-purple-50 rounded-lg border border-purple-200">
+                        <p class="text-sm font-medium text-purple-900">{{ card.name }}</p>
+                        <p class="text-xs text-gray-600">{{ card.energy }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
     <!-- Stats freemium -->
     <div class="grid md:grid-cols-2 gap-6 mb-8">
 
