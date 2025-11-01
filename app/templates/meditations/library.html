@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Méditations Guidées{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+
+    <!-- Header -->
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-bold text-purple-900 mb-4">
+            🧘 Méditations Guidées Audio
+        </h1>
+        <p class="text-xl text-gray-700 max-w-3xl mx-auto mb-6">
+            Découvre notre collection de méditations guidées pour t'accompagner sur ton chemin spirituel
+        </p>
+
+        <!-- Stats utilisateur -->
+        <div class="inline-block bg-white rounded-full px-8 py-3 shadow-lg border-2 border-purple-200">
+            {% if remaining_meditations == -1 %}
+                <p class="text-purple-800 font-medium">
+                    ✨ <strong>Premium</strong> : Méditations illimitées
+                </p>
+            {% else %}
+                <p class="text-gray-700">
+                    🎧 <strong>{{ remaining_meditations }}</strong> méditation(s) restante(s) ce mois
+                    <span class="text-sm text-gray-500">({{ monthly_count }}/3 écoutées)</span>
+                </p>
+            {% endif %}
+        </div>
+
+        {% if remaining_meditations == 0 %}
+        <div class="mt-6 p-4 bg-yellow-50 border-2 border-yellow-300 rounded-xl max-w-2xl mx-auto">
+            <p class="text-yellow-800 mb-3">
+                ⚠️ Tu as atteint ta limite de méditations gratuites ce mois
+            </p>
+            <a href="{{ url_for('premium.subscribe') }}" class="inline-block px-6 py-2 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white rounded-full font-medium hover:shadow-lg transition">
+                Passer Premium pour un accès illimité ✨
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Filtres par thème -->
+    <div class="flex flex-wrap justify-center gap-3 mb-12">
+        <a href="{{ url_for('meditations.library') }}"
+           class="px-6 py-2 {% if not theme_filter %}bg-gradient-to-r from-purple-600 to-pink-600 text-white{% else %}bg-white text-purple-700 border-2 border-purple-200{% endif %} rounded-full font-medium hover:shadow-lg transition">
+            Tous les thèmes
+        </a>
+        <a href="{{ url_for('meditations.library', theme='chakras') }}"
+           class="px-6 py-2 {% if theme_filter == 'chakras' %}bg-gradient-to-r from-purple-600 to-pink-600 text-white{% else %}bg-white text-purple-700 border-2 border-purple-200{% endif %} rounded-full font-medium hover:shadow-lg transition">
+            🌈 Chakras
+        </a>
+        <a href="{{ url_for('meditations.library', theme='manifestation') }}"
+           class="px-6 py-2 {% if theme_filter == 'manifestation' %}bg-gradient-to-r from-purple-600 to-pink-600 text-white{% else %}bg-white text-purple-700 border-2 border-purple-200{% endif %} rounded-full font-medium hover:shadow-lg transition">
+            ✨ Manifestation
+        </a>
+        <a href="{{ url_for('meditations.library', theme='guérison') }}"
+           class="px-6 py-2 {% if theme_filter == 'guérison' %}bg-gradient-to-r from-purple-600 to-pink-600 text-white{% else %}bg-white text-purple-700 border-2 border-purple-200{% endif %} rounded-full font-medium hover:shadow-lg transition">
+            💚 Guérison
+        </a>
+        <a href="{{ url_for('meditations.library', theme='sommeil') }}"
+           class="px-6 py-2 {% if theme_filter == 'sommeil' %}bg-gradient-to-r from-purple-600 to-pink-600 text-white{% else %}bg-white text-purple-700 border-2 border-purple-200{% endif %} rounded-full font-medium hover:shadow-lg transition">
+            😴 Sommeil
+        </a>
+    </div>
+
+    <!-- Grille de méditations -->
+    {% if meditations %}
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+        {% for meditation in meditations %}
+        <div class="card-mystical rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2 overflow-hidden">
+            <!-- Header coloré selon le thème -->
+            <div class="p-6
+                {% if meditation.theme == 'chakras' %}bg-gradient-to-r from-purple-400 to-pink-400
+                {% elif meditation.theme == 'manifestation' %}bg-gradient-to-r from-yellow-400 to-orange-400
+                {% elif meditation.theme == 'guérison' %}bg-gradient-to-r from-green-400 to-teal-400
+                {% elif meditation.theme == 'sommeil' %}bg-gradient-to-r from-indigo-400 to-purple-400
+                {% else %}bg-gradient-to-r from-purple-500 to-pink-500
+                {% endif %}">
+                <div class="flex items-center justify-between text-white mb-2">
+                    <span class="text-3xl">
+                        {% if meditation.theme == 'chakras' %}🌈
+                        {% elif meditation.theme == 'manifestation' %}✨
+                        {% elif meditation.theme == 'guérison' %}💚
+                        {% elif meditation.theme == 'sommeil' %}😴
+                        {% else %}🧘
+                        {% endif %}
+                    </span>
+                    <span class="text-sm font-medium bg-white bg-opacity-20 px-3 py-1 rounded-full">
+                        {{ meditation.duration_minutes }} min
+                    </span>
+                </div>
+                <h3 class="text-2xl font-bold text-white">{{ meditation.title }}</h3>
+            </div>
+
+            <!-- Contenu -->
+            <div class="p-6">
+                <p class="text-gray-700 mb-4 leading-relaxed">
+                    {{ meditation.description }}
+                </p>
+
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-500 capitalize">
+                        {{ meditation.theme }}
+                    </span>
+                    <a href="{{ url_for('meditations.player', meditation_id=meditation.id) }}"
+                       class="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-medium hover:shadow-lg transition flex items-center gap-2">
+                        <span>▶</span> Écouter
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-12">
+        <p class="text-2xl text-gray-600">
+            {% if theme_filter %}
+                Aucune méditation trouvée pour le thème "{{ theme_filter }}"
+            {% else %}
+                Aucune méditation disponible pour le moment
+            {% endif %}
+        </p>
+        {% if theme_filter %}
+        <a href="{{ url_for('meditations.library') }}" class="inline-block mt-4 text-purple-700 hover:underline">
+            ← Voir toutes les méditations
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- CTA Premium (si pas premium) -->
+    {% if not current_user.is_premium %}
+    <div class="mt-16 max-w-4xl mx-auto card-mystical rounded-3xl p-12 text-center shadow-2xl border-2 border-yellow-300">
+        <div class="text-6xl mb-6">✨</div>
+        <h2 class="text-4xl font-bold text-purple-900 mb-4">
+            Médite sans limites avec Premium
+        </h2>
+        <p class="text-xl text-gray-700 mb-8">
+            Accès illimité à toutes les méditations + nouvelles méditations exclusives chaque mois
+        </p>
+        <a href="{{ url_for('premium.subscribe') }}" class="inline-block px-12 py-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white text-xl rounded-full font-medium shadow-2xl hover:scale-105 transition-all">
+            Passer Premium - 9,99€/mois
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

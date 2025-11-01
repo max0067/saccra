@@ -47,6 +47,7 @@ def create_app(config_class=Config):
     from app.routes.premium import bp as premium_bp
     from app.routes.admin import bp as admin_bp
     from app.routes.chat import bp as chat_bp
+    from app.routes.meditations import bp as meditations_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -54,5 +55,6 @@ def create_app(config_class=Config):
     app.register_blueprint(premium_bp, url_prefix='/premium')
     app.register_blueprint(admin_bp, url_prefix='/admin')
     app.register_blueprint(chat_bp)
+    app.register_blueprint(meditations_bp)
 
     return app

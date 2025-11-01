@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}{{ meditation.title }}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen py-12 px-4"
+     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+
+    <div class="container mx-auto max-w-4xl">
+
+        <!-- Bouton retour -->
+        <a href="{{ url_for('meditations.library') }}"
+           class="inline-flex items-center gap-2 text-white hover:text-purple-100 transition mb-8">
+            <span>←</span> Retour à la bibliothèque
+        </a>
+
+        <!-- Card player -->
+        <div class="card-mystical rounded-3xl p-8 md:p-12 shadow-2xl">
+
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="text-6xl mb-4">
+                    {% if meditation.theme == 'chakras' %}🌈
+                    {% elif meditation.theme == 'manifestation' %}✨
+                    {% elif meditation.theme == 'guérison' %}💚
+                    {% elif meditation.theme == 'sommeil' %}😴
+                    {% else %}🧘
+                    {% endif %}
+                </div>
+                <h1 class="text-4xl font-bold text-purple-900 mb-3">
+                    {{ meditation.title }}
+                </h1>
+                <p class="text-lg text-gray-700 mb-4">
+                    {{ meditation.description }}
+                </p>
+                <div class="flex items-center justify-center gap-4 text-sm text-gray-600">
+                    <span class="px-3 py-1 bg-purple-100 rounded-full capitalize">
+                        {{ meditation.theme }}
+                    </span>
+                    <span class="px-3 py-1 bg-purple-100 rounded-full">
+                        ⏱ {{ meditation.duration_minutes }} minutes
+                    </span>
+                    {% if total_listens > 0 %}
+                    <span class="px-3 py-1 bg-purple-100 rounded-full">
+                        🎧 {{ total_listens }} écoute{{ 's' if total_listens > 1 else '' }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Zone de visualisation (optionnel - cercle de méditation) -->
+            <div class="flex justify-center mb-8">
+                <div id="meditation-circle"
+                     class="w-48 h-48 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 shadow-2xl flex items-center justify-center transition-all duration-1000">
+                    <div class="text-white text-6xl" id="meditation-icon">🧘</div>
+                </div>
+            </div>
+
+            <!-- Player audio -->
+            <div class="mb-8">
+                <div id="loading-state" class="text-center py-8">
+                    <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent mb-4"></div>
+                    <p class="text-purple-800 font-medium">Préparation de ta méditation...</p>
+                </div>
+
+                <div id="player-container" class="hidden">
+                    <audio id="meditation-audio" controls class="w-full rounded-lg shadow-lg"
+                           style="height: 54px;">
+                    </audio>
+
+                    <!-- Progress bar custom (optionnel) -->
+                    <div class="mt-6">
+                        <div class="flex justify-between text-sm text-gray-600 mb-2">
+                            <span id="current-time">0:00</span>
+                            <span id="duration">{{ meditation.duration_minutes }}:00</span>
+                        </div>
+                        <div class="h-2 bg-purple-100 rounded-full overflow-hidden">
+                            <div id="progress-bar" class="h-full bg-gradient-to-r from-purple-600 to-pink-600 transition-all"
+                                 style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="bg-purple-50 rounded-xl p-6 mb-6">
+                <h3 class="text-lg font-bold text-purple-900 mb-3 flex items-center gap-2">
+                    💡 Pour une expérience optimale
+                </h3>
+                <ul class="space-y-2 text-gray-700">
+                    <li class="flex items-start gap-2">
+                        <span class="text-purple-600 mt-1">•</span>
+                        <span>Installe-toi confortablement dans un endroit calme</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-purple-600 mt-1">•</span>
+                        <span>Utilise un casque ou des écouteurs pour une immersion complète</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-purple-600 mt-1">•</span>
+                        <span>Ferme les yeux et laisse-toi guider par la voix</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-purple-600 mt-1">•</span>
+                        <span>Ne t'inquiète pas si ton esprit vagabonde, c'est normal</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Bouton retour -->
+            <div class="text-center">
+                <a href="{{ url_for('meditations.library') }}"
+                   class="inline-block px-8 py-3 bg-white text-purple-700 border-2 border-purple-200 rounded-full font-medium hover:shadow-lg transition">
+                    ← Choisir une autre méditation
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Méditations similaires (optionnel pour plus tard) -->
+        <!-- TODO: Ajouter section "Autres méditations du thème" -->
+
+    </div>
+</div>
+
+<script>
+    const audioUrl = '/meditations/{{ meditation.id }}/audio';
+    const meditationId = {{ meditation.id }};
+    const loadingState = document.getElementById('loading-state');
+    const playerContainer = document.getElementById('player-container');
+    const audioPlayer = document.getElementById('meditation-audio');
+    const progressBar = document.getElementById('progress-bar');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationEl = document.getElementById('duration');
+    const meditationCircle = document.getElementById('meditation-circle');
+
+    // Charger l'audio
+    audioPlayer.src = audioUrl;
+
+    // Quand l'audio est prêt
+    audioPlayer.addEventListener('loadedmetadata', () => {
+        loadingState.classList.add('hidden');
+        playerContainer.classList.remove('hidden');
+
+        // Mettre à jour la durée
+        const minutes = Math.floor(audioPlayer.duration / 60);
+        const seconds = Math.floor(audioPlayer.duration % 60);
+        durationEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    });
+
+    // Mise à jour du temps et de la barre de progression
+    audioPlayer.addEventListener('timeupdate', () => {
+        const currentMinutes = Math.floor(audioPlayer.currentTime / 60);
+        const currentSeconds = Math.floor(audioPlayer.currentTime % 60);
+        currentTimeEl.textContent = `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
+
+        const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+        progressBar.style.width = `${progress}%`;
+    });
+
+    // Animation du cercle pendant la lecture
+    audioPlayer.addEventListener('play', () => {
+        meditationCircle.style.transform = 'scale(1.1)';
+        meditationCircle.style.boxShadow = '0 0 60px rgba(167, 139, 250, 0.6)';
+    });
+
+    audioPlayer.addEventListener('pause', () => {
+        meditationCircle.style.transform = 'scale(1)';
+        meditationCircle.style.boxShadow = '';
+    });
+
+    // Marquer comme complétée quand terminée
+    audioPlayer.addEventListener('ended', () => {
+        fetch(`/meditations/${meditationId}/complete`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        }).then(response => {
+            if (response.ok) {
+                console.log('Méditation marquée comme complétée ✓');
+            }
+        });
+
+        // Animation de fin
+        meditationCircle.style.transform = 'scale(1)';
+        meditationCircle.innerHTML = '<div class="text-white text-6xl">✨</div>';
+    });
+
+    // Gestion des erreurs
+    audioPlayer.addEventListener('error', (e) => {
+        loadingState.innerHTML = `
+            <div class="text-red-600">
+                <p class="text-lg font-medium mb-2">❌ Erreur de chargement</p>
+                <p class="text-sm">Impossible de charger l'audio. Réessaie dans quelques instants.</p>
+            </div>
+        `;
+    });
+</script>
+
+<style>
+    /* Pulse animation pour le cercle */
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    #meditation-circle {
+        animation: pulse 4s ease-in-out infinite;
+    }
+</style>
+
+{% endblock %}

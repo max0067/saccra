@@ -402,3 +402,22 @@ Caractéristiques de ton style :
 
     except Exception as e:
         raise Exception('Erreur lors de la génération de la réponse : {}'.format(str(e)))
+
+
+def generate_meditation_audio(meditation_script, voice='nova'):
+    """
+    Génère l'audio d'une méditation guidée avec OpenAI TTS
+
+    Args:
+        meditation_script: str - Le script de la méditation
+        voice: str - La voix à utiliser (nova recommandée pour les méditations)
+
+    Returns:
+        bytes: Le contenu audio au format MP3
+
+    Note: Pour l'instant utilise directement TTS. Dans le futur, pourrait
+    ajouter de la musique de fond relaxante (bols tibétains, nature, etc.)
+    """
+    # Pour l'instant, simple génération TTS
+    # TODO: Ajouter musique de fond (mixer avec pydub ou ffmpeg)
+    return generate_audio_guidance(meditation_script, voice=voice)

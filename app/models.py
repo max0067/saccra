@@ -47,6 +47,7 @@ class User(UserMixin, db.Model):
     # Relations
     interpretations = db.relationship('Interpretation', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     conversations = db.relationship('Conversation', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    meditation_listens = db.relationship('MeditationListen', backref='user', lazy='dynamic', cascade='all, delete-orphan')
 
     def set_password(self, password):
         """Hash le mot de passe"""
@@ -142,6 +143,26 @@ class User(UserMixin, db.Model):
             return -1  # Illimité
         count = self.get_daily_chat_messages_count()
         return max(0, 5 - count)
+
+    def get_monthly_meditations_count(self):
+        """Compte les méditations écoutées ce mois"""
+        from app.models import MeditationListen
+        start_of_month = datetime.utcnow().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        return self.meditation_listens.filter(MeditationListen.listened_at >= start_of_month).count()
+
+    def can_listen_meditation(self):
+        """Vérifie si l'utilisateur peut écouter une méditation"""
+        if self.is_premium and self.premium_until and self.premium_until > datetime.utcnow():
+            return True
+        count = self.get_monthly_meditations_count()
+        return count < 3  # 3 méditations gratuites par mois
+
+    def get_remaining_meditations(self):
+        """Retourne le nombre de méditations restantes ce mois"""
+        if self.is_premium and self.premium_until and self.premium_until > datetime.utcnow():
+            return -1  # Illimité
+        count = self.get_monthly_meditations_count()
+        return max(0, 3 - count)
 
 
 class Interpretation(db.Model):
@@ -292,3 +313,45 @@ class ChatMessage(db.Model):
     is_user = db.Column(db.Boolean, default=True)  # True = utilisateur, False = IA
     content = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
+
+class Meditation(db.Model):
+    """Méditation guidée audio"""
+    __tablename__ = 'meditations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text)
+    theme = db.Column(db.String(50), nullable=False, index=True)  # chakras, manifestation, guérison, sommeil
+    duration_minutes = db.Column(db.Integer, nullable=False)  # Durée en minutes
+    script = db.Column(db.Text, nullable=False)  # Le texte de la méditation
+
+    # Audio (optionnel, pour cache)
+    audio_file_path = db.Column(db.String(500))  # Chemin vers l'audio en cache
+
+    # Métadonnées
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    is_active = db.Column(db.Boolean, default=True)  # Pour activer/désactiver
+
+    # Relations
+    listens = db.relationship('MeditationListen', backref='meditation', lazy='dynamic', cascade='all, delete-orphan')
+
+    def __repr__(self):
+        return '<Meditation {}>'.format(self.title)
+
+
+class MeditationListen(db.Model):
+    """Tracking des écoutes de méditations par utilisateur"""
+    __tablename__ = 'meditation_listens'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    meditation_id = db.Column(db.Integer, db.ForeignKey('meditations.id'), nullable=False)
+    listened_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+
+    # Métriques d'écoute (optionnel, pour analytics)
+    duration_listened = db.Column(db.Integer)  # Secondes écoutées
+    completed = db.Column(db.Boolean, default=False)  # A écouté jusqu'au bout
+
+    def __repr__(self):
+        return '<MeditationListen user={} meditation={}>'.format(self.user_id, self.meditation_id)
