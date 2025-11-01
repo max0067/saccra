@@ -4,7 +4,7 @@ Modèles de données pour SACRA
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import URLSafeTimedSerializer
 from datetime import datetime, timedelta
 import json
 import os
@@ -66,24 +66,26 @@ class User(UserMixin, db.Model):
             str: Token signé
         """
         secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production-sacra-2025')
-        s = Serializer(secret_key, expires_sec)
-        return s.dumps({'user_id': self.id}).decode('utf-8')
+        s = URLSafeTimedSerializer(secret_key)
+        return s.dumps({'user_id': self.id}, salt='password-reset-salt')
 
     @staticmethod
-    def verify_reset_token(token):
+    def verify_reset_token(token, expires_sec=1800):
         """
         Vérifie un token de réinitialisation et retourne l'utilisateur
 
         Args:
             token: str - Token à vérifier
+            expires_sec: int - Durée de validité maximale en secondes
 
         Returns:
             User or None: L'utilisateur si le token est valide, None sinon
         """
         secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production-sacra-2025')
-        s = Serializer(secret_key)
+        s = URLSafeTimedSerializer(secret_key)
         try:
-            user_id = s.loads(token)['user_id']
+            data = s.loads(token, salt='password-reset-salt', max_age=expires_sec)
+            user_id = data['user_id']
         except:
             return None
         return User.query.get(user_id)
