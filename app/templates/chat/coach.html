@@ -137,7 +137,7 @@ function askQuestion(question) {
 }
 
 // Fonction pour ajouter un message
-function addMessage(content, isUser, timestamp = new Date()) {
+function addMessage(content, isUser, timestamp = new Date(), messageId = null) {
     const messageDiv = document.createElement('div');
     messageDiv.className = 'flex items-start gap-3 fade-in';
 
@@ -153,11 +153,21 @@ function addMessage(content, isUser, timestamp = new Date()) {
             </div>
         `;
     } else {
+        // Message de l'IA : afficher l'audio avec le texte en petit en dessous
         messageDiv.innerHTML = `
             <div class="text-3xl">🔮</div>
             <div class="flex-1 max-w-[80%]">
                 <div class="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl rounded-tl-none p-4 shadow-lg">
-                    <p>${content}</p>
+                    <div class="mb-3">
+                        <audio id="audio-${messageId}" controls class="w-full" autoplay>
+                            <source src="/coach/audio/${messageId}" type="audio/mpeg">
+                            Ton navigateur ne supporte pas la lecture audio.
+                        </audio>
+                    </div>
+                    <details class="cursor-pointer">
+                        <summary class="text-sm opacity-80 hover:opacity-100">📝 Voir le texte</summary>
+                        <p class="mt-2 text-sm">${content}</p>
+                    </details>
                 </div>
                 <p class="text-xs text-gray-500 mt-1 ml-2">${formatTime(timestamp)}</p>
             </div>
@@ -252,8 +262,8 @@ chatForm.addEventListener('submit', async (e) => {
             currentConversationId = data.conversation_id;
         }
 
-        // Afficher la réponse de l'IA
-        addMessage(data.ai_message.content, false, data.ai_message.created_at);
+        // Afficher la réponse de l'IA avec l'audio
+        addMessage(data.ai_message.content, false, data.ai_message.created_at, data.ai_message.id);
 
         // Mettre à jour le compteur
         if (data.remaining_messages >= 0) {

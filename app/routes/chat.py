@@ -1,12 +1,13 @@
 """
 Routes pour le Coach Spirituel IA (Chatbot)
 """
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, send_file
 from flask_login import login_required, current_user
 from app.models import db, Conversation, ChatMessage
-from app.services.ai_service import generate_chat_response
+from app.services.ai_service import generate_chat_response, generate_audio_guidance
 from datetime import datetime
 import json
+import io
 
 bp = Blueprint('chat', __name__)
 
@@ -193,3 +194,39 @@ def delete_conversation(conversation_id):
         'success': True,
         'message': 'Conversation supprimée'
     })
+
+
+@bp.route('/coach/audio/<int:message_id>')
+@login_required
+def message_audio(message_id):
+    """Génère et renvoie l'audio d'un message du coach"""
+
+    # Récupérer le message
+    message = ChatMessage.query.get_or_404(message_id)
+
+    # Vérifier que le message appartient à une conversation de l'utilisateur
+    conversation = Conversation.query.get_or_404(message.conversation_id)
+    if conversation.user_id != current_user.id:
+        return jsonify({'error': 'Accès non autorisé'}), 403
+
+    # Vérifier que c'est un message de l'IA
+    if message.is_user:
+        return jsonify({'error': 'Ce message ne peut pas être converti en audio'}), 400
+
+    try:
+        # Générer l'audio avec OpenAI TTS
+        audio_content = generate_audio_guidance(message.content, voice='nova')
+
+        # Créer un buffer pour renvoyer l'audio
+        audio_buffer = io.BytesIO(audio_content)
+        audio_buffer.seek(0)
+
+        return send_file(
+            audio_buffer,
+            mimetype='audio/mpeg',
+            as_attachment=False,
+            download_name='message_{}.mp3'.format(message_id)
+        )
+
+    except Exception as e:
+        return jsonify({'error': 'Erreur lors de la génération audio : {}'.format(str(e))}), 500
