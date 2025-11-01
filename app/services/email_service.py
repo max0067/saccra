@@ -10,6 +10,30 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def _send_email(message, smtp_server, smtp_port, smtp_user, smtp_password):
+    """
+    Fonction helper pour envoyer un email avec le bon mode (SSL ou TLS)
+
+    Args:
+        message: MIMEMultipart - Le message à envoyer
+        smtp_server: str - Serveur SMTP
+        smtp_port: int - Port SMTP
+        smtp_user: str - Utilisateur SMTP
+        smtp_password: str - Mot de passe SMTP
+    """
+    # Port 465 = SSL direct, Port 587 = TLS avec STARTTLS
+    if smtp_port == 465:
+        # Connexion SSL
+        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+            server.login(smtp_user, smtp_password)
+            server.send_message(message)
+    else:
+        # Connexion TLS (port 587 ou autre)
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()
+            server.login(smtp_user, smtp_password)
+            server.send_message(message)
+
 def send_welcome_email(user_email, user_name):
     """
     Envoie un email de bienvenue au nouvel utilisateur
@@ -121,10 +145,7 @@ def send_welcome_email(user_email, user_name):
         message.attach(part2)
 
         # Envoyer l'email
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()
-            server.login(smtp_user, smtp_password)
-            server.send_message(message)
+        _send_email(message, smtp_server, smtp_port, smtp_user, smtp_password)
 
         print('Email de bienvenue envoyé à {}'.format(user_email))
         return True
@@ -241,10 +262,7 @@ def send_admin_new_user_notification(user_email, user_name):
         message.attach(part2)
 
         # Envoyer l'email
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()
-            server.login(smtp_user, smtp_password)
-            server.send_message(message)
+        _send_email(message, smtp_server, smtp_port, smtp_user, smtp_password)
 
         print('Notification admin envoyée pour le nouveau compte : {}'.format(user_email))
         return True
@@ -363,10 +381,7 @@ def send_password_reset_email(user_email, reset_url):
         message.attach(part2)
 
         # Envoyer l'email
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()
-            server.login(smtp_user, smtp_password)
-            server.send_message(message)
+        _send_email(message, smtp_server, smtp_port, smtp_user, smtp_password)
 
         print('Email de réinitialisation envoyé à {}'.format(user_email))
         return True
