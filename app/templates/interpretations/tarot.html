@@ -120,6 +120,29 @@
                     <p id="personalAdvice" class="text-gray-700 leading-relaxed font-medium"></p>
                 </div>
 
+                <!-- Guidance Audio -->
+                <div class="mb-6 p-6 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-2 border-purple-200">
+                    <h3 class="text-xl font-semibold text-purple-800 mb-3 flex items-center gap-2">
+                        🎧 Écoute ta guidance en audio
+                    </h3>
+                    <p class="text-gray-600 text-sm mb-4">Reçois ton interprétation en audio pour une expérience encore plus immersive</p>
+                    <div id="audioControls">
+                        <button
+                            onclick="generateAudio()"
+                            id="generateAudioBtn"
+                            class="w-full py-3 btn-primary text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition"
+                        >
+                            🎙️ Générer la guidance audio
+                        </button>
+                        <div id="audioPlayer" class="hidden mt-4">
+                            <audio id="guidanceAudio" controls class="w-full">
+                                <source id="audioSource" type="audio/mpeg">
+                                Ton navigateur ne supporte pas la lecture audio.
+                            </audio>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex gap-4 mt-8">
                     <button
                         onclick="location.reload()"
@@ -218,6 +241,9 @@ document.getElementById('form').addEventListener('submit', async (e) => {
             return;
         }
 
+        // Stocker l'ID de l'interprétation pour l'audio
+        currentInterpretationId = data.interpretation_id;
+
         // Afficher les infos utilisateur
         let userInfoText = `Tirage pour ${firstName}`;
         if (age) userInfoText += `, ${age} ans`;
@@ -231,7 +257,7 @@ document.getElementById('form').addEventListener('submit', async (e) => {
                 <div class="mb-3">
                     <img src="/static/images/tarot/${card.image}"
                          alt="${card.name}"
-                         class="w-32 h-auto mx-auto rounded-lg shadow-lg border-2 border-purple-300"
+                         class="w-56 h-auto mx-auto rounded-lg shadow-lg border-2 border-purple-300"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <div style="display:none;" class="text-5xl mb-2">🔮</div>
                 </div>
@@ -257,6 +283,47 @@ document.getElementById('form').addEventListener('submit', async (e) => {
         loader.classList.add('hidden');
     }
 });
+
+// Variable globale pour stocker l'ID de l'interprétation
+let currentInterpretationId = null;
+
+// Fonction pour générer l'audio
+async function generateAudio() {
+    if (!currentInterpretationId) {
+        alert('Aucune interprétation disponible');
+        return;
+    }
+
+    const btn = document.getElementById('generateAudioBtn');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const audioElement = document.getElementById('guidanceAudio');
+    const audioSource = document.getElementById('audioSource');
+
+    // Désactiver le bouton pendant la génération
+    btn.disabled = true;
+    btn.textContent = '⏳ Génération de l\'audio en cours...';
+
+    try {
+        // Générer l'audio
+        const audioUrl = `/interpretations/audio/${currentInterpretationId}`;
+
+        // Charger l'audio
+        audioSource.src = audioUrl;
+        audioElement.load();
+
+        // Afficher le lecteur audio
+        audioPlayer.classList.remove('hidden');
+        btn.classList.add('hidden');
+
+        // Démarrer la lecture automatiquement
+        audioElement.play();
+
+    } catch (error) {
+        alert('Erreur lors de la génération audio. Réessaye dans quelques instants.');
+        btn.disabled = false;
+        btn.textContent = '🎙️ Générer la guidance audio';
+    }
+}
 </script>
 
 {% endblock %}

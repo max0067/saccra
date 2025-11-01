@@ -142,6 +142,13 @@ class Interpretation(db.Model):
         except:
             return {"symbolism": "", "spiritual_message": "", "personal_advice": ""}
 
+    def get_user_input_dict(self):
+        """Parse l'entrée utilisateur si c'est du JSON (pour tarot notamment)"""
+        try:
+            return json.loads(self.user_input)
+        except:
+            return None
+
 
 class SpiritualProfile(db.Model):
     """Profil spirituel détaillé (optionnel, pour extension future)"""

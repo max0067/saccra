@@ -1,12 +1,13 @@
 """
 Routes d'interprétations : rêves, signes, tirages, profil spirituel
 """
-from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, send_file
 from flask_login import login_required, current_user
 from app.models import db, Interpretation
-from app.services.ai_service import interpret_dream, interpret_sign, interpret_tarot, calculate_spiritual_profile
+from app.services.ai_service import interpret_dream, interpret_sign, interpret_tarot, calculate_spiritual_profile, generate_audio_guidance
 from datetime import datetime
 import json
+import io
 
 bp = Blueprint('interpretations', __name__)
 
@@ -139,6 +140,7 @@ def tarot():
             return jsonify({
                 'success': True,
                 'interpretation': interpretation_result,
+                'interpretation_id': interpretation.id,
                 'remaining': current_user.get_remaining_free_interpretations()
             })
 
@@ -212,3 +214,79 @@ def history():
         ).limit(3).all()
 
     return render_template('interpretations/history.html', interpretations=interpretations)
+
+@bp.route('/audio/<int:interpretation_id>')
+@login_required
+def generate_audio(interpretation_id):
+    """Génère et renvoie l'audio d'une interprétation"""
+
+    # Récupérer l'interprétation
+    interpretation = Interpretation.query.get_or_404(interpretation_id)
+
+    # Vérifier que l'utilisateur est propriétaire de l'interprétation
+    if interpretation.user_id != current_user.id:
+        return jsonify({'error': 'Accès non autorisé'}), 403
+
+    try:
+        # Récupérer le contenu de l'interprétation
+        response = interpretation.get_response_dict()
+
+        # Construire le texte de la guidance audio
+        audio_text = ""
+
+        if interpretation.type == 'tarot':
+            user_data = interpretation.get_user_input_dict()
+            first_name = user_data.get('first_name', '') if user_data else ''
+
+            audio_text = "Bonjour {}. ".format(first_name) if first_name else "Bonjour. "
+            audio_text += "Voici ta guidance spirituelle. "
+
+            if response.get('interpretation'):
+                audio_text += response['interpretation'] + " "
+
+            if response.get('spiritual_message'):
+                audio_text += response['spiritual_message'] + " "
+
+            if response.get('personal_advice'):
+                audio_text += "Mon conseil pour toi : " + response['personal_advice']
+
+        elif interpretation.type == 'dream':
+            audio_text = "Voici l'interprétation de ton rêve. "
+
+            if response.get('symbolism'):
+                audio_text += response['symbolism'] + " "
+
+            if response.get('spiritual_message'):
+                audio_text += response['spiritual_message'] + " "
+
+            if response.get('personal_advice'):
+                audio_text += "Mon conseil : " + response['personal_advice']
+
+        elif interpretation.type == 'sign':
+            audio_text = "Voici l'interprétation du signe que tu as reçu. "
+
+            if response.get('symbolism'):
+                audio_text += response['symbolism'] + " "
+
+            if response.get('spiritual_message'):
+                audio_text += response['spiritual_message'] + " "
+
+            if response.get('personal_advice'):
+                audio_text += "Mon conseil : " + response['personal_advice']
+
+        # Générer l'audio avec OpenAI TTS
+        audio_content = generate_audio_guidance(audio_text, voice='nova')
+
+        # Créer un buffer pour renvoyer l'audio
+        audio_buffer = io.BytesIO(audio_content)
+        audio_buffer.seek(0)
+
+        return send_file(
+            audio_buffer,
+            mimetype='audio/mpeg',
+            as_attachment=False,
+            download_name='guidance_{}.mp3'.format(interpretation_id)
+        )
+
+    except Exception as e:
+        return jsonify({'error': 'Erreur lors de la génération audio : {}'.format(str(e))}), 500

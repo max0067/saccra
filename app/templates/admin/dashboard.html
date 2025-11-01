@@ -11,9 +11,10 @@
     </div>
 
     <!-- Navigation Admin -->
-    <div class="mb-6 flex space-x-4">
+    <div class="mb-6 flex space-x-4 flex-wrap gap-2">
         <a href="{{ url_for('admin.dashboard') }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg shadow">Statistiques</a>
         <a href="{{ url_for('admin.users') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Utilisateurs</a>
+        <a href="{{ url_for('admin.interpretations') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Interprétations</a>
         <a href="{{ url_for('admin.promo_codes') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Codes Promo</a>
         <a href="{{ url_for('admin.site_contents') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Contenus</a>
     </div>

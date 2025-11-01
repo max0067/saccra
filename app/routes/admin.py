@@ -448,3 +448,37 @@ def user_payments(user_id):
             'success': False,
             'error': 'Erreur: {}'.format(str(e))
         }), 500
+
+
+@bp.route('/interpretations')
+@login_required
+@admin_required
+def interpretations():
+    """Liste de toutes les interprétations avec filtres"""
+
+    page = request.args.get('page', 1, type=int)
+    filter_type = request.args.get('filter', 'all')
+    search = request.args.get('search', '')
+
+    query = Interpretation.query
+
+    # Filtres par type
+    if filter_type in ['dream', 'sign', 'tarot']:
+        query = query.filter_by(type=filter_type)
+
+    # Recherche par email ou prénom d'utilisateur
+    if search:
+        query = query.join(User).filter(
+            (User.email.contains(search)) |
+            (User.first_name.contains(search))
+        )
+
+    # Pagination
+    interpretations_paginated = query.order_by(Interpretation.created_at.desc()).paginate(
+        page=page, per_page=20, error_out=False
+    )
+
+    return render_template('admin/interpretations.html',
+                          interpretations=interpretations_paginated,
+                          filter_type=filter_type,
+                          search=search)

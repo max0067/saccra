@@ -68,7 +68,16 @@
 
                 <!-- Contenu utilisateur -->
                 <div class="mb-4 p-4 bg-purple-50 rounded-lg">
-                    <p class="text-gray-700 italic">{{ interp.user_input }}</p>
+                    {% if interp.type == 'tarot' %}
+                        {% set user_data = interp.get_user_input_dict() %}
+                        {% if user_data and user_data.question %}
+                            <p class="text-gray-700 italic"><strong>Question :</strong> {{ user_data.question }}</p>
+                        {% else %}
+                            <p class="text-gray-700 italic">{{ interp.user_input }}</p>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-gray-700 italic">{{ interp.user_input }}</p>
+                    {% endif %}
                 </div>
 
                 <!-- Interprétation -->

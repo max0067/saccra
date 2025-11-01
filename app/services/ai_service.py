@@ -309,3 +309,38 @@ Couleur préférée : {}
             "vibratory_color": favorite_color or "doré",
             "description": "Ton âme est en plein éveil spirituel, prête à découvrir sa véritable nature."
         }
+
+
+def generate_audio_guidance(text, voice='nova'):
+    """
+    Génère un fichier audio à partir d'un texte avec l'API text-to-speech d'OpenAI
+
+    Args:
+        text: str - Le texte à convertir en audio
+        voice: str - La voix à utiliser (alloy, echo, fable, onyx, nova, shimmer)
+
+    Returns:
+        bytes: Le contenu audio au format MP3
+    """
+    headers = {
+        'Authorization': 'Bearer {}'.format(OPENAI_API_KEY),
+        'Content-Type': 'application/json'
+    }
+
+    data = {
+        'model': 'tts-1',
+        'input': text,
+        'voice': voice
+    }
+
+    response = requests.post(
+        'https://api.openai.com/v1/audio/speech',
+        headers=headers,
+        json=data,
+        timeout=60
+    )
+
+    if response.status_code != 200:
+        raise Exception('Erreur API OpenAI TTS: {}'.format(response.text))
+
+    return response.content
