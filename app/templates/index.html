@@ -13,31 +13,31 @@
 
             <!-- Badge Nouveau -->
             <div class="inline-block mb-6 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-sm font-medium shadow-lg animate-pulse">
-                🆕 Nouveau : Coach Spirituel avec réponses vocales !
+                {{ get_content('home_hero_badge', '🆕 Nouveau : Coach Spirituel avec réponses vocales !') }}
             </div>
 
             <h1 class="text-5xl md:text-7xl font-bold text-purple-900 mb-6 fade-in leading-tight">
-                Ton guide spirituel personnel<br>
+                {{ get_content('home_hero_title', 'Ton guide spirituel personnel') }}<br>
                 <span class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                    disponible 24/7
+                    {{ get_content('home_hero_subtitle', 'disponible 24/7') }}
                 </span>
             </h1>
 
             <p class="text-xl md:text-2xl text-gray-700 mb-10 max-w-3xl mx-auto leading-relaxed">
-                Guidance empathique • Réponses audio personnalisées • Disponible 24/7
+                {{ get_content('home_hero_tagline', 'Guidance empathique • Réponses audio personnalisées • Disponible 24/7') }}
             </p>
 
             {% if not current_user.is_authenticated %}
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
                 <a href="{{ url_for('auth.register') }}" class="px-10 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg rounded-full font-medium shadow-2xl hover:shadow-3xl hover:scale-105 transition-all">
-                    Commencer gratuitement ✨
+                    {{ get_content('home_hero_cta_primary', 'Commencer gratuitement ✨') }}
                 </a>
                 <a href="#features" class="px-10 py-4 bg-white text-purple-700 text-lg rounded-full font-medium shadow-lg hover:shadow-xl transition-all border-2 border-purple-200">
-                    Découvrir →
+                    {{ get_content('home_hero_cta_secondary', 'Découvrir →') }}
                 </a>
             </div>
             <p class="text-sm text-gray-600">
-                ✓ 5 messages gratuits par jour • ✓ Pas de carte bancaire requise
+                {{ get_content('home_hero_disclaimer', '✓ 5 messages gratuits par jour • ✓ Pas de carte bancaire requise') }}
             </p>
             {% else %}
             <a href="{{ url_for('main.dashboard') }}" class="inline-block px-10 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg rounded-full font-medium shadow-2xl hover:scale-105 transition-all">
@@ -53,13 +53,13 @@
     <div class="container mx-auto px-4">
         <div class="text-center mb-16">
             <span class="inline-block px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium mb-4">
-                🚀 NOUVEAUTÉS
+                {{ get_content('home_features_badge', '🚀 NOUVEAUTÉS') }}
             </span>
             <h2 class="text-4xl md:text-5xl font-bold text-purple-900 mb-4">
-                Une expérience spirituelle réinventée
+                {{ get_content('home_features_title', 'Une expérience spirituelle réinventée') }}
             </h2>
             <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Découvre les fonctionnalités innovantes qui rendent SACRA unique
+                {{ get_content('home_features_subtitle', 'Découvre les fonctionnalités innovantes qui rendent SACRA unique') }}
             </p>
         </div>
 
@@ -72,9 +72,9 @@
                     <div class="text-5xl">🔮</div>
                     <span class="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full font-medium">NOUVEAU</span>
                 </div>
-                <h3 class="text-2xl font-bold text-purple-900 mb-3">Coach Spirituel</h3>
+                <h3 class="text-2xl font-bold text-purple-900 mb-3">{{ get_content('home_coach_title', 'Coach Spirituel') }}</h3>
                 <p class="text-gray-700 mb-6 leading-relaxed">
-                    Discute avec ton guide spirituel personnel en temps réel. Pose toutes tes questions sur le développement personnel, l'énergie, les relations...
+                    {{ get_content('home_coach_description', 'Discute avec ton guide spirituel personnel en temps réel. Pose toutes tes questions sur le développement personnel, l\'énergie, les relations...') }}
                 </p>
                 <ul class="space-y-2 mb-6">
                     <li class="flex items-center gap-2 text-gray-700">
@@ -104,9 +104,9 @@
                     <div class="text-5xl">🎧</div>
                     <span class="px-3 py-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs rounded-full font-medium">EXCLUSIF</span>
                 </div>
-                <h3 class="text-2xl font-bold text-purple-900 mb-3">Guidance Vocale</h3>
+                <h3 class="text-2xl font-bold text-purple-900 mb-3">{{ get_content('home_audio_title', 'Guidance Vocale') }}</h3>
                 <p class="text-gray-700 mb-6 leading-relaxed">
-                    Écoute tes interprétations avec une voix douce et apaisante. Parfait pour méditer ou te détendre.
+                    {{ get_content('home_audio_description', 'Écoute tes interprétations avec une voix douce et apaisante. Parfait pour méditer ou te détendre.') }}
                 </p>
                 <ul class="space-y-2 mb-6">
                     <li class="flex items-center gap-2 text-gray-700">
@@ -139,10 +139,10 @@
     <div class="container mx-auto px-4">
         <div class="text-center mb-16">
             <h2 class="text-4xl md:text-5xl font-bold text-purple-900 mb-4">
-                4 façons de recevoir ta guidance
+                {{ get_content('home_services_title', '4 façons de recevoir ta guidance') }}
             </h2>
             <p class="text-xl text-gray-600">
-                Choisis le type d'interprétation qui résonne avec toi
+                {{ get_content('home_services_subtitle', 'Choisis le type d\'interprétation qui résonne avec toi') }}
             </p>
         </div>
 
@@ -214,7 +214,7 @@
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="text-4xl md:text-5xl font-bold text-purple-900 mb-4">
-                    Pourquoi SACRA est différent ?
+                    {{ get_content('home_why_title', 'Pourquoi SACRA est différent ?') }}
                 </h2>
             </div>
 
@@ -224,9 +224,9 @@
                     <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
                         🤖
                     </div>
-                    <h3 class="text-xl font-bold text-purple-900 mb-3">Guidance Empathique</h3>
+                    <h3 class="text-xl font-bold text-purple-900 mb-3">{{ get_content('home_why_feature1_title', 'Guidance Empathique') }}</h3>
                     <p class="text-gray-600">
-                        Un accompagnement bienveillant, chaleureux et intuitif pour ton chemin spirituel
+                        {{ get_content('home_why_feature1_text', 'Un accompagnement bienveillant, chaleureux et intuitif pour ton chemin spirituel') }}
                     </p>
                 </div>
 
@@ -234,9 +234,9 @@
                     <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
                         🎯
                     </div>
-                    <h3 class="text-xl font-bold text-purple-900 mb-3">Personnalisé</h3>
+                    <h3 class="text-xl font-bold text-purple-900 mb-3">{{ get_content('home_why_feature2_title', 'Personnalisé') }}</h3>
                     <p class="text-gray-600">
-                        Chaque réponse est adaptée à ton profil spirituel et ton chemin de vie
+                        {{ get_content('home_why_feature2_text', 'Chaque réponse est adaptée à ton profil spirituel et ton chemin de vie') }}
                     </p>
                 </div>
 
@@ -244,9 +244,9 @@
                     <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
                         ⚡
                     </div>
-                    <h3 class="text-xl font-bold text-purple-900 mb-3">Instantané</h3>
+                    <h3 class="text-xl font-bold text-purple-900 mb-3">{{ get_content('home_why_feature3_title', 'Instantané') }}</h3>
                     <p class="text-gray-600">
-                        Reçois ta guidance en quelques secondes, 24h/24, 7j/7
+                        {{ get_content('home_why_feature3_text', 'Reçois ta guidance en quelques secondes, 24h/24, 7j/7') }}
                     </p>
                 </div>
 
@@ -260,10 +260,10 @@
     <div class="container mx-auto px-4">
         <div class="text-center mb-16">
             <h2 class="text-4xl md:text-5xl font-bold mb-4">
-                Choisis ton chemin
+                {{ get_content('home_pricing_title', 'Choisis ton chemin') }}
             </h2>
             <p class="text-xl text-purple-200">
-                Commence gratuitement, passe en Premium quand tu veux
+                {{ get_content('home_pricing_subtitle', 'Commence gratuitement, passe en Premium quand tu veux') }}
             </p>
         </div>
 
@@ -274,7 +274,7 @@
                 <div class="text-center mb-6">
                     <h3 class="text-2xl font-bold text-purple-900 mb-2">Gratuit</h3>
                     <div class="text-4xl font-bold text-purple-900 mb-4">0€</div>
-                    <p class="text-gray-600">Pour découvrir SACRA</p>
+                    <p class="text-gray-600">{{ get_content('home_pricing_free_tagline', 'Pour découvrir SACRA') }}</p>
                 </div>
                 <ul class="space-y-3 mb-8">
                     <li class="flex items-center gap-2">
@@ -305,11 +305,11 @@
             <div class="bg-gradient-to-br from-yellow-400 to-yellow-600 text-gray-900 rounded-3xl p-8 shadow-2xl transform scale-105 border-4 border-yellow-300">
                 <div class="text-center mb-6">
                     <span class="inline-block px-3 py-1 bg-white text-yellow-600 text-xs rounded-full font-medium mb-2">
-                        ⭐ RECOMMANDÉ
+                        {{ get_content('home_pricing_premium_badge', '⭐ RECOMMANDÉ') }}
                     </span>
                     <h3 class="text-2xl font-bold mb-2">Premium</h3>
-                    <div class="text-4xl font-bold mb-4">9,99€<span class="text-xl">/mois</span></div>
-                    <p class="text-gray-800">Guidance illimitée</p>
+                    <div class="text-4xl font-bold mb-4">{{ get_content('home_pricing_premium_price', '9,99€') }}<span class="text-xl">/mois</span></div>
+                    <p class="text-gray-800">{{ get_content('home_pricing_premium_tagline', 'Guidance illimitée') }}</p>
                 </div>
                 <ul class="space-y-3 mb-8">
                     <li class="flex items-center gap-2">
@@ -358,17 +358,17 @@
         <div class="max-w-4xl mx-auto text-center card-mystical rounded-3xl p-12 shadow-2xl">
             <div class="text-6xl mb-6">🌟</div>
             <h2 class="text-4xl md:text-5xl font-bold text-purple-900 mb-6">
-                Prêt(e) à commencer ton voyage ?
+                {{ get_content('home_cta_title', 'Prêt(e) à commencer ton voyage ?') }}
             </h2>
             <p class="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
-                Rejoins des milliers de personnes qui utilisent SACRA pour leur développement spirituel
+                {{ get_content('home_cta_subtitle', 'Rejoins des milliers de personnes qui utilisent SACRA pour leur développement spirituel') }}
             </p>
             {% if not current_user.is_authenticated %}
             <a href="{{ url_for('auth.register') }}" class="inline-block px-12 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl rounded-full font-medium shadow-2xl hover:scale-105 transition-all">
-                Créer mon compte gratuit ✨
+                {{ get_content('home_cta_button', 'Créer mon compte gratuit ✨') }}
             </a>
             <p class="text-sm text-gray-600 mt-4">
-                Inscription en 30 secondes • Pas de carte bancaire
+                {{ get_content('home_cta_disclaimer', 'Inscription en 30 secondes • Pas de carte bancaire') }}
             </p>
             {% else %}
             <a href="{{ url_for('main.dashboard') }}" class="inline-block px-12 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl rounded-full font-medium shadow-2xl hover:scale-105 transition-all">
