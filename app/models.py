@@ -46,6 +46,7 @@ class User(UserMixin, db.Model):
 
     # Relations
     interpretations = db.relationship('Interpretation', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    conversations = db.relationship('Conversation', backref='user', lazy='dynamic', cascade='all, delete-orphan')
 
     def set_password(self, password):
         """Hash le mot de passe"""
@@ -118,6 +119,29 @@ class User(UserMixin, db.Model):
         if self.credits > 0:
             self.credits -= 1
             db.session.commit()
+
+    def get_daily_chat_messages_count(self):
+        """Compte les messages du chat envoyés aujourd'hui"""
+        from app.models import ChatMessage, Conversation
+        start_of_day = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+        return ChatMessage.query.join(Conversation).filter(
+            Conversation.user_id == self.id,
+            ChatMessage.is_user == True,
+            ChatMessage.created_at >= start_of_day
+        ).count()
+
+    def can_send_chat_message(self):
+        """Vérifie si l'utilisateur peut envoyer un message au chatbot"""
+        if self.is_premium and self.premium_until and self.premium_until > datetime.utcnow():
+            return True
+        return self.get_daily_chat_messages_count() < 5
+
+    def get_remaining_chat_messages(self):
+        """Retourne le nombre de messages chatbot restants"""
+        if self.is_premium:
+            return -1  # Illimité
+        count = self.get_daily_chat_messages_count()
+        return max(0, 5 - count)
 
 
 class Interpretation(db.Model):
@@ -239,3 +263,32 @@ class SiteContent(db.Model):
     description = db.Column(db.String(200))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class Conversation(db.Model):
+    """Conversation avec le coach spirituel IA"""
+    __tablename__ = 'conversations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    title = db.Column(db.String(200))  # Titre généré automatiquement depuis la 1ère question
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relations
+    messages = db.relationship('ChatMessage', backref='conversation', lazy='dynamic', cascade='all, delete-orphan', order_by='ChatMessage.created_at')
+
+    def get_message_count(self):
+        """Compte le nombre de messages de l'utilisateur dans cette conversation"""
+        return self.messages.filter_by(is_user=True).count()
+
+
+class ChatMessage(db.Model):
+    """Message individuel dans une conversation"""
+    __tablename__ = 'chat_messages'
+
+    id = db.Column(db.Integer, primary_key=True)
+    conversation_id = db.Column(db.Integer, db.ForeignKey('conversations.id'), nullable=False)
+    is_user = db.Column(db.Boolean, default=True)  # True = utilisateur, False = IA
+    content = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)

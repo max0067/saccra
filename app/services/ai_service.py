@@ -344,3 +344,61 @@ def generate_audio_guidance(text, voice='nova'):
         raise Exception('Erreur API OpenAI TTS: {}'.format(response.text))
 
     return response.content
+
+
+def generate_chat_response(user_message, user_profile=None, conversation_history=None):
+    """
+    Génère une réponse du coach spirituel IA
+
+    Args:
+        user_message: str - Message de l'utilisateur
+        user_profile: dict - Profil spirituel de l'utilisateur (first_name, soul_type, element, etc.)
+        conversation_history: list - Historique des messages [{role: 'user/assistant', content: '...'}]
+
+    Returns:
+        str: Réponse du coach spirituel
+    """
+    # Construction du prompt système personnalisé
+    system_prompt = """Tu es un guide spirituel bienveillant et empathique, un coach personnel qui accompagne les âmes en quête de sens.
+
+Ton rôle est d'écouter, comprendre et guider avec sagesse, douceur et intuition.
+
+Caractéristiques de ton style :
+- Ton chaleureux, mystique mais accessible
+- Empathie et validation des émotions
+- Références spirituelles (énergies, chakras, synchronicités, loi de l'attraction)
+- Conseils concrets et actionnables
+- Encouragement et positivité
+- Tu tutois toujours
+
+"""
+
+    # Personnalisation basée sur le profil
+    if user_profile:
+        if user_profile.get('first_name'):
+            system_prompt += "\nTu t'adresses à {}, traite-la/le avec familiarité et chaleur.".format(user_profile['first_name'])
+
+        if user_profile.get('soul_type'):
+            system_prompt += "\nCette personne a une âme de type '{}', garde cela en tête dans tes réponses.".format(user_profile['soul_type'])
+
+        if user_profile.get('dominant_element'):
+            system_prompt += "\nSon élément dominant est {}, cela influence son énergie.".format(user_profile['dominant_element'])
+
+    system_prompt += "\n\nRéponds de manière naturelle, en 2-4 paragraphes maximum. Sois concis mais profond."
+
+    # Construction des messages
+    messages = [{"role": "system", "content": system_prompt}]
+
+    # Ajouter l'historique si disponible
+    if conversation_history:
+        messages.extend(conversation_history[-6:])  # Garder les 6 derniers messages pour le contexte
+
+    # Ajouter le message actuel
+    messages.append({"role": "user", "content": user_message})
+
+    try:
+        response_text = call_openai_api(messages, temperature=0.8, max_tokens=400)
+        return response_text
+
+    except Exception as e:
+        raise Exception('Erreur lors de la génération de la réponse : {}'.format(str(e)))
