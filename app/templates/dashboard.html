@@ -93,6 +93,9 @@
                 <a href="{{ url_for('interpretations.tarot') }}" class="block px-4 py-2 bg-purple-100 hover:bg-purple-200 rounded-lg transition">
                     🔮 Faire un tirage
                 </a>
+                <a href="{{ url_for('interpretations.history') }}" class="block px-4 py-2 bg-purple-100 hover:bg-purple-200 rounded-lg transition">
+                    📖 Mon historique
+                </a>
             </div>
         </div>
 
@@ -133,11 +136,13 @@
     <div class="card-mystical rounded-2xl p-8 shadow-lg">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-3xl font-bold text-purple-900">Tes dernières interprétations</h2>
-            {% if current_user.is_premium %}
             <a href="{{ url_for('interpretations.history') }}" class="text-purple-700 font-medium hover:underline">
+                {% if current_user.is_premium %}
                 Voir tout →
+                {% else %}
+                Voir les 3 dernières →
+                {% endif %}
             </a>
-            {% endif %}
         </div>
 
         <div class="space-y-4">
@@ -162,7 +167,7 @@
         {% if not current_user.is_premium %}
         <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
             <p class="text-sm text-gray-700">
-                💡 Passe en Premium pour accéder à tout ton historique et garder tes interprétations à vie.
+                💡 En tant qu'utilisateur gratuit, tu peux consulter tes 3 dernières interprétations. Passe en Premium pour accéder à tout ton historique et garder tes interprétations à vie.
             </p>
         </div>
         {% endif %}

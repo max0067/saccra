@@ -199,13 +199,16 @@ def spiritual_profile():
 @bp.route('/history')
 @login_required
 def history():
-    """Historique des interprétations (premium)"""
-    if not current_user.is_premium:
-        flash('Cette fonctionnalité est réservée aux membres Premium', 'warning')
-        return redirect(url_for('premium.subscribe'))
-
-    interpretations = current_user.interpretations.order_by(
-        Interpretation.created_at.desc()
-    ).all()
+    """Historique des interprétations (3 dernières pour gratuit, illimité pour premium)"""
+    if current_user.is_premium:
+        # Premium : toutes les interprétations
+        interpretations = current_user.interpretations.order_by(
+            Interpretation.created_at.desc()
+        ).all()
+    else:
+        # Gratuit : 3 dernières seulement
+        interpretations = current_user.interpretations.order_by(
+            Interpretation.created_at.desc()
+        ).limit(3).all()
 
     return render_template('interpretations/history.html', interpretations=interpretations)
