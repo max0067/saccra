@@ -134,6 +134,126 @@ def send_welcome_email(user_email, user_name):
         return False
 
 
+def send_admin_new_user_notification(user_email, user_name):
+    """
+    Envoie une notification à l'admin quand un nouveau compte est créé
+
+    Args:
+        user_email: str - Email du nouvel utilisateur
+        user_name: str - Prénom du nouvel utilisateur
+
+    Returns:
+        bool: True si envoyé, False sinon
+    """
+    # Configuration SMTP depuis les variables d'environnement
+    smtp_server = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+    smtp_port = int(os.environ.get('MAIL_PORT', '587'))
+    smtp_user = os.environ.get('MAIL_USERNAME', '')
+    smtp_password = os.environ.get('MAIL_PASSWORD', '')
+    sender_email = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@saccra.fr')
+    admin_email = os.environ.get('ADMIN_EMAIL', '')
+
+    # Si pas de configuration SMTP ou pas d'email admin, ne pas envoyer
+    if not smtp_user or not smtp_password or not admin_email:
+        print('SMTP ou ADMIN_EMAIL non configuré - Notification admin non envoyée')
+        return False
+
+    try:
+        # Créer le message
+        message = MIMEMultipart('alternative')
+        message['Subject'] = '🎉 Nouveau compte créé sur SACRA'
+        message['From'] = sender_email
+        message['To'] = admin_email
+
+        # Contenu HTML de l'email
+        html_content = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+                .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+                .info-box {{ background: white; border-left: 4px solid #667eea; padding: 15px; margin: 20px 0; }}
+                .footer {{ text-align: center; margin-top: 30px; color: #999; font-size: 12px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>🎉 Nouveau compte créé !</h1>
+                </div>
+                <div class="content">
+                    <p>Bonjour,</p>
+
+                    <p>Un nouveau compte vient d'être créé sur <strong>SACRA</strong>.</p>
+
+                    <div class="info-box">
+                        <p style="margin: 5px 0;"><strong>👤 Prénom :</strong> {name}</p>
+                        <p style="margin: 5px 0;"><strong>📧 Email :</strong> {email}</p>
+                        <p style="margin: 5px 0;"><strong>📅 Date :</strong> {date}</p>
+                    </div>
+
+                    <p>L'utilisateur a reçu son email de bienvenue et peut maintenant accéder à toutes les fonctionnalités de SACRA.</p>
+
+                    <p style="text-align: center; margin-top: 30px;">
+                        <a href="https://saccra.fr/admin/users" style="display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px;">Voir tous les utilisateurs</a>
+                    </p>
+                </div>
+                <div class="footer">
+                    <p>SACRA - Notification automatique</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """.format(
+            name=user_name or 'Non renseigné',
+            email=user_email,
+            date=__import__('datetime').datetime.now().strftime('%d/%m/%Y à %H:%M')
+        )
+
+        # Contenu texte alternatif
+        text_content = """
+        Nouveau compte créé sur SACRA !
+
+        Un nouveau compte vient d'être créé.
+
+        Informations :
+        - Prénom : {name}
+        - Email : {email}
+        - Date : {date}
+
+        L'utilisateur a reçu son email de bienvenue et peut maintenant accéder à toutes les fonctionnalités.
+
+        SACRA - Notification automatique
+        """.format(
+            name=user_name or 'Non renseigné',
+            email=user_email,
+            date=__import__('datetime').datetime.now().strftime('%d/%m/%Y à %H:%M')
+        )
+
+        # Attacher les deux versions
+        part1 = MIMEText(text_content, 'plain', 'utf-8')
+        part2 = MIMEText(html_content, 'html', 'utf-8')
+        message.attach(part1)
+        message.attach(part2)
+
+        # Envoyer l'email
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()
+            server.login(smtp_user, smtp_password)
+            server.send_message(message)
+
+        print('Notification admin envoyée pour le nouveau compte : {}'.format(user_email))
+        return True
+
+    except Exception as e:
+        print('Erreur lors de l\'envoi de la notification admin : {}'.format(str(e)))
+        return False
+
+
 def send_password_reset_email(user_email, reset_url):
     """
     Envoie un email de réinitialisation de mot de passe

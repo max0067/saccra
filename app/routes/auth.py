@@ -4,7 +4,7 @@ Routes d'authentification : login, register, logout
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models import db, User
-from app.services.email_service import send_welcome_email, send_password_reset_email
+from app.services.email_service import send_welcome_email, send_password_reset_email, send_admin_new_user_notification
 from datetime import datetime
 
 bp = Blueprint('auth', __name__)
@@ -65,6 +65,13 @@ def register():
         except Exception as e:
             # Logger l'erreur mais continuer l'inscription
             print('Erreur envoi email bienvenue: {}'.format(str(e)))
+
+        # Envoyer la notification à l'admin (ne pas bloquer si ça échoue)
+        try:
+            send_admin_new_user_notification(email, first_name)
+        except Exception as e:
+            # Logger l'erreur mais continuer l'inscription
+            print('Erreur envoi notification admin: {}'.format(str(e)))
 
         # Connecter l'utilisateur automatiquement
         login_user(user, remember=True)
