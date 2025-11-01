@@ -1,98 +1,401 @@
 {% extends "base.html" %}
 
-{% block title %}Accueil - SACRA{% endblock %}
+{% block title %}SACRA - Ton Coach Spirituel Personnel{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-16">
 
-    <!-- Hero Section -->
-    <div class="text-center mb-16 fade-in">
-        <h1 class="text-6xl md:text-7xl font-bold text-purple-900 mb-6">
-            {{ get_content('home_title', 'Laisse ton âme te parler') }}
-        </h1>
-        <p class="text-xl md:text-2xl text-gray-700 mb-8 max-w-3xl mx-auto">
-            {{ get_content('home_subtitle', 'Découvre les messages cachés dans tes rêves, synchronicités et tirages intuitifs. Une IA empathique pour t\'accompagner sur ton chemin spirituel.') }}
-        </p>
+<!-- Hero Section Ultra Moderne -->
+<div class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-purple-100 via-pink-50 to-purple-50 opacity-70"></div>
 
-        {% if not current_user.is_authenticated %}
-        <a href="{{ url_for('auth.register') }}" class="inline-block px-10 py-4 btn-primary text-white text-lg rounded-full font-medium shadow-lg">
-            {{ get_content('home_cta_button', 'Commencer mon interprétation ✨') }}
-        </a>
-        {% else %}
-        <a href="{{ url_for('main.dashboard') }}" class="inline-block px-10 py-4 btn-primary text-white text-lg rounded-full font-medium shadow-lg">
-            Accéder à mon espace 🌙
-        </a>
-        {% endif %}
-    </div>
+    <div class="container mx-auto px-4 py-20 relative">
+        <div class="max-w-5xl mx-auto text-center">
 
-    <!-- Features -->
-    <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
+            <!-- Badge Nouveau -->
+            <div class="inline-block mb-6 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-full text-sm font-medium shadow-lg animate-pulse">
+                🆕 Nouveau : Coach Spirituel avec réponses vocales !
+            </div>
 
-        <!-- Rêves -->
-        <div class="card-mystical rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2">
-            <div class="text-5xl mb-4">🌙</div>
-            <h3 class="text-2xl font-bold text-purple-900 mb-3">{{ get_content('feature_dream_title', 'Interprétation de rêves') }}</h3>
-            <p class="text-gray-700 mb-4">
-                {{ get_content('feature_dream_desc', 'Découvre la signification profonde de tes rêves avec une analyse symbolique personnalisée') }}
+            <h1 class="text-5xl md:text-7xl font-bold text-purple-900 mb-6 fade-in leading-tight">
+                Ton guide spirituel personnel<br>
+                <span class="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    disponible 24/7
+                </span>
+            </h1>
+
+            <p class="text-xl md:text-2xl text-gray-700 mb-10 max-w-3xl mx-auto leading-relaxed">
+                Guidance empathique • Réponses audio personnalisées • Disponible 24/7
             </p>
-            {% if current_user.is_authenticated %}
-            <a href="{{ url_for('interpretations.dream') }}" class="text-purple-700 font-medium hover:underline">
-                Interpréter un rêve →
+
+            {% if not current_user.is_authenticated %}
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+                <a href="{{ url_for('auth.register') }}" class="px-10 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg rounded-full font-medium shadow-2xl hover:shadow-3xl hover:scale-105 transition-all">
+                    Commencer gratuitement ✨
+                </a>
+                <a href="#features" class="px-10 py-4 bg-white text-purple-700 text-lg rounded-full font-medium shadow-lg hover:shadow-xl transition-all border-2 border-purple-200">
+                    Découvrir →
+                </a>
+            </div>
+            <p class="text-sm text-gray-600">
+                ✓ 5 messages gratuits par jour • ✓ Pas de carte bancaire requise
+            </p>
+            {% else %}
+            <a href="{{ url_for('main.dashboard') }}" class="inline-block px-10 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg rounded-full font-medium shadow-2xl hover:scale-105 transition-all">
+                Accéder à mon espace 🌙
             </a>
             {% endif %}
         </div>
-
-        <!-- Signes -->
-        <div class="card-mystical rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2">
-            <div class="text-5xl mb-4">✨</div>
-            <h3 class="text-2xl font-bold text-purple-900 mb-3">{{ get_content('feature_signs_title', 'Signes & Synchronicités') }}</h3>
-            <p class="text-gray-700 mb-4">
-                {{ get_content('feature_signs_desc', 'Comprends les messages que l\'univers t\'envoie : nombres miroirs, animaux totems, coïncidences') }}
-            </p>
-            {% if current_user.is_authenticated %}
-            <a href="{{ url_for('interpretations.sign') }}" class="text-purple-700 font-medium hover:underline">
-                Décoder un signe →
-            </a>
-            {% endif %}
-        </div>
-
-        <!-- Tirage -->
-        <div class="card-mystical rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2">
-            <div class="text-5xl mb-4">🔮</div>
-            <h3 class="text-2xl font-bold text-purple-900 mb-3">{{ get_content('feature_tarot_title', 'Tirage intuitif') }}</h3>
-            <p class="text-gray-700 mb-4">
-                {{ get_content('feature_tarot_desc', 'Reçois une guidance spirituelle à travers un tirage de cartes inspiré et bienveillant') }}
-            </p>
-            {% if current_user.is_authenticated %}
-            <a href="{{ url_for('interpretations.tarot') }}" class="text-purple-700 font-medium hover:underline">
-                Faire un tirage →
-            </a>
-            {% endif %}
-        </div>
-
     </div>
-
-    <!-- CTA Premium -->
-    <div class="card-mystical rounded-2xl p-12 max-w-4xl mx-auto text-center shadow-xl">
-        <h2 class="text-4xl font-bold text-purple-900 mb-4">
-            {{ get_content('premium_title', 'Passe en Premium ✨') }}
-        </h2>
-        <p class="text-lg text-gray-700 mb-6">
-            {{ get_content('premium_subtitle', 'Accède à des interprétations illimitées et à des fonctionnalités exclusives') }}
-        </p>
-        <p class="text-3xl font-bold text-purple-800 mb-6">
-            {{ get_content('premium_price', '9,99€') }}/mois
-        </p>
-        {% if current_user.is_authenticated %}
-        <a href="{{ url_for('premium.subscribe') }}" class="inline-block px-8 py-3 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition">
-            {{ get_content('premium_cta', 'Passer Premium maintenant') }}
-        </a>
-        {% else %}
-        <a href="{{ url_for('auth.register') }}" class="inline-block px-8 py-3 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition">
-            Commencer gratuitement
-        </a>
-        {% endif %}
-    </div>
-
 </div>
+
+<!-- Section : Nouveautés -->
+<div class="py-20 bg-white" id="features">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <span class="inline-block px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium mb-4">
+                🚀 NOUVEAUTÉS
+            </span>
+            <h2 class="text-4xl md:text-5xl font-bold text-purple-900 mb-4">
+                Une expérience spirituelle réinventée
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Découvre les fonctionnalités innovantes qui rendent SACRA unique
+            </p>
+        </div>
+
+        <!-- Grille des nouveautés -->
+        <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-12">
+
+            <!-- Coach Spirituel IA -->
+            <div class="card-mystical rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all hover:-translate-y-2 border-2 border-purple-200">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="text-5xl">🔮</div>
+                    <span class="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full font-medium">NOUVEAU</span>
+                </div>
+                <h3 class="text-2xl font-bold text-purple-900 mb-3">Coach Spirituel</h3>
+                <p class="text-gray-700 mb-6 leading-relaxed">
+                    Discute avec ton guide spirituel personnel en temps réel. Pose toutes tes questions sur le développement personnel, l'énergie, les relations...
+                </p>
+                <ul class="space-y-2 mb-6">
+                    <li class="flex items-center gap-2 text-gray-700">
+                        <span class="text-purple-600">✓</span> Conversations personnalisées
+                    </li>
+                    <li class="flex items-center gap-2 text-gray-700">
+                        <span class="text-purple-600">✓</span> Réponses en 3 secondes
+                    </li>
+                    <li class="flex items-center gap-2 text-gray-700">
+                        <span class="text-purple-600">✓</span> Historique sauvegardé
+                    </li>
+                </ul>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('chat.coach') }}" class="block w-full text-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition">
+                    Essayer maintenant →
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.register') }}" class="block w-full text-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition">
+                    S'inscrire gratuitement →
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Réponses Audio -->
+            <div class="card-mystical rounded-3xl p-8 shadow-2xl hover:shadow-3xl transition-all hover:-translate-y-2 border-2 border-pink-200">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="text-5xl">🎧</div>
+                    <span class="px-3 py-1 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs rounded-full font-medium">EXCLUSIF</span>
+                </div>
+                <h3 class="text-2xl font-bold text-purple-900 mb-3">Guidance Vocale</h3>
+                <p class="text-gray-700 mb-6 leading-relaxed">
+                    Écoute tes interprétations avec une voix douce et apaisante. Parfait pour méditer ou te détendre.
+                </p>
+                <ul class="space-y-2 mb-6">
+                    <li class="flex items-center gap-2 text-gray-700">
+                        <span class="text-pink-600">✓</span> Voix féminine mystique
+                    </li>
+                    <li class="flex items-center gap-2 text-gray-700">
+                        <span class="text-pink-600">✓</span> Lecture automatique
+                    </li>
+                    <li class="flex items-center gap-2 text-gray-700">
+                        <span class="text-pink-600">✓</span> Texte disponible aussi
+                    </li>
+                </ul>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('interpretations.tarot') }}" class="block w-full text-center px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium hover:shadow-lg transition">
+                    Découvrir →
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.register') }}" class="block w-full text-center px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium hover:shadow-lg transition">
+                    S'inscrire gratuitement →
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Section : Fonctionnalités Principales -->
+<div class="py-20 bg-gradient-to-b from-purple-50 to-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-purple-900 mb-4">
+                4 façons de recevoir ta guidance
+            </h2>
+            <p class="text-xl text-gray-600">
+                Choisis le type d'interprétation qui résonne avec toi
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+
+            <!-- Rêves -->
+            <div class="card-mystical rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2 text-center">
+                <div class="text-6xl mb-4">🌙</div>
+                <h3 class="text-xl font-bold text-purple-900 mb-3">Interprétation de rêves</h3>
+                <p class="text-gray-700 text-sm mb-4">
+                    Comprends les symboles et messages de tes rêves
+                </p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('interpretations.dream') }}" class="text-purple-700 font-medium hover:underline text-sm">
+                    Essayer →
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Signes -->
+            <div class="card-mystical rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2 text-center">
+                <div class="text-6xl mb-4">✨</div>
+                <h3 class="text-xl font-bold text-purple-900 mb-3">Signes & Synchronicités</h3>
+                <p class="text-gray-700 text-sm mb-4">
+                    Décode les messages de l'univers (11:11, animaux...)
+                </p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('interpretations.sign') }}" class="text-purple-700 font-medium hover:underline text-sm">
+                    Essayer →
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Tirage -->
+            <div class="card-mystical rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2 text-center">
+                <div class="text-6xl mb-4">🔮</div>
+                <h3 class="text-xl font-bold text-purple-900 mb-3">Tirage de Tarot</h3>
+                <p class="text-gray-700 text-sm mb-4">
+                    Reçois ta guidance avec les 22 arcanes majeurs
+                </p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('interpretations.tarot') }}" class="text-purple-700 font-medium hover:underline text-sm">
+                    Essayer →
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Coach -->
+            <div class="card-mystical rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2 text-center border-2 border-purple-300">
+                <div class="text-6xl mb-4">💬</div>
+                <h3 class="text-xl font-bold text-purple-900 mb-3">Coach Spirituel</h3>
+                <p class="text-gray-700 text-sm mb-4">
+                    Discute en direct avec ton guide spirituel
+                </p>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('chat.coach') }}" class="text-purple-700 font-medium hover:underline text-sm">
+                    Essayer →
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Section : Pourquoi SACRA -->
+<div class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold text-purple-900 mb-4">
+                    Pourquoi SACRA est différent ?
+                </h2>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                        🤖
+                    </div>
+                    <h3 class="text-xl font-bold text-purple-900 mb-3">Guidance Empathique</h3>
+                    <p class="text-gray-600">
+                        Un accompagnement bienveillant, chaleureux et intuitif pour ton chemin spirituel
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                        🎯
+                    </div>
+                    <h3 class="text-xl font-bold text-purple-900 mb-3">Personnalisé</h3>
+                    <p class="text-gray-600">
+                        Chaque réponse est adaptée à ton profil spirituel et ton chemin de vie
+                    </p>
+                </div>
+
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                        ⚡
+                    </div>
+                    <h3 class="text-xl font-bold text-purple-900 mb-3">Instantané</h3>
+                    <p class="text-gray-600">
+                        Reçois ta guidance en quelques secondes, 24h/24, 7j/7
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section : Pricing -->
+<div class="py-20 bg-gradient-to-b from-purple-900 to-purple-800 text-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                Choisis ton chemin
+            </h2>
+            <p class="text-xl text-purple-200">
+                Commence gratuitement, passe en Premium quand tu veux
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+
+            <!-- Gratuit -->
+            <div class="bg-white text-gray-900 rounded-3xl p-8 shadow-2xl">
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl font-bold text-purple-900 mb-2">Gratuit</h3>
+                    <div class="text-4xl font-bold text-purple-900 mb-4">0€</div>
+                    <p class="text-gray-600">Pour découvrir SACRA</p>
+                </div>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-2">
+                        <span class="text-green-600 text-xl">✓</span>
+                        <span>5 messages coach /jour</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="text-green-600 text-xl">✓</span>
+                        <span>3 interprétations /mois</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="text-green-600 text-xl">✓</span>
+                        <span>Réponses audio</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="text-green-600 text-xl">✓</span>
+                        <span>Historique 7 jours</span>
+                    </li>
+                </ul>
+                {% if not current_user.is_authenticated %}
+                <a href="{{ url_for('auth.register') }}" class="block w-full text-center px-6 py-3 bg-purple-100 text-purple-900 rounded-xl font-medium hover:bg-purple-200 transition">
+                    Commencer gratuitement
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Premium -->
+            <div class="bg-gradient-to-br from-yellow-400 to-yellow-600 text-gray-900 rounded-3xl p-8 shadow-2xl transform scale-105 border-4 border-yellow-300">
+                <div class="text-center mb-6">
+                    <span class="inline-block px-3 py-1 bg-white text-yellow-600 text-xs rounded-full font-medium mb-2">
+                        ⭐ RECOMMANDÉ
+                    </span>
+                    <h3 class="text-2xl font-bold mb-2">Premium</h3>
+                    <div class="text-4xl font-bold mb-4">9,99€<span class="text-xl">/mois</span></div>
+                    <p class="text-gray-800">Guidance illimitée</p>
+                </div>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-2">
+                        <span class="text-green-800 text-xl">✓</span>
+                        <span class="font-medium">Messages coach ILLIMITÉS</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="text-green-800 text-xl">✓</span>
+                        <span class="font-medium">Interprétations ILLIMITÉES</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="text-green-800 text-xl">✓</span>
+                        <span>Réponses audio premium</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="text-green-800 text-xl">✓</span>
+                        <span>Historique complet</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="text-green-800 text-xl">✓</span>
+                        <span>Export PDF</span>
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="text-green-800 text-xl">✓</span>
+                        <span>Support prioritaire</span>
+                    </li>
+                </ul>
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('premium.subscribe') }}" class="block w-full text-center px-6 py-3 bg-white text-yellow-600 rounded-xl font-bold hover:shadow-xl transition">
+                    Passer Premium maintenant ✨
+                </a>
+                {% else %}
+                <a href="{{ url_for('auth.register') }}" class="block w-full text-center px-6 py-3 bg-white text-yellow-600 rounded-xl font-bold hover:shadow-xl transition">
+                    Commencer avec Premium
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- CTA Final -->
+<div class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center card-mystical rounded-3xl p-12 shadow-2xl">
+            <div class="text-6xl mb-6">🌟</div>
+            <h2 class="text-4xl md:text-5xl font-bold text-purple-900 mb-6">
+                Prêt(e) à commencer ton voyage ?
+            </h2>
+            <p class="text-xl text-gray-700 mb-8 max-w-2xl mx-auto">
+                Rejoins des milliers de personnes qui utilisent SACRA pour leur développement spirituel
+            </p>
+            {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('auth.register') }}" class="inline-block px-12 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl rounded-full font-medium shadow-2xl hover:scale-105 transition-all">
+                Créer mon compte gratuit ✨
+            </a>
+            <p class="text-sm text-gray-600 mt-4">
+                Inscription en 30 secondes • Pas de carte bancaire
+            </p>
+            {% else %}
+            <a href="{{ url_for('main.dashboard') }}" class="inline-block px-12 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl rounded-full font-medium shadow-2xl hover:scale-105 transition-all">
+                Accéder à mon espace 🌙
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.fade-in {
+    animation: fadeIn 1s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hover\:scale-105:hover {
+    transform: scale(1.05);
+}
+
+.hover\:shadow-3xl:hover {
+    box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3);
+}
+</style>
+
 {% endblock %}
