@@ -15,66 +15,216 @@ MEDITATIONS = [
         'title': 'Équilibrage des 7 Chakras',
         'description': 'Voyage énergétique à travers tes 7 centres d\'énergie pour les harmoniser et les aligner.',
         'theme': 'chakras',
-        'duration_minutes': 20,
+        'duration_minutes': 7,
         'script': """
-Installe-toi confortablement, assis ou allongé. Ferme doucement les yeux.
+Bienvenue dans cette méditation d'équilibrage des sept chakras.
 
-Commence par prendre trois respirations profondes... Inspire par le nez... Expire par la bouche...
+Installe-toi confortablement, que tu sois assis en tailleur, sur une chaise, ou allongé sur le dos. Choisis la position qui te convient le mieux.
 
-Visualise maintenant une lumière rouge éclatante à la base de ta colonne vertébrale... C'est ton chakra racine, Muladhara... Il t'ancre à la terre... Sens cette énergie rouge tourner et briller...
+Ferme doucement les yeux. Prends un moment pour simplement arriver ici, maintenant, dans cet espace sacré que tu te crées.
 
-Laisse maintenant cette lumière monter légèrement... Elle devient orange, juste sous ton nombril... C'est Svadhisthana, ton chakra sacré... Centre de ta créativité et de tes émotions... Laisse cette lumière orange danser et circuler librement...
+Commence par porter ton attention sur ta respiration naturelle. Observe l'air qui entre par tes narines, frais et vivifiant. Observe l'air qui ressort, chaud et apaisant.
 
-L'énergie continue de monter... Au niveau de ton plexus solaire, elle devient d'un jaune doré éclatant... Manipura, ton centre de pouvoir personnel... Sens ta confiance grandir avec cette lumière jaune qui rayonne...
+Prends maintenant trois grandes respirations conscientes. Inspire profondément par le nez, en comptant jusqu'à quatre. Un, deux, trois, quatre. Retiens quelques secondes. Et expire longuement par la bouche, en comptant jusqu'à six. Un, deux, trois, quatre, cinq, six.
 
-Cette lumière monte encore... Au centre de ta poitrine, elle devient d'un vert émeraude magnifique... Anahata, ton chakra du cœur... Ressens l'amour inconditionnel qui émane de ce centre... Envoie-toi de la compassion...
+Encore une fois. Grande inspiration. Un, deux, trois, quatre. Et longue expiration. Un, deux, trois, quatre, cinq, six.
 
-Maintenant, la lumière arrive à ta gorge, devenant d'un bleu azur... Vishuddha, ton chakra de la communication... Sens ta vérité personnelle prête à s'exprimer...
+Une dernière fois. Inspire. Remplis tes poumons complètement. Et expire. Relâche toutes les tensions, tous les soucis de la journée.
 
-Cette énergie monte à ton troisième œil, entre tes sourcils, devenant indigo profond... Ajna, ton centre d'intuition... Fais confiance à ta sagesse intérieure...
+Maintenant, laisse ta respiration reprendre son rythme naturel. N'essaie plus de la contrôler. Observe-la simplement.
 
-Enfin, au sommet de ta tête, la lumière devient d'un violet ou blanc étincelant... Sahasrara, ton chakra couronne... Tu es connecté à l'univers tout entier...
+Nous allons maintenant voyager ensemble à travers tes sept centres d'énergie, du bas vers le haut de ton corps.
 
-Maintenant, visualise toutes ces couleurs qui brillent ensemble, formant un arc-en-ciel de lumière à travers ton corps... Tous tes chakras sont alignés, équilibrés, en harmonie parfaite...
+Porte ton attention tout en bas de ta colonne vertébrale, à la base de ton coccyx, entre tes jambes. C'est là que se trouve ton premier chakra, Muladhara, le chakra racine.
 
-Reste dans cette sensation d'équilibre quelques instants...
+Visualise dans cette zone une sphère de lumière rouge, d'un rouge profond comme la terre, comme les racines d'un arbre puissant. Cette lumière rouge pulse doucement, elle respire avec toi.
 
-Quand tu es prêt, ramène doucement ta conscience dans la pièce... Bouge tes doigts et tes orteils... Ouvre les yeux en douceur...
+À chaque inspiration, cette sphère rouge devient un peu plus grande, un peu plus lumineuse. À chaque expiration, elle tourne lentement sur elle-même, dans le sens des aiguilles d'une montre.
+
+Ce chakra racine t'ancre à la terre. Il représente ta sécurité, ta stabilité, ton sentiment d'appartenance à ce monde. Sens des racines de lumière rouge qui descendent de ce chakra, qui traversent le sol, qui s'enfoncent profondément dans la terre.
+
+Tu es ancré. Tu es en sécurité. Tu es stable. Tu es chez toi sur cette terre.
+
+Répète mentalement trois fois: "Je suis en sécurité. Je suis ancré. Je suis stable."
+
+Prends encore deux respirations dans ce chakra racine rouge.
+
+Maintenant, laisse cette énergie rouge monter légèrement dans ton corps. Juste au-dessus de ton os pubien, quelques centimètres sous ton nombril. C'est là que se trouve ton deuxième chakra, Svadhisthana, le chakra sacré.
+
+Visualise dans cette zone une sphère de lumière orange, d'un orange vif comme un coucher de soleil, comme une flamme dansante. Cette lumière orange tourbillonne doucement.
+
+À chaque inspiration, ce chakra orange grandit. À chaque expiration, il rayonne sa lumière chaude tout autour.
+
+Ce chakra sacré est le siège de ta créativité, de tes émotions, de ta sensualité, de ta joie de vivre. C'est l'eau qui coule en toi.
+
+Visualise cette sphère orange comme de l'eau en mouvement, fluide, libre, expressive. Laisse les émotions circuler. Accueille ta créativité.
+
+Répète mentalement trois fois: "Je ressens pleinement. Je crée librement. Je me permets d'être moi-même."
+
+Respire encore deux fois dans ce chakra orange.
+
+L'énergie monte encore. Elle arrive maintenant au niveau de ton plexus solaire, juste au-dessus de ton nombril, sous ta cage thoracique. C'est ton troisième chakra, Manipura, le chakra du plexus solaire.
+
+Visualise dans cette zone une sphère de lumière jaune, d'un jaune doré éclatant comme le soleil du midi, comme de l'or liquide. Cette lumière jaune brille intensément.
+
+À chaque inspiration, ce soleil intérieur devient plus brillant, plus puissant. À chaque expiration, ses rayons se diffusent dans tout ton corps.
+
+Ce chakra est ton centre de pouvoir personnel, de confiance en toi, de volonté, de détermination. C'est le feu qui brûle en toi.
+
+Sens la chaleur de ce soleil jaune dans ton ventre. Sens ta force, ton courage, ta capacité à agir. Tu es puissant. Tu es capable.
+
+Répète mentalement trois fois: "Je suis fort. Je suis confiant. Je peux réaliser mes rêves."
+
+Inspire, expire, dans cette lumière jaune dorée.
+
+L'énergie continue son ascension. Elle arrive maintenant au centre de ta poitrine, au niveau de ton cœur. C'est ton quatrième chakra, Anahata, le chakra du cœur.
+
+Visualise dans cette zone une sphère de lumière verte, d'un vert émeraude magnifique comme une forêt en printemps, comme le jade le plus pur. Cette lumière verte pulse au rythme de ton cœur.
+
+À chaque battement de cœur, à chaque respiration, ce chakra vert s'épanouit comme une fleur qui s'ouvre.
+
+Ce chakra est le siège de l'amour inconditionnel, de la compassion, du pardon, de la connexion aux autres. C'est l'air qui circule, qui relie tout.
+
+Sens ton cœur s'ouvrir. Envoie de l'amour à toi-même d'abord. Tu mérites cet amour. Tu es digne de recevoir autant que de donner.
+
+Puis envoie cet amour vert à ceux que tu aimes. À tous les êtres vivants. Ton cœur est un pont entre toi et le monde.
+
+Répète mentalement trois fois: "J'aime et je suis aimé. Je pardonne et je me pardonne. Mon cœur est ouvert."
+
+Respire profondément dans ce chakra vert du cœur.
+
+Laisse maintenant cette énergie monter à ta gorge. C'est ton cinquième chakra, Vishuddha, le chakra de la gorge.
+
+Visualise dans cette zone une sphère de lumière bleu ciel, d'un bleu clair comme le ciel d'été, comme l'océan sous le soleil. Cette lumière bleue vibre doucement.
+
+À chaque inspiration et expiration, sens ce chakra bleu qui s'active, qui s'équilibre.
+
+Ce chakra est le centre de ta communication, de ton expression personnelle, de ta vérité. C'est ton espace pour dire qui tu es vraiment.
+
+Sens ta voix intérieure. Ta vérité unique. Ta capacité à t'exprimer authentiquement.
+
+Répète mentalement trois fois: "Je m'exprime librement. Je dis ma vérité. Ma voix est importante."
+
+Respire dans cette lumière bleue apaisante.
+
+L'énergie monte encore, elle arrive entre tes sourcils, au centre de ton front. C'est ton sixième chakra, Ajna, le chakra du troisième œil.
+
+Visualise dans cette zone une sphère de lumière indigo, d'un bleu violet profond comme le ciel nocturne, comme l'améthyste. Cette lumière indigo pulse avec une sagesse ancienne.
+
+À chaque respiration, ce troisième œil s'ouvre un peu plus, se clarifie, voit plus loin.
+
+Ce chakra est le siège de ton intuition, de ta vision intérieure, de ta sagesse spirituelle, de ta clairvoyance.
+
+Fais confiance à ton intuition. Fais confiance à ta vision. Tu sais. Au fond de toi, tu sais.
+
+Répète mentalement trois fois: "Je vois clairement. J'ai confiance en mon intuition. Je suis sage."
+
+Respire dans cette lumière indigo mystique.
+
+Enfin, l'énergie arrive au sommet de ton crâne. C'est ton septième chakra, Sahasrara, le chakra couronne.
+
+Visualise au sommet de ta tête une sphère de lumière violette, ou blanche, ou dorée, selon ce qui vient naturellement. C'est une lumière divine, pure, transcendante.
+
+À chaque respiration, ce chakra s'ouvre comme les pétales d'un lotus à mille pétales. Tu es connecté. Connecté à l'univers entier. À toute vie. À tout ce qui est.
+
+Ce chakra est ta connexion au divin, à ta conscience supérieure, à l'unité cosmique.
+
+Répète mentalement trois fois: "Je suis connecté. Je suis Un avec l'univers. Je suis conscience pure."
+
+Maintenant, prends un moment pour visualiser tous tes chakras en même temps. Rouge à la base. Orange sous le nombril. Jaune au plexus. Vert au cœur. Bleu à la gorge. Indigo au front. Violet au sommet.
+
+Tu es un arc-en-ciel de lumière. Une colonne de couleurs vibrantes qui va de la terre au ciel. Tous tes chakras sont alignés, équilibrés, en harmonie parfaite.
+
+Respire dans cette harmonie. Dans cet équilibre. Dans cette complétude.
+
+Sens l'énergie circuler librement de bas en haut et de haut en bas le long de ta colonne vertébrale.
+
+Tu es équilibré. Tu es harmonieux. Tu es complet.
+
+Reste encore un moment dans cette sensation. Savoure cet alignement.
+
+Quand tu te sens prêt, commence doucement à ramener ta conscience dans la pièce. Bouge légèrement tes doigts. Bouge légèrement tes orteils.
+
+Prends une grande inspiration. Et une longue expiration.
+
+Ouvre les yeux en douceur, doucement, à ton rythme.
+
+Prends le temps de t'étirer si tu en ressens le besoin.
+
+Merci d'avoir pris ce temps pour toi. Merci d'avoir honoré tes centres d'énergie.
+
+Porte cette harmonie avec toi tout au long de ta journée.
 
 Namaste.
 """
     },
     {
-        'title': 'Activation du Chakra du Cœur',
-        'description': 'Méditation centrée sur Anahata pour cultiver l\'amour de soi et la compassion.',
+        'title': 'Ancrage et Sécurité Intérieure',
+        'description': 'Renforce ton chakra racine pour te sentir stable, en sécurité et ancré dans le moment présent.',
         'theme': 'chakras',
-        'duration_minutes': 10,
+        'duration_minutes': 5,
         'script': """
-Assieds-toi confortablement, le dos droit mais détendu. Ferme les yeux.
+Bienvenue dans cette méditation d'ancrage.
 
-Porte ton attention sur ta respiration naturelle... Observe l'air qui entre et qui sort...
+Assieds-toi confortablement, le dos droit mais sans rigidité. Si tu es sur une chaise, pose tes deux pieds bien à plat sur le sol. Si tu es par terre, assieds-toi en tailleur ou dans la position qui te convient.
 
-Maintenant, place ta main droite sur ton cœur... Sens la chaleur de ta paume sur ta poitrine...
+Ferme doucement les yeux. Ou garde-les mi-clos si tu préfères.
 
-Inspire profondément et imagine une lumière verte émeraude qui commence à briller au centre de ta poitrine... C'est ton chakra du cœur, Anahata...
+Prends un instant pour t'installer, pour arriver vraiment ici, maintenant.
 
-À chaque inspiration, cette lumière verte grandit, devient plus brillante... À chaque expiration, elle rayonne autour de toi...
+Porte ton attention sur ta respiration. Inspire par le nez. Expire par le nez. Observe simplement ce va-et-vient de ton souffle.
 
-Répète mentalement : "Je suis amour... Je mérite l'amour... Je donne et je reçois l'amour librement..."
+Maintenant, sens les points de contact entre ton corps et ce qui te soutient. Sens tes fesses sur la chaise ou sur le sol. Sens tes cuisses qui reposent. Sens tes pieds qui touchent la terre.
 
-Pense à quelqu'un que tu aimes profondément... Ressens cet amour grandir dans ton cœur, comme une chaleur douce...
+Prends conscience du poids de ton corps. Tu es ici. Tu es présent. Tu es solide.
 
-Maintenant, dirige cet amour vers toi-même... Envoie-toi la même compassion, la même tendresse...
+Porte maintenant toute ton attention à la base de ta colonne vertébrale, entre tes jambes, au niveau de ton coccyx. C'est là que se trouve ton chakra racine, Muladhara.
 
-Si des émotions surgissent, accueille-les avec bienveillance... Ton cœur est un espace sûr...
+Visualise dans cette zone une sphère de lumière rouge. Rouge comme la terre. Rouge comme les racines d'un chêne centenaire. Rouge comme le rubis.
 
-Visualise cette lumière verte qui s'étend maintenant dans tout ton corps... Puis au-delà de ton corps, remplissant la pièce... Ton amour touche tout ce qui t'entoure...
+Cette lumière rouge pulse doucement. Elle est chaude. Elle est stable. Elle est forte.
 
-Prends encore trois respirations profondes dans cette énergie d'amour...
+À chaque inspiration, imagine que tu respires directement dans cette sphère rouge. Elle grandit, elle s'illumine.
 
-Doucement, ramène ta conscience ici et maintenant... Enlève ta main de ton cœur...
+À chaque expiration, imagine que cette lumière rouge s'ancre encore plus profondément en toi.
 
-Ouvre les yeux quand tu es prêt... Garde cette lumière d'amour avec toi aujourd'hui...
+Maintenant, visualise des racines de lumière rouge qui partent de ce chakra racine. Des racines puissantes, épaisses, solides. Elles descendent de ton corps, elles traversent le sol sous toi.
+
+Ces racines continuent de descendre, de plus en plus profondément. Elles traversent les fondations du bâtiment. Elles pénètrent dans la terre. Dans la roche. Elles s'enfoncent, s'enfoncent, s'enfoncent.
+
+Elles atteignent maintenant le cœur de la Terre. Ce noyau chaud, solide, stable, qui est là depuis des milliards d'années.
+
+Tes racines s'enroulent autour de ce noyau. Tu es connecté au cœur de la Terre. Tu es ancré. Tu ne peux pas tomber. Tu ne peux pas être déstabilisé.
+
+Sens la force de la Terre qui remonte maintenant le long de tes racines. Une énergie rouge, chaude, stable, sécurisante. Elle remonte, elle remonte, elle arrive à ton chakra racine.
+
+Cette énergie de la Terre remplit ta sphère rouge. Tu absorbes la stabilité de la Terre. Sa patience. Sa force tranquille.
+
+Répète mentalement, trois fois : "Je suis ancré. Je suis en sécurité. Je suis stable."
+
+Inspire profondément. Expire complètement.
+
+Encore une fois : "Je suis ancré. Je suis en sécurité. Je suis stable."
+
+Continue de respirer. Sens tes racines profondément plantées dans la Terre.
+
+Tu es comme un arbre. Tu peux plier dans le vent, mais tu ne romps pas. Tes racines te tiennent. Tu es solide.
+
+Quoi qu'il se passe autour de toi, quoi qu'il se passe dans ta vie, tu as toujours ces racines. Tu as toujours cette connexion à la Terre. Tu es toujours en sécurité au fond de toi.
+
+Prends encore quelques respirations dans cette sensation d'ancrage.
+
+Sens le poids de ton corps. Tu es ici. Tu es présent. Tu es en sécurité.
+
+Quand tu te sens prêt, commence à bouger légèrement les doigts, les orteils.
+
+Prends une grande inspiration. Une longue expiration.
+
+Ouvre les yeux doucement.
+
+Emporte cet ancrage avec toi. Ces racines sont toujours là. Tu peux te reconnecter à elles à tout moment, simplement en fermant les yeux et en respirant.
+
+Merci pour cette pratique.
 
 Namaste.
 """
@@ -82,69 +232,94 @@ Namaste.
 
     # MANIFESTATION
     {
-        'title': 'Manifester tes Intentions',
-        'description': 'Utilise la loi de l\'attraction pour clarifier et attirer tes désirs les plus profonds.',
+        'title': 'Attirer l\'Abondance',
+        'description': 'Élève ta vibration pour attirer l\'abondance sous toutes ses formes dans ta vie.',
         'theme': 'manifestation',
-        'duration_minutes': 15,
+        'duration_minutes': 8,
         'script': """
-Installe-toi dans une position confortable... Ferme les yeux et prends plusieurs respirations profondes...
+Bienvenue dans cette méditation pour attirer l'abondance.
 
-Laisse ton corps se détendre complètement... Relâche toutes les tensions...
+Installe-toi confortablement, que tu sois assis ou allongé. Choisis une position où tu peux rester sans bouger pendant quelques minutes.
 
-Commence par clarifier ton intention... Qu'est-ce que tu souhaites manifester dans ta vie ? Ne censure pas, laisse venir...
+Ferme les yeux. Prends quelques respirations profondes pour te centrer.
 
-Visualise maintenant cette intention déjà réalisée... Tu ES déjà là où tu veux être... Que vois-tu autour de toi ? Qui est avec toi ?
+Inspire par le nez, lentement. Expire par la bouche, complètement. Inspire. Expire. Encore une fois. Inspire. Expire.
 
-Ressens les émotions de cette réalisation... La joie, la gratitude, la fierté, l'amour... Laisse ces émotions remplir tout ton être...
+Maintenant, laisse ta respiration reprendre son rythme naturel.
 
-Maintenant, imagine une lumière dorée qui descend du ciel et t'enveloppe complètement... C'est l'énergie de l'univers qui soutient ta manifestation...
+L'abondance est ton état naturel. C'est ton droit de naissance. Tu es né dans un univers d'abondance infinie. Il y a assez pour tout le monde. Il y a assez pour toi.
 
-Répète mentalement : "Je suis aligné avec mes désirs... L'univers conspire en ma faveur... Tout vient à moi au moment parfait..."
+Commence par prendre conscience de l'abondance qui est déjà présente dans ta vie en ce moment même.
 
-Visualise des portes qui s'ouvrent sur ton chemin... Des opportunités qui se présentent... Des rencontres qui se font...
+Tu respires. L'air est abondant. Gratuit. Toujours disponible pour toi. Prends conscience de l'abondance de l'air qui entre dans tes poumons. Merci.
 
-Ressens la certitude que ce que tu désires est déjà en route vers toi... Pas d'espoir, pas de doute... Juste la certitude...
+Tu as un corps. Un corps qui fonctionne. Un cœur qui bat. Des poumons qui respirent. Des yeux qui voient. Des oreilles qui entendent. Quelle abondance. Merci.
 
-Prends un moment pour remercier l'univers... Merci pour ce qui vient... Merci pour ce qui est... Merci pour ce qui était...
+Tu as un lieu où vivre. Un toit. Des murs. Un espace rien que pour toi. Quelle abondance. Merci.
 
-Cette gratitude amplifie ta vibration et accélère ta manifestation...
+Tu as accès à de l'eau. À de la nourriture. À des vêtements. Quelle abondance. Merci.
 
-Prends trois respirations profondes... Ancre cette énergie de manifestation dans ton corps...
+Tu as des gens qui t'aiment. Des amis. De la famille. Des collègues. Des rencontres. Quelle abondance de connexions humaines. Merci.
 
-Quand tu te sens prêt, ouvre doucement les yeux... Agis aujourd'hui comme si ta manifestation était déjà en cours...
+Prends un moment pour ressentir cette gratitude pour l'abondance déjà présente. La gratitude est la clé qui ouvre la porte à encore plus d'abondance.
 
-Et ainsi soit-il.
-"""
-    },
-    {
-        'title': 'Élever ta Vibration',
-        'description': 'Augmente ta fréquence énergétique pour attirer des expériences positives et alignées.',
-        'theme': 'manifestation',
-        'duration_minutes': 10,
-        'script': """
-Assieds-toi confortablement et ferme les yeux...
+Maintenant, nous allons clarifier et magnétiser ce que tu souhaites attirer.
 
-Commence par scanner ton corps... Où sens-tu des tensions ? Des lourdeurs ? Prends-en simplement conscience...
+Pense à un domaine de ta vie où tu souhaites plus d'abondance. Peut-être l'argent. Peut-être l'amour. Peut-être les opportunités. Peut-être la santé. Peut-être la créativité. Choisis un domaine. Un seul pour cette méditation.
 
-Maintenant, imagine que tu es comme une note de musique... Quelle est ta fréquence en ce moment ? Grave, aiguë, quelque part entre les deux ?
+Visualise maintenant que tu as déjà cette abondance. Tu ne la désires plus. Tu ne l'espères plus. Tu l'AS. Elle est déjà là. Comment te sens-tu ? Que vois-tu ? Où es-tu ? Avec qui ?
 
-À chaque inspiration, imagine que tu montes d'une note... Ta vibration s'élève... Tu deviens plus léger...
+Rends cette visualisation aussi réelle, aussi vivante que possible. Utilise tous tes sens.
 
-Pense à quelque chose qui te remplit de joie... Un souvenir heureux, un être aimé, un lieu magique... Ressens cette joie vibrer dans ton corps...
+Si c'est l'argent : visualise ton compte en banque. Vois le chiffre que tu désires. Ressens le soulagement. La liberté. La sécurité. Vois-toi payant tes factures facilement. T'offrant ce que tu veux. Aidant ceux que tu aimes.
 
-Cette joie élève naturellement ta fréquence... Tu deviens comme une lumière qui brille de plus en plus fort...
+Si c'est l'amour : visualise ton partenaire. Sens-toi dans ses bras. Entends ses mots d'amour. Vois son sourire. Ressens cette chaleur, cette connexion, cette joie d'être aimé et d'aimer.
 
-Répète : "Je choisis la joie... Je choisis l'amour... Je choisis la lumière... Ma vibration est élevée et positive..."
+Si c'est la santé : sens ton corps vital, énergique, fort. Vois-toi bougeant avec aisance. Ressens cette énergie qui circule. Cette vitalité. Cette force.
 
-Visualise maintenant que tu attires à toi des choses et des personnes qui vibrent à la même fréquence... Comme un aimant puissant...
+Quelle que soit ton abondance, vis-la maintenant. Dans ta visualisation, tu l'as déjà. C'est fait. C'est réel.
 
-Reste dans cette haute vibration quelques instants... Savoure cette sensation...
+Maintenant, imagine qu'une lumière dorée descend du ciel. C'est la lumière de l'abondance universelle. Cette lumière dorée entre par le sommet de ta tête, descend dans tout ton corps.
 
-Prends l'intention de garder cette fréquence élevée tout au long de ta journée... Dès que tu te sens lourd, rappelle-toi cette méditation...
+Cette lumière dorée emplit chaque cellule. Tu deviens lumineux. Brillant. Magnétique.
 
-Respire profondément trois fois... Ancre cette vibration haute...
+Cette lumière dorée rayonne maintenant hors de ton corps. Elle crée un champ magnétique autour de toi. Un champ d'attraction puissant.
 
-Ouvre les yeux doucement... Souris... Ta vibration est élevée... Tout est possible...
+Tout ce qui vibre à la même fréquence que ton abondance est maintenant attiré vers toi. Comme un aimant.
+
+Les opportunités te trouvent. L'argent te trouve. Les bonnes personnes te trouvent. Les bonnes occasions te trouvent.
+
+Tu n'as pas à chercher. Tu n'as pas à forcer. Tu n'as qu'à rester dans cette vibration élevée. Tu n'as qu'à rester dans cette certitude. Cette abondance est tienne. Elle vient à toi. Maintenant.
+
+Répète mentalement, avec conviction : "Je suis un aimant pour l'abondance. Tout ce dont j'ai besoin vient à moi facilement. L'univers conspire en ma faveur."
+
+Encore une fois : "Je suis un aimant pour l'abondance. Tout ce dont j'ai besoin vient à moi facilement. L'univers conspire en ma faveur."
+
+Sens cette vérité dans tout ton être. Ce n'est pas un espoir. C'est une certitude. C'est une loi universelle. Tu es abondance.
+
+Maintenant, et c'est très important, envoie de la gratitude à l'univers. Merci pour ce qui vient. Merci pour ce qui est déjà en route vers toi. Merci pour cette abondance qui se manifeste maintenant dans ta vie.
+
+Ressens cette gratitude dans ton cœur. Laisse-la rayonner.
+
+La gratitude accélère la manifestation. La gratitude élève ta vibration encore plus haut.
+
+Prends encore quelques respirations dans cette énergie d'abondance et de gratitude.
+
+Sens-toi riche. Sens-toi béni. Sens-toi soutenu par l'univers.
+
+Quand tu es prêt, commence à ramener ta conscience dans la pièce.
+
+Bouge tes doigts. Bouge tes orteils.
+
+Prends une grande inspiration. Une longue expiration.
+
+Ouvre les yeux doucement.
+
+Tout au long de ta journée, reste dans cette vibration d'abondance. Reste dans cette gratitude. Remarque tous les signes que l'univers t'envoie. Sois attentif aux opportunités. Dis oui à ce qui s'aligne avec ton abondance.
+
+Et surtout, agis. L'abondance aime l'action. Fais un pas, même petit, dans la direction de ton abondance aujourd'hui.
+
+Merci pour cette pratique.
 
 Namaste.
 """
@@ -152,81 +327,112 @@ Namaste.
 
     # GUÉRISON
     {
-        'title': 'Guérison Intérieure Profonde',
-        'description': 'Libère les blessures émotionnelles et retrouve ta lumière intérieure.',
+        'title': 'Libération des Blessures du Passé',
+        'description': 'Libère les douleurs émotionnelles anciennes et retrouve ta paix intérieure.',
         'theme': 'guérison',
-        'duration_minutes': 20,
+        'duration_minutes': 10,
         'script': """
-Allonge-toi confortablement... Ferme les yeux... Laisse ton corps s'enfoncer dans le sol...
+Bienvenue dans cet espace sacré de guérison.
 
-Prends plusieurs respirations profondes... À chaque expiration, relâche un peu plus...
+Allonge-toi confortablement, si possible. Ou assieds-toi dans une position qui te permet de vraiment lâcher prise.
 
-Porte maintenant ton attention sur ton cœur... Y a-t-il une tristesse ? Une douleur ? Une blessure ? Ne la rejette pas... Accueille-la avec douceur...
+Ferme les yeux. Prends une grande inspiration par le nez. Expire longuement par la bouche, en faisant un soupir si tu en as envie. Relâche.
 
-Donne une forme à cette blessure dans ton esprit... Une couleur... Une texture... Observe-la sans jugement...
+Encore une fois. Grande inspiration. Longue expiration. Relâche tout.
 
-Dis mentalement à cette partie blessée de toi : "Je te vois... Je t'accepte... Tu as le droit d'exister..."
+Une dernière fois. Inspire profondément. Expire complètement. Laisse ton corps s'enfoncer dans le sol, dans la chaise, dans le lit. Abandonne-toi à ce support.
 
-Imagine maintenant une lumière dorée et chaude qui descend du ciel... C'est une lumière de guérison pure...
+Maintenant, laisse ta respiration reprendre son rythme naturel. Observe-la simplement.
 
-Cette lumière entre par le sommet de ta tête et descend lentement dans ton corps... Elle arrive à ton cœur...
+Dans cette méditation, nous allons visiter une blessure du passé. Une douleur émotionnelle que tu portes peut-être depuis longtemps. Quelque chose que tu as peut-être essayé d'ignorer, de repousser, d'oublier.
 
-La lumière enveloppe ta blessure avec tant d'amour, tant de compassion... Elle ne la juge pas, elle la berce doucement...
+Mais aujourd'hui, nous allons l'accueillir. Nous allons la regarder avec compassion. Et nous allons la libérer.
 
-Ta blessure commence à se transformer... La douleur se dissout peu à peu dans la lumière... Laisse ce processus se faire naturellement...
+Porte ton attention sur ton cœur, au centre de ta poitrine. Demande doucement à ton cœur : quelle est la blessure qui a le plus besoin de guérison aujourd'hui ?
 
-Si des larmes viennent, laisse-les couler... Elles sont la libération dont tu as besoin...
+Ne cherche pas. Ne force pas. Laisse venir ce qui vient. C'est peut-être une image. Un souvenir. Un sentiment. Un nom. Un âge que tu avais. Laisse venir.
 
-Répète : "Je me pardonne... Je libère le passé... Je mérite de guérir... Je mérite d'être heureux..."
+Quelle que soit cette blessure, quelle que soit cette douleur, accueille-la maintenant. Dis-lui mentalement : "Je te vois. Je te reconnais. Tu as le droit d'exister. Tu as ta place ici."
 
-La lumière dorée remplit maintenant tout ton être... Là où il y avait de la douleur, il y a maintenant de la paix...
+Cette blessure a peut-être été ignorée pendant longtemps. Peut-être même par toi. Mais aujourd'hui, tu la vois. Tu la reconnais.
 
-Ressens cette paix profonde... Cette liberté nouvelle... Tu as fait un travail important aujourd'hui...
+Maintenant, donne une forme à cette blessure dans ton esprit. Si elle était un objet, quelle forme aurait-elle ? Une pierre ? Un nœud ? Une tache sombre ? Ne juge pas. Observe simplement.
 
-Prends trois respirations de gratitude... Merci à ton corps, à ton cœur, à ton âme...
+Donne-lui aussi une couleur. Quelle est la couleur de cette douleur ? Noir ? Gris ? Rouge ? Bleu ? Laisse venir.
 
-Quand tu es prêt, bouge doucement... Ouvre les yeux en douceur...
+Donne-lui une texture. Est-elle lisse ? Rugueuse ? Dure ? Molle ? Froide ? Chaude ?
 
-Tu es guéri un peu plus aujourd'hui... Continue ce chemin avec patience et amour...
+Donne-lui même une taille. Est-elle petite comme un caillou ? Grande comme un rocher ? Immense ?
 
-Namaste.
-"""
-    },
-    {
-        'title': 'Libération Émotionnelle',
-        'description': 'Relâche les émotions bloquées et retrouve ta légèreté intérieure.',
-        'theme': 'guérison',
-        'duration_minutes': 12,
-        'script': """
-Assieds-toi confortablement, le dos droit... Ferme les yeux...
+Maintenant que tu peux la voir, cette blessure, nous allons la guérir.
 
-Commence par scanner ton corps... Où sens-tu des tensions ? Des nœuds ? Des blocages ?
+Imagine qu'une lumière dorée commence à descendre du ciel. C'est une lumière de pur amour. De pure compassion. De pure guérison.
 
-Ces zones sont souvent des émotions non exprimées... De la colère, de la tristesse, de la peur qui se sont logées dans ton corps...
+Cette lumière dorée descend vers toi. Elle entre par le sommet de ta tête, comme une douce pluie de guérison.
 
-Choisis une zone qui attire ton attention... Respire dans cette zone... Envoie ton souffle directement là où c'est tendu...
+Cette lumière descend dans ton corps. Elle arrive à ton cœur. Elle voit ta blessure.
 
-Demande mentalement à cette tension : "Que veux-tu me dire ? Quelle émotion portes-tu ?"
+Et avec tant de douceur, tant d'amour, cette lumière dorée enveloppe ta blessure. Elle ne la juge pas. Elle ne la rejette pas. Elle l'embrasse avec une compassion infinie.
 
-Écoute la réponse... Elle peut venir sous forme d'image, de mot, de sensation...
+La lumière dorée commence maintenant à pénétrer dans la blessure. Doucement. Respectueusement. Avec amour.
 
-Quelle que soit cette émotion, dis-lui : "Bienvenue... Tu peux sortir maintenant... Je te libère avec amour..."
+La blessure commence à se transformer. Peut-être qu'elle change de couleur. Peut-être qu'elle devient plus petite. Peut-être qu'elle se dissout. Peut-être qu'elle s'ouvre comme une fleur.
 
-À chaque expiration, imagine que cette émotion s'évacue de ton corps comme une fumée sombre... Elle part, doucement mais sûrement...
+Laisse ce processus se faire naturellement. Ne force rien. Observe simplement. La guérison se fait à son propre rythme.
 
-À chaque inspiration, imagine une lumière blanche pure qui remplit cet espace libéré... Fraîcheur... Légèreté...
+Si des émotions montent, c'est parfait. Laisse-les venir. Les larmes sont de la guérison liquide. La colère qui sort est de l'énergie qui se libère. La tristesse qui est accueillie peut enfin partir.
 
-Continue ce processus... Expire la lourdeur... Inspire la lumière...
+Respire dans ces émotions. Donne-leur de l'espace. Elles ont besoin d'être ressenties pour pouvoir être libérées.
 
-Sens ton corps devenir plus léger... Plus libre... Comme si des chaînes invisibles se brisaient...
+La lumière dorée continue son travail. Elle dissout la douleur. Elle transforme la blessure en compréhension. En sagesse. En force.
 
-Place une main sur ton cœur et répète : "Je libère ce qui ne me sert plus... Je fais de la place pour la joie... Je suis libre..."
+Maintenant, parle à cette partie blessée de toi. Dis-lui ce qu'elle a besoin d'entendre depuis si longtemps.
 
-Prends un moment pour apprécier cette nouvelle légèreté... Souris intérieurement...
+Peut-être : "Ce n'était pas de ta faute."
 
-Trois respirations profondes pour ancrer cette libération...
+Peut-être : "Tu as fait de ton mieux."
 
-Ouvre les yeux quand tu te sens prêt... Tu es plus léger... Tu es libre...
+Peut-être : "Je suis désolé que tu aies vécu ça."
+
+Peut-être : "Je te pardonne."
+
+Peut-être : "Je me pardonne."
+
+Dis-lui : "Tu peux te reposer maintenant. Je vais prendre soin de toi. Tu es en sécurité maintenant."
+
+Sens la libération qui se produit. La blessure devient de plus en plus légère. De plus en plus lumineuse.
+
+Maintenant, imagine que là où il y avait la blessure, il y a maintenant une belle lumière blanche. Pure. Paisible. Libre.
+
+Cette lumière blanche rayonne dans tout ton corps. Elle remplit ton cœur. Elle se diffuse dans chaque cellule.
+
+Tu es guéri un peu plus aujourd'hui. Tu es libéré un peu plus aujourd'hui.
+
+Répète mentalement trois fois : "Je libère le passé. Je me pardonne. Je suis libre."
+
+Encore : "Je libère le passé. Je me pardonne. Je suis libre."
+
+Une dernière fois : "Je libère le passé. Je me pardonne. Je suis libre."
+
+Prends un moment pour savourer cette liberté. Cette paix. Cette légèreté.
+
+Envoie de la gratitude à ton corps pour avoir porté cette blessure jusqu'à aujourd'hui. Envoie de la gratitude à ton cœur pour son courage de visiter cette douleur. Envoie de la gratitude à toi-même pour avoir fait ce travail important.
+
+Respire profondément dans cette paix nouvelle.
+
+Quand tu te sens prêt, commence doucement à revenir. Bouge tes doigts. Bouge tes orteils.
+
+Prends ton temps. Il n'y a pas de précipitation.
+
+Grande inspiration. Longue expiration.
+
+Ouvre les yeux en douceur quand tu es prêt.
+
+Sois doux avec toi après cette méditation. Bois de l'eau. Repose-toi si tu en as besoin.
+
+Tu as fait un travail magnifique aujourd'hui. Honore-le.
+
+Merci pour ce moment de guérison.
 
 Namaste.
 """
@@ -234,103 +440,232 @@ Namaste.
 
     # SOMMEIL
     {
-        'title': 'Voyage vers un Sommeil Profond',
-        'description': 'Détends complètement ton corps et ton esprit pour t\'endormir paisiblement.',
+        'title': 'Voyage vers le Sommeil Profond',
+        'description': 'Détente complète du corps et de l\'esprit pour t\'endormir paisiblement et dormir profondément.',
         'theme': 'sommeil',
-        'duration_minutes': 25,
+        'duration_minutes': 12,
         'script': """
-Allonge-toi confortablement dans ton lit... Arrange tes oreillers... Trouve ta position préférée pour dormir...
+Bonsoir. Bienvenue dans ce voyage vers un sommeil profond et réparateur.
 
-Ferme doucement les yeux... Tu n'as rien d'autre à faire qu'à te laisser porter...
+Tu es maintenant allongé dans ton lit, dans ta position préférée pour dormir. Arrange ton oreiller. Tire ta couverture. Trouve le confort parfait.
 
-Commence par prendre trois respirations très lentes et profondes... Inspire par le nez... Expire longuement par la bouche...
+Ferme doucement les yeux. Tu peux les garder fermés jusqu'à ce que tu t'endormes. Il n'y a rien d'autre à faire que te laisser aller.
 
-Maintenant, laisse ta respiration reprendre son rythme naturel... Observe-la simplement, sans la contrôler...
+Prends une grande inspiration par le nez. Retiens un instant. Et expire longuement par la bouche, en faisant un grand soupir. Aaahhh.
 
-Porte ton attention sur tes orteils... Contracte-les légèrement... Et relâche complètement... Sens-les devenir lourds, si lourds...
+Encore une fois. Grande inspiration. Retiens. Longue expiration. Aaahhh. Relâche toute la tension de la journée.
 
-Tes pieds maintenant... Contracte... Et relâche... Ils s'enfoncent dans le matelas...
+Une dernière fois. Inspire profondément. Retiens brièvement. Expire complètement. Relâche tout.
 
-Tes mollets... Contracte... Relâche... Une vague de détente monte dans tes jambes...
+Maintenant, laisse ta respiration reprendre son rythme naturel. Lent. Régulier. Paisible. Tu n'as plus rien à contrôler. Observe simplement ton souffle qui entre et qui sort.
 
-Tes cuisses... Contracte... Relâche... Tes jambes sont complètement abandonnées...
+Nous allons maintenant détendre ton corps complètement, de la tête aux pieds.
 
-Ton bassin, ton ventre... Contracte légèrement... Et laisse tout s'assouplir... Ta respiration est douce et calme...
+Porte ton attention sur ton front. Ressens les muscles de ton front. Et maintenant, laisse-les se détendre complètement. Ton front devient lisse. Détendu. Lourd.
 
-Ta poitrine, tes épaules... Contracte... Relâche... Sens les tensions s'évacuer...
+Tes sourcils se relâchent. L'espace entre tes sourcils s'adoucit.
 
-Tes bras, tes mains, tes doigts... Contracte... Relâche... Ils sont lourds, si lourds...
+Tes yeux, derrière tes paupières closes, se détendent. Tes globes oculaires deviennent lourds. Ils s'enfoncent doucement dans leurs orbites. Détendus. Si détendus.
 
-Ton cou, ta mâchoire... Contracte... Relâche... Laisse ta langue se détendre dans ta bouche...
+Tes paupières sont lourdes. Si lourdes. Elles ne veulent plus bouger.
 
-Ton visage, ton front... Contracte... Relâche... Toute expression disparaît de ton visage...
+Tes joues se relâchent. Tes pommettes s'affaissent légèrement.
 
-Ton corps entier est maintenant complètement détendu... Lourd... Abandonné au matelas...
+Ta mâchoire se détend. Laisse un petit espace entre tes dents du haut et tes dents du bas. Ta langue se détend dans ta bouche. Elle devient molle. Lourde.
 
-Imagine-toi maintenant sur une plage au coucher du soleil... Le ciel est rose et orange... Le sable est chaud sous toi...
+Tes lèvres se relâchent. Légèrement entrouvertes peut-être.
 
-Tu entends le bruit des vagues... Chaque vague qui se retire emporte avec elle tes pensées, tes soucis...
+Tout ton visage est maintenant complètement détendu. Sans tension. Sans expression. Paisible.
 
-Le rythme des vagues est apaisant... Régulier... Comme une berceuse naturelle...
+Ton cou se détend. Laisse ta tête s'enfoncer dans l'oreiller. Elle est lourde. Si lourde.
 
-Tu es en parfaite sécurité... Rien ni personne ne peut te déranger ici... C'est ton sanctuaire de paix...
+Tes épaules se relâchent. Elles s'affaissent. Elles descendent loin de tes oreilles. Toute la tension accumulée dans tes épaules se dissout. S'évapore.
 
-Les étoiles commencent à apparaître dans le ciel... Une à une... Elles scintillent doucement...
+Tes bras deviennent lourds. Ton bras droit est lourd. Ton bras gauche est lourd. Ils s'enfoncent dans le matelas.
 
-Tu te sens entouré par l'amour de l'univers... Protégé... En paix...
+Tes coudes se détendent. Tes avant-bras deviennent mous. Lourds.
 
-Ta respiration ralentit encore... Ton corps s'enfonce plus profondément dans le sable chaud...
+Tes poignets se relâchent. Tes mains sont lourdes. Si lourdes qu'elles ne peuvent plus bouger.
 
-Chaque vague qui arrive murmure : "Dors... Dors... Dors..."
+Tes doigts sont détendus. Chaque doigt, l'un après l'autre. Lourd. Détendu. Abandonné.
 
-Laisse-toi glisser dans le sommeil... Il n'y a rien à faire... Juste se laisser aller...
+Ton torse se détend maintenant. Ta poitrine s'affaisse légèrement à chaque expiration. Ton cœur bat calmement. Régulièrement.
 
-Doux rêves... Namaste...
+Ton ventre se relâche complètement. Il n'y a plus besoin de le rentrer. Laisse-le être. Mou. Détendu.
 
-(Silence prolongé pour permettre l'endormissement)
+Ton dos s'enfonce dans le matelas. Chaque vertèbre se détend. Du haut de ta colonne jusqu'au bas. Détente. Détente. Détente.
+
+Ton bassin est lourd. Tes fesses s'enfoncent dans le matelas. Lourdes. Détendues.
+
+Tes hanches se relâchent. Tes cuisses deviennent molles. Lourdes. Ton cuisse droite est lourde. Ta cuisse gauche est lourde.
+
+Tes genoux se détendent. Tes mollets sont lourds. Ton mollet droit. Ton mollet gauche. Si lourds qu'ils s'enfoncent dans le matelas.
+
+Tes chevilles se relâchent. Tes pieds sont lourds. Ton pied droit est lourd. Ton pied gauche est lourd.
+
+Tes orteils se détendent. Chaque orteil. Lourd. Mou. Détendu.
+
+Ton corps entier est maintenant complètement détendu. De la tête aux pieds. Lourd. Abandonné. Tu ne peux même plus bouger. Tu n'as même plus envie de bouger. C'est si agréable d'être si détendu.
+
+Maintenant, nous allons apaiser ton esprit.
+
+Imagine que tu es allongé sur une plage, au crépuscule. Le ciel est magnifique. Rose. Orange. Violet. Les derniers rayons du soleil réchauffent doucement ta peau.
+
+Le sable sous toi est encore chaud de la journée. Il épouse parfaitement les courbes de ton corps. Tu t'enfonces légèrement dans ce sable doux.
+
+Tu entends les vagues. Doucement. Régulièrement. Elles viennent caresser le rivage. Chuuuu. Et elles repartent. Shhhhh. Chuuuu. Shhhhh.
+
+Ce rythme des vagues est hypnotique. Apaisant. Il ralentit naturellement ta respiration. Ton cœur bat au rythme des vagues.
+
+Chaque vague qui se retire emporte avec elle les pensées de ta journée. Les soucis. Les préoccupations. Tout s'en va avec l'eau. Chuuuu. Parti. Shhhhh.
+
+L'air est doux. Agréable. Une légère brise caresse ton visage. Tes cheveux. Si agréable.
+
+Le soleil descend doucement vers l'horizon. Le ciel devient de plus en plus sombre. De plus en plus apaisant.
+
+Les premières étoiles apparaissent. Une. Puis deux. Puis trois. Elles scintillent doucement dans le ciel qui s'assombrit.
+
+Tu te sens en parfaite sécurité sur cette plage. Rien ni personne ne peut te déranger. C'est ton sanctuaire. Ton havre de paix.
+
+La lune commence à se lever. Une belle lune pleine. Argentée. Elle illumine doucement la plage. L'océan. Toi.
+
+Cette lumière de lune est apaisante. Douce. Elle enveloppe ton corps d'une couverture invisible de paix.
+
+Les vagues continuent leur danse. Chuuuu. Shhhhh. Chuuuu. Shhhhh. Elles murmurent : "Dors. Dors. Dors."
+
+Ton corps s'enfonce encore plus profondément dans le sable chaud. Tu es si lourd maintenant. Si détendu. Si paisible.
+
+Tes pensées deviennent de plus en plus lentes. De plus en plus espacées. Comme les vagues. Qui viennent. De temps en temps. Et repartent.
+
+Tu es entre la veille et le sommeil. Dans cet espace doux. Agréable. Paisible.
+
+Laisse-toi glisser. Il n'y a rien à faire. Juste se laisser aller.
+
+Les vagues continuent. Chuuuu. Shhhhh.
+
+La lune brille doucement.
+
+Les étoiles scintillent.
+
+Tu es en sécurité.
+
+Tu es aimé.
+
+Tu es paisible.
+
+Dors maintenant.
+
+Doux rêves.
+
+Bonne nuit.
+
+Namaste.
 """
     },
+
     {
-        'title': 'Relaxation du Corps et de l\'Esprit',
-        'description': 'Calme ton mental et prépare ton corps à une nuit réparatrice.',
+        'title': 'Calmer l\'Anxiété du Soir',
+        'description': 'Apaise ton mental agité et retrouve la sérénité pour une nuit paisible.',
         'theme': 'sommeil',
-        'duration_minutes': 15,
+        'duration_minutes': 6,
         'script': """
-Installe-toi confortablement dans ton lit... Éteins toutes les lumières...
+Bonsoir. Si tu écoutes cette méditation, c'est peut-être que ton esprit est agité ce soir. Que les pensées tournent en boucle. Que l'anxiété est présente.
 
-Ferme les yeux et prends une grande inspiration... Expire longuement en laissant sortir toutes les tensions de la journée...
+C'est ok. Tu es au bon endroit.
 
-Imagine qu'une lumière douce et apaisante, comme celle de la lune, entre dans ta chambre...
+Installe-toi confortablement dans ton lit. Allonge-toi dans ta position préférée pour dormir.
 
-Cette lumière argentée descend lentement sur ton corps, comme un voile de soie...
+Ferme les yeux doucement.
 
-Elle touche d'abord ton front... Ton front se détend complètement... Toutes les pensées se calment...
+Prends une grande inspiration par le nez. Et expire longuement par la bouche. Relâche.
 
-La lumière descend sur tes yeux... Tes paupières deviennent si lourdes... Si lourdes...
+Encore. Inspire. Expire. Relâche.
 
-Elle continue sur tes joues, ta mâchoire... Ton visage est paisible, sans expression...
+Une dernière fois. Inspire profondément. Expire complètement. Laisse tout partir.
 
-La lumière argentée enveloppe maintenant ta gorge, tes épaules... Elles s'affaissent, libérées de tout poids...
+Maintenant, observe simplement ta respiration naturelle. N'essaie pas de la changer. Observe-la juste.
 
-Elle descend sur ta poitrine... Ta respiration est lente, profonde, apaisée...
+Je sais que ton esprit est peut-être en ébullition en ce moment. Les pensées se bousculent. Les inquiétudes sont là.
 
-Sur ton ventre... Ton ventre se détend à chaque expiration...
+Mais ici, maintenant, tu es en sécurité. Dans ton lit. Sous ta couverture. À l'abri. Protégé.
 
-Sur tes jambes... Elles sont lourdes, si lourdes qu'elles s'enfoncent dans le matelas...
+Ici, maintenant, rien ne peut t'arriver. Les soucis de demain sont pour demain. Les regrets d'hier sont passés. Ici, maintenant, tu es en sécurité.
 
-Sur tes pieds... Tes pieds se réchauffent doucement...
+Répète mentalement : "Je suis en sécurité. Ici et maintenant, je suis en sécurité."
 
-Ton corps entier est maintenant enveloppé dans cette lumière argentée apaisante... Tu es comme dans un cocon de douceur...
+Encore : "Je suis en sécurité."
 
-Si des pensées arrivent, laisse-les passer comme des nuages dans le ciel... Ne les retiens pas... Laisse-les s'éloigner...
+Imagine maintenant que chaque pensée anxieuse est comme un nuage dans le ciel de ton esprit.
 
-Compte lentement à rebours de dix à un... À chaque nombre, tu t'enfonces plus profondément dans la détente...
+Ces nuages passent. Ils viennent. Ils passent. Ils s'en vont. Ils reviennent peut-être. Ils repartent. C'est leur nature.
 
-Dix... Neuf... Huit... Sept... Six... Cinq... Quatre... Trois... Deux... Un...
+Tu n'as pas besoin de les retenir. Tu n'as pas besoin de les combattre. Laisse-les passer. Comme des nuages dans le ciel.
 
-Tu es prêt pour une nuit de sommeil profond et réparateur...
+Toi, tu es le ciel. Vaste. Paisible. Infini. Les nuages passent mais le ciel reste. Toujours là. Toujours paisible.
 
-Bonne nuit... Namaste...
+À chaque expiration, imagine que tu relâches un nuage. Il s'en va. Il s'éloigne. Il disparaît à l'horizon.
+
+Expire. Relâche. Le nuage part.
+
+Encore. Expire. Relâche. Un autre nuage s'en va.
+
+Continue. À ton rythme. Chaque expiration libère un nuage de pensée anxieuse.
+
+Imagine maintenant qu'une lumière douce, d'un bleu clair apaisant, descend vers toi. Comme la lumière de la lune. Douce. Apaisante. Sécurisante.
+
+Cette lumière bleue t'enveloppe complètement. Comme une couverture de paix. De sérénité. De calme.
+
+Tu es en sécurité dans cette lumière. L'anxiété ne peut pas t'atteindre ici.
+
+Cette lumière bleue entre maintenant dans ton corps. Par le sommet de ta tête. Elle descend. Doucement. Lentement.
+
+Elle arrive à ton front. Ton front se détend. Les rides d'inquiétude s'effacent.
+
+Elle descend à tes yeux. Tes paupières deviennent lourdes. Si lourdes.
+
+Elle arrive à ta poitrine. À ton cœur. Ton cœur se calme. Les battements ralentissent. Tout va bien.
+
+Elle descend à ton ventre. Ce nœud dans ton ventre commence à se défaire. À se dissoudre dans la lumière bleue.
+
+Respire dans ton ventre. Laisse-le se gonfler à l'inspiration. Se dégonfler à l'expiration. Détends ton ventre. Tout va bien.
+
+La lumière bleue continue de descendre dans tout ton corps. Jusqu'au bout de tes orteils.
+
+Tu es complètement enveloppé. À l'intérieur et à l'extérieur. Dans cette lumière bleue apaisante.
+
+Répète mentalement : "Je lâche prise. Je fais confiance. Tout va bien."
+
+Encore : "Je lâche prise. Je fais confiance. Tout va bien."
+
+Tu n'as pas besoin de tout comprendre ce soir. Tu n'as pas besoin de tout résoudre ce soir. Ce soir, tu as juste besoin de te reposer.
+
+Demain, tu verras les choses plus clairement. Demain, tu trouveras des solutions. Mais ce soir, maintenant, repose-toi.
+
+Confie tes soucis à l'univers. À ton inconscient. À ta sagesse intérieure. Ils vont s'en occuper pendant que tu dors.
+
+Toi, maintenant, tu peux te reposer.
+
+Sens ton corps devenir de plus en plus lourd. De plus en plus détendu.
+
+Ton esprit devient de plus en plus calme. De plus en plus paisible.
+
+Les pensées ralentissent. S'espacent. Comme les vagues qui se calment après la tempête.
+
+Laisse-toi glisser maintenant vers le sommeil.
+
+Tu es en sécurité.
+
+Tu es aimé.
+
+Tu es paisible.
+
+Tout va bien.
+
+Dors maintenant.
+
+Bonne nuit.
+
+Namaste.
 """
     }
 ]
