@@ -260,6 +260,51 @@ def import_contacts():
     return render_template('admin/emails/import.html')
 
 
+@bp.route('/contacts/new', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def contact_new():
+    """Ajouter un contact manuellement"""
+
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip().lower()
+        first_name = request.form.get('first_name', '').strip()
+        last_name = request.form.get('last_name', '').strip()
+
+        # Validation
+        if not email:
+            flash('L\'email est obligatoire', 'error')
+            return redirect(request.url)
+
+        if '@' not in email or '.' not in email:
+            flash('L\'email n\'est pas valide', 'error')
+            return redirect(request.url)
+
+        # Vérifier si le contact existe déjà
+        existing = EmailContact.query.filter_by(email=email).first()
+        if existing:
+            flash(f'❌ Ce contact existe déjà : {email}', 'error')
+            return redirect(request.url)
+
+        # Créer le contact
+        contact = EmailContact(
+            email=email,
+            first_name=first_name or None,
+            last_name=last_name or None,
+            source='manual',
+            is_subscribed=True,
+            subscribed_at=datetime.utcnow()
+        )
+
+        db.session.add(contact)
+        db.session.commit()
+
+        flash(f'✅ Contact ajouté avec succès : {email}', 'success')
+        return redirect(url_for('emails.contacts'))
+
+    return render_template('admin/emails/contact_form.html')
+
+
 @bp.route('/campaigns')
 @login_required
 @admin_required

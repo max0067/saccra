@@ -61,9 +61,14 @@
                 <h2 class="text-2xl font-bold text-purple-900">
                     📋 Liste des contacts ({{ contacts.total }})
                 </h2>
-                <a href="{{ url_for('emails.import_contacts') }}" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-lg shadow-lg hover:shadow-xl transition">
-                    📤 Importer CSV
-                </a>
+                <div class="flex space-x-3">
+                    <a href="{{ url_for('emails.contact_new') }}" class="px-6 py-3 bg-white border-2 border-purple-600 text-purple-600 rounded-lg shadow hover:bg-purple-50 transition">
+                        ➕ Ajouter un contact
+                    </a>
+                    <a href="{{ url_for('emails.import_contacts') }}" class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-lg shadow-lg hover:shadow-xl transition">
+                        📤 Importer CSV
+                    </a>
+                </div>
             </div>
 
             {% if contacts.items %}

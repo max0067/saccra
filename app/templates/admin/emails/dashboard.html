@@ -16,11 +16,17 @@
         </div>
 
         <!-- Actions rapides -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <a href="{{ url_for('emails.contact_new') }}" class="card-mystical rounded-xl p-6 shadow-lg hover:shadow-xl transition text-center">
+                <div class="text-4xl mb-3">➕</div>
+                <h3 class="text-lg font-bold text-purple-900">Ajouter Contact</h3>
+                <p class="text-sm text-gray-600">Manuel (un par un)</p>
+            </a>
+
             <a href="{{ url_for('emails.import_contacts') }}" class="card-mystical rounded-xl p-6 shadow-lg hover:shadow-xl transition text-center">
                 <div class="text-4xl mb-3">📤</div>
                 <h3 class="text-lg font-bold text-purple-900">Importer CSV</h3>
-                <p class="text-sm text-gray-600">Ajoute tes contacts</p>
+                <p class="text-sm text-gray-600">Import en masse</p>
             </a>
 
             <a href="{{ url_for('emails.contacts') }}" class="card-mystical rounded-xl p-6 shadow-lg hover:shadow-xl transition text-center">
