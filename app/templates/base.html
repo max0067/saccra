@@ -195,6 +195,26 @@
         </div>
     </footer>
 
+    <!-- Tracking des visiteurs (analytics) -->
+    <script>
+        // Enregistrer la visite de la page
+        (function() {
+            try {
+                fetch('/api/track', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        page_url: window.location.pathname
+                    })
+                });
+            } catch (e) {
+                // Ne rien faire si le tracking échoue (ne pas bloquer le site)
+            }
+        })();
+    </script>
+
     {% block extra_js %}{% endblock %}
 
 </body>

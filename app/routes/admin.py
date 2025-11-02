@@ -7,7 +7,7 @@ from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime, timedelta
 from sqlalchemy import func
-from app.models import db, User, Interpretation, PromoCode, SpiritualProfile, SiteContent, JournalEntry, BlogPost
+from app.models import db, User, Interpretation, PromoCode, SpiritualProfile, SiteContent, JournalEntry, BlogPost, Visit
 from werkzeug.utils import secure_filename
 import stripe
 import os
@@ -66,6 +66,10 @@ def dashboard():
     # Derniers utilisateurs
     recent_users = User.query.order_by(User.created_at.desc()).limit(10).all()
 
+    # Statistiques de visiteurs
+    visitors_today = Visit.get_unique_visitors_today()
+    visitors_online = Visit.get_online_visitors()
+
     stats = {
         'total_users': total_users,
         'premium_users': premium_users,
@@ -77,6 +81,8 @@ def dashboard():
         'dream_count': dream_count,
         'sign_count': sign_count,
         'tarot_count': tarot_count,
+        'visitors_today': visitors_today,
+        'visitors_online': visitors_online,
     }
 
     return render_template('admin/dashboard.html', stats=stats, recent_users=recent_users)

@@ -50,6 +50,7 @@ class User(UserMixin, db.Model):
     meditation_listens = db.relationship('MeditationListen', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     journal_entries = db.relationship('JournalEntry', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     blog_posts = db.relationship('BlogPost', backref='author', lazy='dynamic', cascade='all, delete-orphan')
+    visits = db.relationship('Visit', backref='visitor', lazy='dynamic')
 
     def set_password(self, password):
         """Hash le mot de passe"""
@@ -439,3 +440,61 @@ class BlogPost(db.Model):
         # Enlever les tirets au début et à la fin
         slug = slug.strip('-')
         return slug
+
+
+class Visit(db.Model):
+    """Tracking des visites pour analytics (RGPD-friendly)"""
+    __tablename__ = 'visits'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    # Identifiant unique du visiteur (hash de l'IP + User-Agent pour privacy)
+    visitor_hash = db.Column(db.String(64), nullable=False, index=True)
+
+    # Page visitée
+    page_url = db.Column(db.String(500), nullable=False)
+
+    # Métadonnées (anonymisées)
+    user_agent = db.Column(db.String(500))  # Pour détecter bots
+
+    # Timestamps
+    visited_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False, index=True)
+
+    # Utilisateur (optionnel, si connecté)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), index=True)
+
+    def __repr__(self):
+        return '<Visit {}>'.format(self.visitor_hash[:8])
+
+    @staticmethod
+    def get_unique_visitors_today():
+        """Compte le nombre de visiteurs uniques aujourd'hui"""
+        from sqlalchemy import func
+        today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+
+        count = db.session.query(func.count(func.distinct(Visit.visitor_hash))).filter(
+            Visit.visited_at >= today_start
+        ).scalar()
+
+        return count or 0
+
+    @staticmethod
+    def get_online_visitors():
+        """Compte le nombre de visiteurs en ligne (actifs dans les 5 dernières minutes)"""
+        from sqlalchemy import func
+        five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
+
+        count = db.session.query(func.count(func.distinct(Visit.visitor_hash))).filter(
+            Visit.visited_at >= five_minutes_ago
+        ).scalar()
+
+        return count or 0
+
+    @staticmethod
+    def create_visitor_hash(ip_address, user_agent):
+        """Crée un hash anonyme du visiteur (RGPD compliant)"""
+        import hashlib
+        # Combiner IP + User-Agent + un sel pour créer un hash unique
+        salt = 'sacra-2025-visitor-tracking'
+        data = '{}{}{}'.format(ip_address, user_agent, salt)
+        return hashlib.sha256(data.encode()).hexdigest()

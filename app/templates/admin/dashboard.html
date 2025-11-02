@@ -21,6 +21,43 @@
         <a href="{{ url_for('admin.site_contents') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Contenus</a>
     </div>
 
+    <!-- Statistiques Visiteurs (temps réel) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Visiteurs aujourd'hui -->
+        <div class="card-mystical rounded-xl p-6 shadow-lg fade-in border-2 border-blue-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm mb-1">Visiteurs Uniques Aujourd'hui</p>
+                    <p class="text-4xl font-bold text-blue-900">{{ stats.visitors_today }}</p>
+                </div>
+                <div class="text-5xl">👥</div>
+            </div>
+            <div class="mt-4 text-sm text-gray-600">
+                Visiteurs uniques depuis minuit
+            </div>
+        </div>
+
+        <!-- Visiteurs en ligne -->
+        <div class="card-mystical rounded-xl p-6 shadow-lg fade-in border-2 border-green-200 relative overflow-hidden">
+            <div class="absolute top-2 right-2">
+                <span class="flex h-3 w-3">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                </span>
+            </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-600 text-sm mb-1">Visiteurs En Ligne</p>
+                    <p class="text-4xl font-bold text-green-900">{{ stats.visitors_online }}</p>
+                </div>
+                <div class="text-5xl">🟢</div>
+            </div>
+            <div class="mt-4 text-sm text-gray-600">
+                Actifs dans les 5 dernières minutes
+            </div>
+        </div>
+    </div>
+
     <!-- Statistiques Globales -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Total Utilisateurs -->
