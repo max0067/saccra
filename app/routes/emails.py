@@ -121,8 +121,8 @@ def import_contacts():
             return redirect(request.url)
 
         try:
-            # Lire le fichier CSV/TSV
-            content = file.stream.read().decode('utf-8')
+            # Lire le fichier CSV/TSV (utf-8-sig supprime automatiquement le BOM)
+            content = file.stream.read().decode('utf-8-sig')
             stream = io.StringIO(content)
 
             # Auto-détecter le délimiteur (virgule, tabulation, point-virgule)
@@ -137,6 +137,26 @@ def import_contacts():
                 # Cela fonctionne pour les fichiers avec une seule colonne
                 stream.seek(0)
                 csv_reader = csv.DictReader(stream)
+
+            # Wrapper pour nettoyer les noms de colonnes (enlever espaces, BOM résiduel)
+            class CleanDictReader:
+                def __init__(self, reader):
+                    self.reader = reader
+                    self.fieldnames = [name.strip() for name in reader.fieldnames] if reader.fieldnames else []
+
+                def __iter__(self):
+                    return self
+
+                def __next__(self):
+                    row = next(self.reader)
+                    # Créer un nouveau dict avec les clés nettoyées
+                    cleaned_row = {}
+                    for key, value in row.items():
+                        clean_key = key.strip() if key else key
+                        cleaned_row[clean_key] = value
+                    return cleaned_row
+
+            csv_reader = CleanDictReader(csv_reader)
 
             imported = 0
             skipped_empty = 0
