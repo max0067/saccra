@@ -41,6 +41,7 @@ def dashboard():
     total_users = User.query.count()
     premium_users = User.query.filter_by(is_premium=True).count()
     total_interpretations = Interpretation.query.count()
+    total_journals = JournalEntry.query.count()
     active_promo_codes = PromoCode.query.filter_by(is_active=True).count()
 
     # Nouveaux utilisateurs cette semaine
@@ -60,6 +61,7 @@ def dashboard():
         'premium_users': premium_users,
         'free_users': total_users - premium_users,
         'total_interpretations': total_interpretations,
+        'total_journals': total_journals,
         'active_promo_codes': active_promo_codes,
         'new_users_week': new_users_week,
         'dream_count': dream_count,
