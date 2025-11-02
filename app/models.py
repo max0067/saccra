@@ -498,3 +498,99 @@ class Visit(db.Model):
         salt = 'sacra-2025-visitor-tracking'
         data = '{}{}{}'.format(ip_address, user_agent, salt)
         return hashlib.sha256(data.encode()).hexdigest()
+
+
+class EmailContact(db.Model):
+    """Contact email pour les campagnes marketing"""
+    __tablename__ = 'email_contacts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False, index=True)
+
+    # Informations optionnelles
+    first_name = db.Column(db.String(100))
+    last_name = db.Column(db.String(100))
+
+    # Status
+    is_subscribed = db.Column(db.Boolean, default=True, index=True)
+    is_bounced = db.Column(db.Boolean, default=False)  # Email invalide/rejeté
+
+    # Source
+    source = db.Column(db.String(50), default='import_csv')  # import_csv, registration, manual
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), index=True)  # Lien avec utilisateur si inscrit
+
+    # Dates
+    subscribed_at = db.Column(db.DateTime, default=datetime.utcnow)
+    unsubscribed_at = db.Column(db.DateTime)
+
+    # Relations
+    email_logs = db.relationship('EmailLog', backref='contact', lazy='dynamic')
+
+    def __repr__(self):
+        return '<EmailContact {}>'.format(self.email)
+
+
+class EmailCampaign(db.Model):
+    """Campagne d'emailing automatique"""
+    __tablename__ = 'email_campaigns'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+
+    # Type de campagne
+    campaign_type = db.Column(db.String(50), nullable=False, index=True)
+    # Types: welcome, onboarding_day_1, onboarding_day_2, ..., journal_reminder, premium_conversion, reengagement
+
+    # Contenu
+    subject = db.Column(db.String(200), nullable=False)
+    html_content = db.Column(db.Text, nullable=False)
+
+    # Configuration
+    is_active = db.Column(db.Boolean, default=True, index=True)
+    send_delay_hours = db.Column(db.Integer, default=0)  # Délai après trigger
+
+    # Statistiques
+    total_sent = db.Column(db.Integer, default=0)
+    total_opened = db.Column(db.Integer, default=0)
+    total_clicked = db.Column(db.Integer, default=0)
+
+    # Dates
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Relations
+    email_logs = db.relationship('EmailLog', backref='campaign', lazy='dynamic')
+
+    def __repr__(self):
+        return '<EmailCampaign {}>'.format(self.name)
+
+
+class EmailLog(db.Model):
+    """Log des emails envoyés (tracking)"""
+    __tablename__ = 'email_logs'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    # Relations
+    contact_id = db.Column(db.Integer, db.ForeignKey('email_contacts.id'), index=True)
+    campaign_id = db.Column(db.Integer, db.ForeignKey('email_campaigns.id'), index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), index=True)
+
+    # Contenu
+    email_to = db.Column(db.String(120), nullable=False, index=True)
+    subject = db.Column(db.String(200))
+
+    # Statut
+    status = db.Column(db.String(50), default='sent', index=True)  # sent, delivered, opened, clicked, bounced, failed
+
+    # Tracking
+    sent_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    opened_at = db.Column(db.DateTime)
+    clicked_at = db.Column(db.DateTime)
+
+    # Provider (Brevo/SendGrid)
+    provider_message_id = db.Column(db.String(200))
+    error_message = db.Column(db.Text)
+
+    def __repr__(self):
+        return '<EmailLog to={}>'.format(self.email_to)
