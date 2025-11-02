@@ -21,17 +21,23 @@ def _send_email(message, smtp_server, smtp_port, smtp_user, smtp_password):
         smtp_user: str - Utilisateur SMTP
         smtp_password: str - Mot de passe SMTP
     """
-    # Port 465 = SSL direct, Port 587 = TLS avec STARTTLS
-    if smtp_port == 465:
-        # Connexion SSL
-        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
-            server.login(smtp_user, smtp_password)
+    # Cas spécial: localhost:25 (relay SMTP local o2switch) - pas d'authentification
+    if smtp_server in ['localhost', '127.0.0.1'] and smtp_port == 25:
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            # Pas de starttls() ni de login() pour localhost
             server.send_message(message)
+    # Port 465 = SSL direct
+    elif smtp_port == 465:
+        with smtplib.SMTP_SSL(smtp_server, smtp_port) as server:
+            if smtp_user and smtp_password:
+                server.login(smtp_user, smtp_password)
+            server.send_message(message)
+    # Port 587 ou autre = TLS avec STARTTLS
     else:
-        # Connexion TLS (port 587 ou autre)
         with smtplib.SMTP(smtp_server, smtp_port) as server:
             server.starttls()
-            server.login(smtp_user, smtp_password)
+            if smtp_user and smtp_password:
+                server.login(smtp_user, smtp_password)
             server.send_message(message)
 
 def send_welcome_email(user_email, user_name):
