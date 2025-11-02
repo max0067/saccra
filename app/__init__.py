@@ -32,13 +32,14 @@ def create_app(config_class=Config):
     def inject_site_content():
         """Injecte une fonction pour récupérer les contenus du site dans tous les templates"""
         from app.models import SiteContent
+        from datetime import datetime
 
         def get_content(key, default=''):
             """Récupère un contenu par sa clé"""
             content = SiteContent.query.filter_by(key=key).first()
             return content.value if content else default
 
-        return dict(get_content=get_content)
+        return dict(get_content=get_content, now=datetime.utcnow)
 
     # Enregistrer les blueprints
     from app.routes.main import bp as main_bp
