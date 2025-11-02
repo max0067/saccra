@@ -390,9 +390,31 @@ def campaign_send(campaign_id):
 
     for contact in contacts[:max_emails]:
         try:
+            # Créer le log AVANT l'envoi pour avoir l'ID (pour le pixel de tracking)
+            email_log = EmailLog(
+                contact_id=contact.id,
+                campaign_id=campaign.id,
+                email_to=contact.email,
+                subject=campaign.subject,
+                status='pending',
+                sent_at=datetime.utcnow()
+            )
+            db.session.add(email_log)
+            db.session.flush()  # Obtenir l'ID sans commit
+
             # Personnaliser le contenu
             html = campaign.html_content.replace('{{first_name}}', contact.first_name or 'ami spirituel')
             html = html.replace('{{email}}', contact.email)
+
+            # Ajouter le pixel de tracking invisible
+            tracking_pixel = f'<img src="https://saccra.fr/api/track/email/open/{email_log.id}" width="1" height="1" style="display:none;" alt="" />'
+
+            # Insérer le pixel juste avant la fermeture du body (si existe)
+            if '</body>' in html:
+                html = html.replace('</body>', tracking_pixel + '</body>')
+            else:
+                # Sinon, ajouter à la fin
+                html += tracking_pixel
 
             # Créer le message
             message = MIMEMultipart('alternative')
@@ -406,16 +428,8 @@ def campaign_send(campaign_id):
             # Envoyer
             _send_email(message, smtp_server, smtp_port, smtp_user, smtp_password)
 
-            # Logger
-            email_log = EmailLog(
-                contact_id=contact.id,
-                campaign_id=campaign.id,
-                email_to=contact.email,
-                subject=campaign.subject,
-                status='sent',
-                sent_at=datetime.utcnow()
-            )
-            db.session.add(email_log)
+            # Mettre à jour le statut après envoi réussi
+            email_log.status = 'sent'
 
             sent += 1
 
