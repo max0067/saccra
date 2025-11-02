@@ -7,7 +7,7 @@ from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime, timedelta
 from sqlalchemy import func
-from app.models import db, User, Interpretation, PromoCode, SpiritualProfile, SiteContent, JournalEntry
+from app.models import db, User, Interpretation, PromoCode, SpiritualProfile, SiteContent, JournalEntry, BlogPost
 import stripe
 import os
 
@@ -513,3 +513,199 @@ def journals():
     return render_template('admin/journals.html',
                           journals=journals_paginated,
                           search=search)
+
+
+@bp.route('/blog')
+@login_required
+@admin_required
+def blog():
+    """Liste de tous les articles de blog"""
+
+    page = request.args.get('page', 1, type=int)
+    filter_status = request.args.get('filter', 'all')
+    search = request.args.get('search', '')
+
+    query = BlogPost.query
+
+    # Filtres par statut
+    if filter_status == 'published':
+        query = query.filter_by(is_published=True)
+    elif filter_status == 'draft':
+        query = query.filter_by(is_published=False)
+
+    # Recherche par titre ou contenu
+    if search:
+        query = query.filter(
+            (BlogPost.title.contains(search)) |
+            (BlogPost.content.contains(search))
+        )
+
+    # Pagination
+    posts_paginated = query.order_by(BlogPost.created_at.desc()).paginate(
+        page=page, per_page=20, error_out=False
+    )
+
+    return render_template('admin/blog.html',
+                          posts=posts_paginated,
+                          filter_status=filter_status,
+                          search=search)
+
+
+@bp.route('/blog/new', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def blog_new():
+    """Créer un nouvel article de blog"""
+
+    if request.method == 'POST':
+        title = request.form.get('title', '').strip()
+        excerpt = request.form.get('excerpt', '').strip()
+        content = request.form.get('content', '').strip()
+        image_url = request.form.get('image_url', '').strip()
+        meta_title = request.form.get('meta_title', '').strip()
+        meta_description = request.form.get('meta_description', '').strip()
+        is_published = request.form.get('is_published') == 'on'
+
+        # Validation
+        if not title or not content:
+            flash('Le titre et le contenu sont obligatoires', 'error')
+            return render_template('admin/blog_form.html', post=None)
+
+        # Générer le slug à partir du titre
+        slug = BlogPost.generate_slug(title)
+
+        # Vérifier que le slug est unique
+        existing_post = BlogPost.query.filter_by(slug=slug).first()
+        if existing_post:
+            # Ajouter un suffixe numérique si le slug existe déjà
+            counter = 1
+            while BlogPost.query.filter_by(slug=f'{slug}-{counter}').first():
+                counter += 1
+            slug = f'{slug}-{counter}'
+
+        # Créer l'article
+        post = BlogPost(
+            author_id=current_user.id,
+            title=title,
+            slug=slug,
+            excerpt=excerpt if excerpt else None,
+            content=content,
+            image_url=image_url if image_url else None,
+            meta_title=meta_title if meta_title else title,
+            meta_description=meta_description if meta_description else excerpt,
+            is_published=is_published,
+            published_at=datetime.utcnow() if is_published else None
+        )
+
+        db.session.add(post)
+        db.session.commit()
+
+        flash('Article créé avec succès !', 'success')
+        return redirect(url_for('admin.blog'))
+
+    return render_template('admin/blog_form.html', post=None)
+
+
+@bp.route('/blog/<int:post_id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def blog_edit(post_id):
+    """Éditer un article de blog"""
+
+    post = BlogPost.query.get_or_404(post_id)
+
+    if request.method == 'POST':
+        title = request.form.get('title', '').strip()
+        excerpt = request.form.get('excerpt', '').strip()
+        content = request.form.get('content', '').strip()
+        image_url = request.form.get('image_url', '').strip()
+        meta_title = request.form.get('meta_title', '').strip()
+        meta_description = request.form.get('meta_description', '').strip()
+        is_published = request.form.get('is_published') == 'on'
+
+        # Validation
+        if not title or not content:
+            flash('Le titre et le contenu sont obligatoires', 'error')
+            return render_template('admin/blog_form.html', post=post)
+
+        # Mettre à jour le slug si le titre a changé
+        if title != post.title:
+            new_slug = BlogPost.generate_slug(title)
+            # Vérifier que le nouveau slug est unique
+            existing_post = BlogPost.query.filter(
+                BlogPost.slug == new_slug,
+                BlogPost.id != post.id
+            ).first()
+            if existing_post:
+                counter = 1
+                while BlogPost.query.filter(
+                    BlogPost.slug == f'{new_slug}-{counter}',
+                    BlogPost.id != post.id
+                ).first():
+                    counter += 1
+                new_slug = f'{new_slug}-{counter}'
+            post.slug = new_slug
+
+        # Mettre à jour l'article
+        post.title = title
+        post.excerpt = excerpt if excerpt else None
+        post.content = content
+        post.image_url = image_url if image_url else None
+        post.meta_title = meta_title if meta_title else title
+        post.meta_description = meta_description if meta_description else excerpt
+
+        # Si on publie pour la première fois, définir la date de publication
+        if is_published and not post.is_published:
+            post.published_at = datetime.utcnow()
+
+        post.is_published = is_published
+        post.updated_at = datetime.utcnow()
+
+        db.session.commit()
+
+        flash('Article mis à jour avec succès !', 'success')
+        return redirect(url_for('admin.blog'))
+
+    return render_template('admin/blog_form.html', post=post)
+
+
+@bp.route('/blog/<int:post_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def blog_delete(post_id):
+    """Supprimer un article de blog"""
+
+    post = BlogPost.query.get_or_404(post_id)
+    title = post.title
+
+    db.session.delete(post)
+    db.session.commit()
+
+    return jsonify({
+        'success': True,
+        'message': 'Article "{}" supprimé'.format(title)
+    })
+
+
+@bp.route('/blog/<int:post_id>/toggle-publish', methods=['POST'])
+@login_required
+@admin_required
+def blog_toggle_publish(post_id):
+    """Publier/dépublier un article"""
+
+    post = BlogPost.query.get_or_404(post_id)
+
+    # Inverser le statut de publication
+    post.is_published = not post.is_published
+
+    # Si on publie pour la première fois, définir la date de publication
+    if post.is_published and not post.published_at:
+        post.published_at = datetime.utcnow()
+
+    db.session.commit()
+
+    return jsonify({
+        'success': True,
+        'message': 'Article {} {}'.format(post.title, 'publié' if post.is_published else 'dépublié'),
+        'is_published': post.is_published
+    })

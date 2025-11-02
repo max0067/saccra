@@ -49,6 +49,7 @@ class User(UserMixin, db.Model):
     conversations = db.relationship('Conversation', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     meditation_listens = db.relationship('MeditationListen', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     journal_entries = db.relationship('JournalEntry', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    blog_posts = db.relationship('BlogPost', backref='author', lazy='dynamic', cascade='all, delete-orphan')
 
     def set_password(self, password):
         """Hash le mot de passe"""
@@ -382,3 +383,59 @@ class JournalEntry(db.Model):
 
     def __repr__(self):
         return '<JournalEntry user={} date={}>'.format(self.user_id, self.date)
+
+
+class BlogPost(db.Model):
+    """Article de blog pour le référencement SEO"""
+    __tablename__ = 'blog_posts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+
+    # Contenu
+    title = db.Column(db.String(200), nullable=False)
+    slug = db.Column(db.String(250), unique=True, nullable=False, index=True)  # URL SEO-friendly
+    excerpt = db.Column(db.String(300))  # Résumé court pour la liste et meta description
+    content = db.Column(db.Text, nullable=False)  # Contenu complet (HTML ou Markdown)
+    image_url = db.Column(db.String(500))  # Image principale de l'article
+
+    # SEO
+    meta_title = db.Column(db.String(200))  # Si différent du title
+    meta_description = db.Column(db.String(300))  # Pour les moteurs de recherche
+
+    # Publication
+    is_published = db.Column(db.Boolean, default=False, index=True)
+    published_at = db.Column(db.DateTime, index=True)
+
+    # Analytics
+    views = db.Column(db.Integer, default=0)  # Compteur de vues
+
+    # Métadonnées
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return '<BlogPost {}>'.format(self.title)
+
+    @staticmethod
+    def generate_slug(title):
+        """Génère un slug SEO-friendly depuis un titre"""
+        import re
+        # Convertir en minuscules et remplacer les espaces/caractères spéciaux
+        slug = title.lower()
+        # Remplacer les caractères accentués
+        replacements = {
+            'à': 'a', 'â': 'a', 'ä': 'a', 'á': 'a',
+            'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e',
+            'í': 'i', 'ì': 'i', 'î': 'i', 'ï': 'i',
+            'ó': 'o', 'ò': 'o', 'ô': 'o', 'ö': 'o',
+            'ú': 'u', 'ù': 'u', 'û': 'u', 'ü': 'u',
+            'ç': 'c', 'ñ': 'n'
+        }
+        for old, new in replacements.items():
+            slug = slug.replace(old, new)
+        # Remplacer tout ce qui n'est pas alphanumérique par des tirets
+        slug = re.sub(r'[^a-z0-9]+', '-', slug)
+        # Enlever les tirets au début et à la fin
+        slug = slug.strip('-')
+        return slug

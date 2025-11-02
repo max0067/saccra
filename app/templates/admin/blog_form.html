@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Éditer' if post else 'Nouvel' }} Article - Admin SACRA{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-16">
+    <div class="container mx-auto px-4 max-w-5xl">
+
+        <!-- En-tête -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-4xl font-bold text-purple-900 mb-2">
+                    {{ '✏️ Éditer l\'article' if post else '✨ Nouvel Article' }}
+                </h1>
+                <p class="text-gray-600">{{ 'Modifie ton article de blog' if post else 'Crée un nouvel article pour le référencement SEO' }}</p>
+            </div>
+            <a href="{{ url_for('admin.blog') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50 transition">
+                ← Retour à la liste
+            </a>
+        </div>
+
+        <!-- Formulaire -->
+        <form method="POST" class="card-mystical rounded-xl p-8 shadow-lg">
+
+            <!-- Titre -->
+            <div class="mb-6">
+                <label class="block text-purple-900 font-medium mb-2" for="title">
+                    Titre de l'article <span class="text-red-500">*</span>
+                </label>
+                <input type="text"
+                       id="title"
+                       name="title"
+                       value="{{ post.title if post else '' }}"
+                       required
+                       class="w-full px-4 py-3 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                       placeholder="Ex: Les bienfaits de la méditation pour équilibrer tes chakras">
+                <p class="text-sm text-gray-600 mt-1">Le slug URL sera généré automatiquement depuis ce titre</p>
+            </div>
+
+            <!-- Résumé (Excerpt) -->
+            <div class="mb-6">
+                <label class="block text-purple-900 font-medium mb-2" for="excerpt">
+                    Résumé court (300 caractères max)
+                </label>
+                <textarea id="excerpt"
+                          name="excerpt"
+                          rows="3"
+                          maxlength="300"
+                          class="w-full px-4 py-3 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                          placeholder="Décris brièvement ton article (affiché dans la liste et pour le SEO)">{{ post.excerpt if post else '' }}</textarea>
+                <p class="text-sm text-gray-600 mt-1">
+                    <span id="excerpt-count">{{ post.excerpt|length if post and post.excerpt else 0 }}</span>/300 caractères
+                </p>
+            </div>
+
+            <!-- URL de l'image -->
+            <div class="mb-6">
+                <label class="block text-purple-900 font-medium mb-2" for="image_url">
+                    URL de l'image principale
+                </label>
+                <input type="url"
+                       id="image_url"
+                       name="image_url"
+                       value="{{ post.image_url if post and post.image_url else '' }}"
+                       class="w-full px-4 py-3 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                       placeholder="https://exemple.com/image.jpg">
+                <p class="text-sm text-gray-600 mt-1">
+                    Image qui s'affichera en haut de l'article et dans les résultats de recherche (recommandé: 1200x630px)
+                </p>
+
+                <!-- Aperçu de l'image -->
+                {% if post and post.image_url %}
+                <div class="mt-3">
+                    <img src="{{ post.image_url }}" alt="Aperçu" class="h-32 rounded-lg object-cover">
+                </div>
+                {% endif %}
+
+                <div class="mt-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p class="text-sm text-blue-900 font-medium mb-2">💡 Comment ajouter une image ?</p>
+                    <ol class="text-sm text-blue-800 space-y-1 ml-4 list-decimal">
+                        <li>Utilise un service gratuit comme <a href="https://imgur.com" target="_blank" class="underline">Imgur</a> ou <a href="https://unsplash.com" target="_blank" class="underline">Unsplash</a></li>
+                        <li>Upload ton image et copie l'URL directe</li>
+                        <li>Colle l'URL dans le champ ci-dessus</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Contenu (HTML) -->
+            <div class="mb-6">
+                <label class="block text-purple-900 font-medium mb-2" for="content">
+                    Contenu de l'article <span class="text-red-500">*</span>
+                </label>
+                <textarea id="content"
+                          name="content"
+                          rows="20"
+                          required
+                          class="w-full px-4 py-3 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 font-mono text-sm"
+                          placeholder="Écris ton contenu en HTML...">{{ post.content if post else '' }}</textarea>
+                <p class="text-sm text-gray-600 mt-1">
+                    Utilise du HTML pour formater ton article. Les balises principales : &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;a&gt;
+                </p>
+            </div>
+
+            <!-- SEO - Meta Title -->
+            <div class="mb-6 p-6 bg-purple-50 border border-purple-200 rounded-lg">
+                <h3 class="text-lg font-bold text-purple-900 mb-4">🎯 Optimisation SEO (optionnel)</h3>
+
+                <div class="mb-4">
+                    <label class="block text-purple-900 font-medium mb-2" for="meta_title">
+                        Meta Title (pour Google)
+                    </label>
+                    <input type="text"
+                           id="meta_title"
+                           name="meta_title"
+                           value="{{ post.meta_title if post and post.meta_title else '' }}"
+                           maxlength="200"
+                           class="w-full px-4 py-3 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                           placeholder="Si vide, le titre de l'article sera utilisé">
+                    <p class="text-sm text-gray-600 mt-1">Titre optimisé pour les moteurs de recherche (60 caractères recommandés)</p>
+                </div>
+
+                <div>
+                    <label class="block text-purple-900 font-medium mb-2" for="meta_description">
+                        Meta Description (pour Google)
+                    </label>
+                    <textarea id="meta_description"
+                              name="meta_description"
+                              rows="2"
+                              maxlength="300"
+                              class="w-full px-4 py-3 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              placeholder="Si vide, le résumé court sera utilisé">{{ post.meta_description if post and post.meta_description else '' }}</textarea>
+                    <p class="text-sm text-gray-600 mt-1">Description affichée dans les résultats Google (155 caractères recommandés)</p>
+                </div>
+            </div>
+
+            <!-- Publication -->
+            <div class="mb-8 p-6 bg-green-50 border border-green-200 rounded-lg">
+                <div class="flex items-center gap-3">
+                    <input type="checkbox"
+                           id="is_published"
+                           name="is_published"
+                           class="w-5 h-5 text-purple-600 border-purple-300 rounded focus:ring-purple-500"
+                           {{ 'checked' if post and post.is_published else '' }}>
+                    <label for="is_published" class="text-purple-900 font-medium cursor-pointer">
+                        Publier cet article immédiatement
+                    </label>
+                </div>
+                <p class="text-sm text-gray-600 mt-2 ml-8">
+                    Si décoché, l'article restera en brouillon et ne sera pas visible publiquement
+                </p>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="flex items-center justify-between pt-6 border-t border-purple-200">
+                <a href="{{ url_for('admin.blog') }}" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                    Annuler
+                </a>
+                <button type="submit" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-lg shadow-lg hover:shadow-xl transition font-medium">
+                    {{ 'Mettre à jour l\'article' if post else 'Créer l\'article' }}
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<script>
+// Compteur de caractères pour l'excerpt
+document.getElementById('excerpt').addEventListener('input', function(e) {
+    document.getElementById('excerpt-count').textContent = e.target.value.length;
+});
+</script>
+{% endblock %}
