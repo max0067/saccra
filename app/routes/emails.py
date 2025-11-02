@@ -133,35 +133,65 @@ def import_contacts():
                 dialect = csv.Sniffer().sniff(sample, delimiters=',\t;')
                 csv_reader = csv.DictReader(stream, dialect=dialect)
             except:
-                # Si la détection échoue, essayer avec tabulation par défaut
-                csv_reader = csv.DictReader(stream, delimiter='\t')
+                # Si la détection échoue, utiliser le comportement par défaut (virgule)
+                # Cela fonctionne pour les fichiers avec une seule colonne
+                stream.seek(0)
+                csv_reader = csv.DictReader(stream)
 
             imported = 0
-            skipped = 0
-            errors = []
+            skipped_empty = 0
+            skipped_duplicates = 0
+            skipped_invalid = 0
+
+            # Pour le debug: stocker les colonnes détectées
+            columns_found = []
 
             # Traiter par batch de 1000 pour ne pas surcharger la DB
             batch = []
             batch_size = 1000
 
-            for row in csv_reader:
-                email = row.get('email', '').strip().lower()
+            row_count = 0
 
+            for row in csv_reader:
+                row_count += 1
+
+                # Première ligne: capturer les noms de colonnes pour debug
+                if row_count == 1:
+                    columns_found = list(row.keys())
+
+                # Chercher la colonne email (flexible: email, Email, EMAIL, e-mail, etc.)
+                email = None
+                for key in row.keys():
+                    key_clean = key.strip().lower().replace('-', '').replace('_', '')
+                    if key_clean in ['email', 'mail', 'email', 'courriel']:
+                        email = row[key].strip().lower()
+                        break
+
+                # Si pas trouvé, essayer directement
                 if not email:
-                    skipped += 1
+                    email = row.get('email', '').strip().lower()
+
+                # Email vide ou invalide
+                if not email:
+                    skipped_empty += 1
+                    continue
+
+                # Validation basique email
+                if '@' not in email or '.' not in email:
+                    skipped_invalid += 1
                     continue
 
                 # Vérifier si le contact existe déjà
                 existing = EmailContact.query.filter_by(email=email).first()
 
                 if existing:
-                    skipped += 1
+                    skipped_duplicates += 1
                     continue
 
                 # Créer le contact
                 contact = EmailContact(
                     email=email,
-                    first_name=row.get('first_name', row.get('prenom', '')).strip() or None,
+                    first_name=row.get('first_name', row.get('prenom', row.get('prénom', ''))).strip() or None,
                     last_name=row.get('last_name', row.get('nom', '')).strip() or None,
                     source='import_csv',
                     is_subscribed=True,
@@ -183,7 +213,24 @@ def import_contacts():
                 db.session.commit()
                 imported += len(batch)
 
-            flash(f'✅ Import terminé ! {imported} contacts importés, {skipped} ignorés (doublons ou invalides)', 'success')
+            # Message détaillé
+            total_skipped = skipped_empty + skipped_duplicates + skipped_invalid
+            message = f'✅ Import terminé ! {imported} contacts importés'
+
+            if total_skipped > 0:
+                details = []
+                if skipped_duplicates > 0:
+                    details.append(f'{skipped_duplicates} doublons')
+                if skipped_empty > 0:
+                    details.append(f'{skipped_empty} vides')
+                if skipped_invalid > 0:
+                    details.append(f'{skipped_invalid} invalides')
+                message += f', {total_skipped} ignorés ({", ".join(details)})'
+
+            if columns_found:
+                message += f'<br>📋 Colonnes détectées: {", ".join(columns_found[:5])}'
+
+            flash(message, 'success' if imported > 0 else 'warning')
             return redirect(url_for('emails.contacts'))
 
         except Exception as e:
