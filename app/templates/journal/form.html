@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}{% if entry %}Modifier{% else %}Nouvelle{% endif %} Entrée{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- En-tête -->
+    <div class="mb-8">
+        <a href="{{ url_for('journal.index') }}" class="text-purple-600 hover:underline mb-4 inline-block">← Retour au journal</a>
+        <h1 class="text-4xl font-bold text-purple-900 mb-2">
+            {% if entry %}✏️ Modifier l'entrée{% else %}✍️ Nouvelle entrée{% endif %}
+        </h1>
+        <p class="text-gray-600">Exprime tes pensées, tes émotions, ton ressenti du jour</p>
+    </div>
+
+    <!-- Formulaire -->
+    <form method="POST" class="card-mystical rounded-xl p-8 shadow-lg">
+        <!-- Date -->
+        <div class="mb-6">
+            <label class="block text-gray-700 font-medium mb-2">Date</label>
+            <input type="date" name="date" value="{{ default_date }}"
+                   {% if entry %}readonly{% endif %}
+                   class="w-full px-4 py-3 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                   required>
+            {% if entry %}
+            <p class="text-sm text-gray-500 mt-1">La date ne peut pas être modifiée</p>
+            {% endif %}
+        </div>
+
+        <!-- Contenu du journal -->
+        <div class="mb-6">
+            <label class="block text-gray-700 font-medium mb-2">Qu'aimerais-tu écrire aujourd'hui ? 💭</label>
+            <textarea name="content" rows="12"
+                      class="w-full px-4 py-3 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      placeholder="Comment te sens-tu aujourd'hui ? Qu'as-tu vécu ? Quelles émotions traverses-tu ? Qu'as-tu appris ?"
+                      required>{% if entry %}{{ entry.content }}{% endif %}</textarea>
+            <p class="text-sm text-gray-500 mt-1">Écris librement, sans jugement. C'est ton espace sacré.</p>
+        </div>
+
+        <!-- Métriques spirituelles -->
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-purple-900 mb-4">Comment te sens-tu aujourd'hui ? (optionnel)</h3>
+
+            <!-- Humeur -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-2">😊 Humeur</label>
+                <div class="flex items-center gap-4">
+                    <input type="range" name="mood" min="1" max="10" value="{% if entry and entry.mood %}{{ entry.mood }}{% else %}5{% endif %}"
+                           class="flex-1" id="mood-slider">
+                    <span id="mood-value" class="text-2xl font-bold text-purple-900 w-12 text-center">
+                        {% if entry and entry.mood %}{{ entry.mood }}{% else %}5{% endif %}
+                    </span>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>1 - Très bas</span>
+                    <span>10 - Excellent</span>
+                </div>
+            </div>
+
+            <!-- Énergie -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-2">⚡ Niveau d'énergie</label>
+                <div class="flex items-center gap-4">
+                    <input type="range" name="energy_level" min="1" max="10" value="{% if entry and entry.energy_level %}{{ entry.energy_level }}{% else %}5{% endif %}"
+                           class="flex-1" id="energy-slider">
+                    <span id="energy-value" class="text-2xl font-bold text-purple-900 w-12 text-center">
+                        {% if entry and entry.energy_level %}{{ entry.energy_level }}{% else %}5{% endif %}
+                    </span>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>1 - Épuisé</span>
+                    <span>10 - Plein d'énergie</span>
+                </div>
+            </div>
+
+            <!-- Clarté mentale -->
+            <div class="mb-4">
+                <label class="block text-gray-700 font-medium mb-2">🧠 Clarté mentale</label>
+                <div class="flex items-center gap-4">
+                    <input type="range" name="mental_clarity" min="1" max="10" value="{% if entry and entry.mental_clarity %}{{ entry.mental_clarity }}{% else %}5{% endif %}"
+                           class="flex-1" id="clarity-slider">
+                    <span id="clarity-value" class="text-2xl font-bold text-purple-900 w-12 text-center">
+                        {% if entry and entry.mental_clarity %}{{ entry.mental_clarity }}{% else %}5{% endif %}
+                    </span>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>1 - Confus</span>
+                    <span>10 - Très clair</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boutons -->
+        <div class="flex gap-3">
+            <button type="submit" class="btn-primary text-white px-8 py-3 rounded-lg font-semibold flex-1">
+                {% if entry %}💾 Sauvegarder{% else %}✨ Créer l'entrée{% endif %}
+            </button>
+            <a href="{{ url_for('journal.index') }}" class="px-8 py-3 bg-gray-200 text-gray-700 rounded-lg font-semibold text-center">
+                Annuler
+            </a>
+        </div>
+
+        {% if not current_user.is_premium or not current_user.premium_until or current_user.premium_until < now() %}
+        <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p class="text-sm text-yellow-800">
+                💎 <strong>Premium :</strong> Obtiens une analyse IA personnalisée de chaque entrée !
+                <a href="{{ url_for('premium.subscribe') }}" class="underline font-semibold">Passer Premium</a>
+            </p>
+        </div>
+        {% endif %}
+    </form>
+</div>
+
+<script>
+// Mise à jour en temps réel des valeurs des sliders
+document.getElementById('mood-slider').addEventListener('input', function(e) {
+    document.getElementById('mood-value').textContent = e.target.value;
+});
+
+document.getElementById('energy-slider').addEventListener('input', function(e) {
+    document.getElementById('energy-value').textContent = e.target.value;
+});
+
+document.getElementById('clarity-slider').addEventListener('input', function(e) {
+    document.getElementById('clarity-value').textContent = e.target.value;
+});
+</script>
+{% endblock %}

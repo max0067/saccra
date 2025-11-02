@@ -88,6 +88,7 @@
                         <a href="{{ url_for('interpretations.tarot') }}" class="text-gray-700 hover:text-purple-700 transition">Tirage</a>
                         <a href="{{ url_for('chat.coach') }}" class="text-gray-700 hover:text-purple-700 transition">Mon coach</a>
                         <a href="{{ url_for('meditations.library') }}" class="text-gray-700 hover:text-purple-700 transition">Méditations</a>
+                        <a href="{{ url_for('journal.index') }}" class="text-gray-700 hover:text-purple-700 transition">Journal</a>
 
                         {% if current_user.is_admin %}
                         <a href="{{ url_for('admin.dashboard') }}" class="px-4 py-2 bg-gradient-to-r from-red-500 to-red-700 text-white rounded-full text-sm font-medium hover:shadow-lg transition">
@@ -120,6 +121,7 @@
                     <a href="{{ url_for('interpretations.tarot') }}" class="block text-gray-700 hover:text-purple-700 transition py-2 border-b border-purple-100">🔮 Tirage</a>
                     <a href="{{ url_for('chat.coach') }}" class="block text-gray-700 hover:text-purple-700 transition py-2 border-b border-purple-100">💬 Mon coach</a>
                     <a href="{{ url_for('meditations.library') }}" class="block text-gray-700 hover:text-purple-700 transition py-2 border-b border-purple-100">🧘 Méditations</a>
+                    <a href="{{ url_for('journal.index') }}" class="block text-gray-700 hover:text-purple-700 transition py-2 border-b border-purple-100">📖 Journal</a>
 
                     {% if current_user.is_admin %}
                     <a href="{{ url_for('admin.dashboard') }}" class="block px-4 py-3 bg-gradient-to-r from-red-500 to-red-700 text-white rounded-lg text-center font-medium hover:shadow-lg transition">

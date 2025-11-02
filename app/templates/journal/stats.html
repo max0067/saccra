@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Statistiques du Journal{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête -->
+    <div class="mb-8">
+        <a href="{{ url_for('journal.index') }}" class="text-purple-600 hover:underline mb-4 inline-block">← Retour au journal</a>
+        <h1 class="text-4xl font-bold text-purple-900 mb-2">📊 Statistiques & Évolution</h1>
+        <p class="text-gray-600">Suis ta progression spirituelle au fil du temps</p>
+    </div>
+
+    <!-- Statistiques générales -->
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="card-mystical rounded-xl p-6 text-center">
+            <div class="text-4xl mb-2">📝</div>
+            <div class="text-3xl font-bold text-purple-900">{{ stats.total_entries }}</div>
+            <div class="text-gray-600">Entrées totales</div>
+        </div>
+
+        <div class="card-mystical rounded-xl p-6 text-center">
+            <div class="text-4xl mb-2">🔥</div>
+            <div class="text-3xl font-bold text-purple-900">{{ stats.current_streak }}</div>
+            <div class="text-gray-600">Jours consécutifs</div>
+        </div>
+
+        <div class="card-mystical rounded-xl p-6 text-center">
+            <div class="text-4xl mb-2">✨</div>
+            <div class="text-3xl font-bold text-purple-900">
+                {% if stats.best_day %}
+                {{ stats.best_day.mood }}/10
+                {% else %}
+                -
+                {% endif %}
+            </div>
+            <div class="text-gray-600">
+                {% if stats.best_day %}
+                Meilleure humeur ({{ stats.best_day.date.strftime('%d/%m') }})
+                {% else %}
+                Meilleure humeur
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphiques -->
+    {% if chart_data.dates %}
+    <div class="card-mystical rounded-xl p-8 shadow-lg mb-6">
+        <h2 class="text-2xl font-bold text-purple-900 mb-6">📈 Évolution dans le temps</h2>
+
+        <!-- Graphique de l'humeur -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">😊 Humeur</h3>
+            <canvas id="moodChart" height="80"></canvas>
+        </div>
+
+        <!-- Graphique de l'énergie -->
+        <div class="mb-8">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">⚡ Niveau d'énergie</h3>
+            <canvas id="energyChart" height="80"></canvas>
+        </div>
+
+        <!-- Graphique de la clarté mentale -->
+        <div>
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">🧠 Clarté mentale</h3>
+            <canvas id="clarityChart" height="80"></canvas>
+        </div>
+    </div>
+    {% else %}
+    <div class="card-mystical rounded-xl p-12 shadow-lg text-center">
+        <div class="text-6xl mb-4">📊</div>
+        <p class="text-lg text-gray-600 mb-4">Pas assez de données pour afficher les graphiques</p>
+        <p class="text-gray-500">Continue à écrire dans ton journal pour voir ton évolution !</p>
+    </div>
+    {% endif %}
+</div>
+
+{% if chart_data.dates %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Configuration commune pour tous les graphiques
+const commonOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+        legend: {
+            display: false
+        }
+    },
+    scales: {
+        y: {
+            beginAtZero: true,
+            max: 10,
+            ticks: {
+                stepSize: 1
+            }
+        }
+    }
+};
+
+// Données
+const dates = {{ chart_data.dates | tojson }};
+const moods = {{ chart_data.moods | tojson }};
+const energies = {{ chart_data.energies | tojson }};
+const clarities = {{ chart_data.clarities | tojson }};
+
+// Graphique de l'humeur
+const moodCtx = document.getElementById('moodChart').getContext('2d');
+new Chart(moodCtx, {
+    type: 'line',
+    data: {
+        labels: dates,
+        datasets: [{
+            label: 'Humeur',
+            data: moods,
+            borderColor: 'rgb(236, 72, 153)',
+            backgroundColor: 'rgba(236, 72, 153, 0.1)',
+            tension: 0.3,
+            fill: true
+        }]
+    },
+    options: commonOptions
+});
+
+// Graphique de l'énergie
+const energyCtx = document.getElementById('energyChart').getContext('2d');
+new Chart(energyCtx, {
+    type: 'line',
+    data: {
+        labels: dates,
+        datasets: [{
+            label: 'Énergie',
+            data: energies,
+            borderColor: 'rgb(251, 191, 36)',
+            backgroundColor: 'rgba(251, 191, 36, 0.1)',
+            tension: 0.3,
+            fill: true
+        }]
+    },
+    options: commonOptions
+});
+
+// Graphique de la clarté mentale
+const clarityCtx = document.getElementById('clarityChart').getContext('2d');
+new Chart(clarityCtx, {
+    type: 'line',
+    data: {
+        labels: dates,
+        datasets: [{
+            label: 'Clarté mentale',
+            data: clarities,
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.3,
+            fill: true
+        }]
+    },
+    options: commonOptions
+});
+</script>
+{% endif %}
+
+{% endblock %}

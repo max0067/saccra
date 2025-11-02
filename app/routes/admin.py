@@ -7,7 +7,7 @@ from flask_login import login_required, current_user
 from functools import wraps
 from datetime import datetime, timedelta
 from sqlalchemy import func
-from app.models import db, User, Interpretation, PromoCode, SpiritualProfile, SiteContent
+from app.models import db, User, Interpretation, PromoCode, SpiritualProfile, SiteContent, JournalEntry
 import stripe
 import os
 
@@ -481,4 +481,33 @@ def interpretations():
     return render_template('admin/interpretations.html',
                           interpretations=interpretations_paginated,
                           filter_type=filter_type,
+                          search=search)
+
+
+@bp.route('/journals')
+@login_required
+@admin_required
+def journals():
+    """Liste de toutes les entrées de journal avec filtres"""
+
+    page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '')
+
+    query = JournalEntry.query
+
+    # Recherche par email ou prénom d'utilisateur
+    if search:
+        query = query.join(User).filter(
+            (User.email.contains(search)) |
+            (User.first_name.contains(search)) |
+            (JournalEntry.content.contains(search))
+        )
+
+    # Pagination
+    journals_paginated = query.order_by(JournalEntry.date.desc()).paginate(
+        page=page, per_page=20, error_out=False
+    )
+
+    return render_template('admin/journals.html',
+                          journals=journals_paginated,
                           search=search)

@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - Journaux{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête -->
+    <div class="mb-8">
+        <h1 class="text-5xl font-bold text-purple-900 mb-2">📖 Gestion des Journaux</h1>
+        <p class="text-gray-600">Vue admin de toutes les entrées de journal</p>
+    </div>
+
+    <!-- Navigation Admin -->
+    <div class="mb-6 flex space-x-4">
+        <a href="{{ url_for('admin.dashboard') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Statistiques</a>
+        <a href="{{ url_for('admin.users') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Utilisateurs</a>
+        <a href="{{ url_for('admin.interpretations') }}" class="px-4 py-2 bg-white text-purple-600 rounded-lg shadow hover:bg-purple-50">Interprétations</a>
+        <a href="{{ url_for('admin.journals') }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg shadow">Journaux</a>
+    </div>
+
+    <!-- Recherche -->
+    <div class="mb-6 card-mystical rounded-xl p-6 shadow-lg">
+        <form method="GET" class="flex gap-4">
+            <input type="text" name="search" value="{{ search }}"
+                   placeholder="Rechercher par email, prénom ou contenu..."
+                   class="flex-1 px-4 py-2 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+            <button type="submit" class="btn-primary text-white px-6 py-2 rounded-lg font-semibold">
+                🔍 Rechercher
+            </button>
+            {% if search %}
+            <a href="{{ url_for('admin.journals') }}" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold">
+                Effacer
+            </a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Stats rapides -->
+    <div class="mb-6 grid md:grid-cols-3 gap-4">
+        <div class="card-mystical rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-purple-900">{{ journals.total }}</div>
+            <div class="text-sm text-gray-600">Entrées totales</div>
+        </div>
+        <div class="card-mystical rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-purple-900">{{ journals.pages }}</div>
+            <div class="text-sm text-gray-600">Pages</div>
+        </div>
+        <div class="card-mystical rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-purple-900">{{ journals.page }}</div>
+            <div class="text-sm text-gray-600">Page actuelle</div>
+        </div>
+    </div>
+
+    <!-- Liste des journaux -->
+    <div class="card-mystical rounded-xl p-6 shadow-lg">
+        {% if journals.items %}
+        <div class="space-y-4">
+            {% for journal in journals.items %}
+            <div class="border border-purple-200 rounded-lg p-4">
+                <div class="flex items-start justify-between mb-2">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="font-semibold text-purple-900">{{ journal.date.strftime('%d/%m/%Y') }}</span>
+                            <span class="text-sm text-gray-600">{{ journal.user.email }}</span>
+
+                            {% if journal.mood %}
+                            <span class="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded">😊 {{ journal.mood }}/10</span>
+                            {% endif %}
+
+                            {% if journal.energy_level %}
+                            <span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded">⚡ {{ journal.energy_level }}/10</span>
+                            {% endif %}
+
+                            {% if journal.mental_clarity %}
+                            <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">🧠 {{ journal.mental_clarity }}/10</span>
+                            {% endif %}
+
+                            {% if journal.ai_analysis %}
+                            <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">✨ Analyse IA</span>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-gray-700 text-sm line-clamp-2">{{ journal.content[:200] }}{% if journal.content|length > 200 %}...{% endif %}</p>
+
+                        <div class="text-xs text-gray-500 mt-2">
+                            Créé le {{ journal.created_at.strftime('%d/%m/%Y à %H:%M') }}
+                            {% if journal.updated_at and journal.updated_at != journal.created_at %}
+                            • Modifié le {{ journal.updated_at.strftime('%d/%m/%Y à %H:%M') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if journals.pages > 1 %}
+        <div class="mt-6 flex justify-center gap-2">
+            {% if journals.has_prev %}
+            <a href="{{ url_for('admin.journals', page=journals.prev_num, search=search) }}"
+               class="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200">← Précédent</a>
+            {% endif %}
+
+            <span class="px-4 py-2 bg-purple-600 text-white rounded-lg">Page {{ journals.page }} / {{ journals.pages }}</span>
+
+            {% if journals.has_next %}
+            <a href="{{ url_for('admin.journals', page=journals.next_num, search=search) }}"
+               class="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200">Suivant →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% else %}
+        <div class="text-center py-12 text-gray-500">
+            <div class="text-6xl mb-4">📖</div>
+            <p class="text-lg">Aucune entrée de journal trouvée</p>
+            {% if search %}
+            <p class="text-sm mt-2">Essayez une autre recherche</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

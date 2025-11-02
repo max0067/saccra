@@ -48,6 +48,7 @@ class User(UserMixin, db.Model):
     interpretations = db.relationship('Interpretation', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     conversations = db.relationship('Conversation', backref='user', lazy='dynamic', cascade='all, delete-orphan')
     meditation_listens = db.relationship('MeditationListen', backref='user', lazy='dynamic', cascade='all, delete-orphan')
+    journal_entries = db.relationship('JournalEntry', backref='user', lazy='dynamic', cascade='all, delete-orphan')
 
     def set_password(self, password):
         """Hash le mot de passe"""
@@ -355,3 +356,29 @@ class MeditationListen(db.Model):
 
     def __repr__(self):
         return '<MeditationListen user={} meditation={}>'.format(self.user_id, self.meditation_id)
+
+
+class JournalEntry(db.Model):
+    """Entrée de journal spirituel quotidien"""
+    __tablename__ = 'journal_entries'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, index=True)
+    date = db.Column(db.Date, nullable=False, index=True)  # Date de l'entrée
+    content = db.Column(db.Text, nullable=False)  # Contenu du journal
+
+    # Métriques spirituelles (échelle 1-10)
+    mood = db.Column(db.Integer)  # Humeur (1=très bas, 10=excellent)
+    energy_level = db.Column(db.Integer)  # Niveau d'énergie
+    mental_clarity = db.Column(db.Integer)  # Clarté mentale
+
+    # Analyse IA
+    ai_analysis = db.Column(db.Text)  # Analyse générée par l'IA
+    ai_analysis_generated_at = db.Column(db.DateTime)  # Quand l'analyse a été générée
+
+    # Métadonnées
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return '<JournalEntry user={} date={}>'.format(self.user_id, self.date)

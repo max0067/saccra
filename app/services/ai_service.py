@@ -421,3 +421,83 @@ def generate_meditation_audio(meditation_script, voice='nova'):
     # Pour l'instant, simple génération TTS
     # TODO: Ajouter musique de fond (mixer avec pydub ou ffmpeg)
     return generate_audio_guidance(meditation_script, voice=voice)
+
+
+def analyze_journal_entry(journal_entry, user):
+    """
+    Analyse une entrée de journal avec l'IA pour fournir des insights spirituels
+
+    Args:
+        journal_entry: JournalEntry - L'entrée de journal à analyser
+        user: User - L'utilisateur qui a écrit l'entrée
+
+    Returns:
+        str: L'analyse générée par l'IA
+    """
+    # Récupérer les entrées récentes pour contexte d'évolution
+    from app.models import JournalEntry
+    from datetime import timedelta
+
+    recent_entries = JournalEntry.query.filter(
+        JournalEntry.user_id == user.id,
+        JournalEntry.date >= journal_entry.date - timedelta(days=30),
+        JournalEntry.date < journal_entry.date
+    ).order_by(JournalEntry.date.desc()).limit(5).all()
+
+    # Construire le prompt système
+    system_prompt = """Tu es un guide spirituel bienveillant et intuitif qui analyse les entrées de journal pour fournir des insights profonds.
+
+Ton rôle est d'analyser l'entrée de journal de l'utilisateur et de fournir :
+1. Une analyse émotionnelle et spirituelle de ce qui est exprimé
+2. Des patterns ou tendances que tu observes dans leur évolution
+3. Des conseils pratiques et spirituels personnalisés
+4. Des affirmations ou pratiques recommandées
+
+Sois empathique, encourageant et spirituel. Utilise un langage simple et chaleureux.
+Ton analyse doit faire environ 3-4 paragraphes."""
+
+    # Construire le contexte utilisateur
+    user_context = ""
+    if user.first_name:
+        user_context += "\nPrénom : {}".format(user.first_name)
+    if user.soul_type:
+        user_context += "\nType d'âme : {}".format(user.soul_type)
+    if user.dominant_element:
+        user_context += "\nÉlément dominant : {}".format(user.dominant_element)
+
+    # Construire le message avec le contexte d'évolution
+    user_message = "Voici l'entrée de journal à analyser :\n\n"
+    user_message += "Date : {}\n".format(journal_entry.date.strftime('%d/%m/%Y'))
+
+    if journal_entry.mood:
+        user_message += "Humeur : {}/10\n".format(journal_entry.mood)
+    if journal_entry.energy_level:
+        user_message += "Énergie : {}/10\n".format(journal_entry.energy_level)
+    if journal_entry.mental_clarity:
+        user_message += "Clarté mentale : {}/10\n".format(journal_entry.mental_clarity)
+
+    user_message += "\nContenu :\n{}\n".format(journal_entry.content)
+
+    # Ajouter le contexte d'évolution si disponible
+    if recent_entries:
+        user_message += "\n\n--- Contexte d'évolution (entrées récentes) ---\n"
+        for entry in recent_entries:
+            user_message += "\n{} : ".format(entry.date.strftime('%d/%m'))
+            if entry.mood:
+                user_message += "Humeur {}/10 ".format(entry.mood)
+            user_message += "\n{}...\n".format(entry.content[:150])
+
+    if user_context:
+        user_message += "\n\n--- Profil de l'utilisateur ---{}".format(user_context)
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_message}
+    ]
+
+    try:
+        analysis = call_openai_api(messages, temperature=0.7, max_tokens=600)
+        return analysis
+
+    except Exception as e:
+        raise Exception('Erreur lors de l\'analyse du journal : {}'.format(str(e)))

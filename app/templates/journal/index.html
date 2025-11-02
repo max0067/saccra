@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Mon Journal Spirituel{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- En-tête -->
+    <div class="mb-8 text-center">
+        <h1 class="text-5xl font-bold text-purple-900 mb-2">📖 Mon Journal Spirituel</h1>
+        <p class="text-gray-600">Écris tes pensées, suis ton évolution</p>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="grid md:grid-cols-4 gap-4 mb-8">
+        <div class="card-mystical rounded-xl p-6 text-center">
+            <div class="text-3xl mb-2">📝</div>
+            <div class="text-2xl font-bold text-purple-900">{{ stats.total_entries }}</div>
+            <div class="text-sm text-gray-600">Entrées totales</div>
+        </div>
+
+        <div class="card-mystical rounded-xl p-6 text-center">
+            <div class="text-3xl mb-2">🔥</div>
+            <div class="text-2xl font-bold text-purple-900">{{ stats.current_streak }}</div>
+            <div class="text-sm text-gray-600">Jours consécutifs</div>
+        </div>
+
+        <div class="card-mystical rounded-xl p-6 text-center">
+            <div class="text-3xl mb-2">😊</div>
+            <div class="text-2xl font-bold text-purple-900">{{ stats.avg_mood if stats.avg_mood > 0 else '-' }}</div>
+            <div class="text-sm text-gray-600">Humeur moyenne (30j)</div>
+        </div>
+
+        <div class="card-mystical rounded-xl p-6 text-center">
+            <div class="text-3xl mb-2">⚡</div>
+            <div class="text-2xl font-bold text-purple-900">{{ stats.avg_energy if stats.avg_energy > 0 else '-' }}</div>
+            <div class="text-sm text-gray-600">Énergie moyenne (30j)</div>
+        </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="mb-6 flex gap-4">
+        {% if today_entry %}
+        <a href="{{ url_for('journal.view', entry_id=today_entry.id) }}" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold shadow-lg">
+            📖 Voir l'entrée d'aujourd'hui
+        </a>
+        <a href="{{ url_for('journal.edit', entry_id=today_entry.id) }}" class="px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold shadow-lg hover:bg-purple-50">
+            ✏️ Modifier
+        </a>
+        {% else %}
+        <a href="{{ url_for('journal.new') }}" class="btn-primary text-white px-6 py-3 rounded-lg font-semibold shadow-lg">
+            ✍️ Écrire aujourd'hui
+        </a>
+        {% endif %}
+
+        <a href="{{ url_for('journal.stats') }}" class="px-6 py-3 bg-white text-purple-600 rounded-lg font-semibold shadow-lg hover:bg-purple-50">
+            📊 Voir les statistiques
+        </a>
+    </div>
+
+    <!-- Liste des entrées -->
+    <div class="card-mystical rounded-xl p-6 shadow-lg">
+        <h2 class="text-2xl font-bold text-purple-900 mb-6">Mes entrées</h2>
+
+        {% if entries %}
+        <div class="space-y-4">
+            {% for entry in entries %}
+            <div class="border border-purple-200 rounded-lg p-4 hover:bg-purple-50 transition">
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-4 mb-2">
+                            <span class="font-semibold text-purple-900">{{ entry.date.strftime('%d/%m/%Y') }}</span>
+
+                            {% if entry.mood %}
+                            <span class="text-sm bg-pink-100 text-pink-700 px-2 py-1 rounded">
+                                😊 {{ entry.mood }}/10
+                            </span>
+                            {% endif %}
+
+                            {% if entry.energy_level %}
+                            <span class="text-sm bg-yellow-100 text-yellow-700 px-2 py-1 rounded">
+                                ⚡ {{ entry.energy_level }}/10
+                            </span>
+                            {% endif %}
+
+                            {% if entry.mental_clarity %}
+                            <span class="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                                🧠 {{ entry.mental_clarity }}/10
+                            </span>
+                            {% endif %}
+
+                            {% if entry.ai_analysis %}
+                            <span class="text-sm bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                                ✨ Analyse IA
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-gray-700 line-clamp-2">{{ entry.content[:200] }}{% if entry.content|length > 200 %}...{% endif %}</p>
+                    </div>
+
+                    <div class="flex gap-2 ml-4">
+                        <a href="{{ url_for('journal.view', entry_id=entry.id) }}" class="px-3 py-1 bg-purple-100 text-purple-700 rounded hover:bg-purple-200 text-sm">
+                            Lire
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-12 text-gray-500">
+            <div class="text-6xl mb-4">📖</div>
+            <p class="text-lg mb-4">Aucune entrée pour le moment</p>
+            <a href="{{ url_for('journal.new') }}" class="inline-block btn-primary text-white px-6 py-3 rounded-lg font-semibold">
+                Écrire ma première entrée ✍️
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
