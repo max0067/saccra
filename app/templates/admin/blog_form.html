@@ -53,36 +53,59 @@
                 </p>
             </div>
 
-            <!-- URL de l'image -->
+            <!-- Image principale -->
             <div class="mb-6">
-                <label class="block text-purple-900 font-medium mb-2" for="image_url">
-                    URL de l'image principale
+                <label class="block text-purple-900 font-medium mb-2">
+                    Image principale
                 </label>
-                <input type="url"
-                       id="image_url"
-                       name="image_url"
-                       value="{{ post.image_url if post and post.image_url else '' }}"
-                       class="w-full px-4 py-3 border border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-                       placeholder="https://exemple.com/image.jpg">
-                <p class="text-sm text-gray-600 mt-1">
-                    Image qui s'affichera en haut de l'article et dans les résultats de recherche (recommandé: 1200x630px)
+
+                <!-- Champ hidden pour stocker l'URL de l'image -->
+                <input type="hidden" id="image_url" name="image_url" value="{{ post.image_url if post and post.image_url else '' }}">
+
+                <!-- Aperçu de l'image actuelle ou uploadée -->
+                <div id="image-preview-container" class="mb-4 {% if not post or not post.image_url %}hidden{% endif %}">
+                    <img id="image-preview"
+                         src="{{ post.image_url if post and post.image_url else '' }}"
+                         alt="Aperçu"
+                         class="h-48 rounded-lg object-cover border border-purple-200">
+                    <button type="button"
+                            onclick="removeImage()"
+                            class="mt-2 px-4 py-2 bg-red-100 text-red-800 rounded-lg hover:bg-red-200 transition text-sm">
+                        Supprimer l'image
+                    </button>
+                </div>
+
+                <!-- Bouton d'upload -->
+                <div id="upload-button-container" class="{% if post and post.image_url %}hidden{% endif %}">
+                    <label for="image-file" class="block">
+                        <div class="border-2 border-dashed border-purple-300 rounded-lg p-8 text-center cursor-pointer hover:border-purple-500 hover:bg-purple-50 transition">
+                            <div class="text-4xl mb-2">📸</div>
+                            <p class="text-purple-900 font-medium mb-1">Clique pour uploader une image</p>
+                            <p class="text-sm text-gray-600">PNG, JPG, WEBP jusqu'à 5MB</p>
+                            <p class="text-xs text-gray-500 mt-2">Recommandé: 1200x630px pour le partage social</p>
+                        </div>
+                    </label>
+                    <input type="file"
+                           id="image-file"
+                           accept="image/png,image/jpeg,image/jpg,image/webp,image/gif"
+                           class="hidden"
+                           onchange="uploadImage(this)">
+                </div>
+
+                <!-- Message de chargement -->
+                <div id="upload-loading" class="hidden text-center py-8">
+                    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+                    <p class="text-purple-900 mt-3">Upload en cours...</p>
+                </div>
+
+                <!-- Message d'erreur -->
+                <div id="upload-error" class="hidden mt-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p class="text-red-800 text-sm"></p>
+                </div>
+
+                <p class="text-sm text-gray-600 mt-3">
+                    L'image sera stockée sur ton serveur et optimisée pour le référencement
                 </p>
-
-                <!-- Aperçu de l'image -->
-                {% if post and post.image_url %}
-                <div class="mt-3">
-                    <img src="{{ post.image_url }}" alt="Aperçu" class="h-32 rounded-lg object-cover">
-                </div>
-                {% endif %}
-
-                <div class="mt-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                    <p class="text-sm text-blue-900 font-medium mb-2">💡 Comment ajouter une image ?</p>
-                    <ol class="text-sm text-blue-800 space-y-1 ml-4 list-decimal">
-                        <li>Utilise un service gratuit comme <a href="https://imgur.com" target="_blank" class="underline">Imgur</a> ou <a href="https://unsplash.com" target="_blank" class="underline">Unsplash</a></li>
-                        <li>Upload ton image et copie l'URL directe</li>
-                        <li>Colle l'URL dans le champ ci-dessus</li>
-                    </ol>
-                </div>
             </div>
 
             <!-- Contenu (HTML) -->
@@ -170,5 +193,88 @@
 document.getElementById('excerpt').addEventListener('input', function(e) {
     document.getElementById('excerpt-count').textContent = e.target.value.length;
 });
+
+// Upload d'image
+function uploadImage(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Vérifier le type de fichier
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+        showError('Type de fichier non autorisé. Utilisez PNG, JPG, WEBP ou GIF.');
+        input.value = '';
+        return;
+    }
+
+    // Vérifier la taille (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+        showError('Fichier trop volumineux. Maximum 5MB.');
+        input.value = '';
+        return;
+    }
+
+    // Afficher le loader
+    document.getElementById('upload-button-container').classList.add('hidden');
+    document.getElementById('upload-loading').classList.remove('hidden');
+    document.getElementById('upload-error').classList.add('hidden');
+
+    // Créer le FormData
+    const formData = new FormData();
+    formData.append('image', file);
+
+    // Envoyer l'image au serveur
+    fetch('/admin/blog/upload-image', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Mettre à jour le champ hidden avec l'URL
+            document.getElementById('image_url').value = data.url;
+
+            // Afficher l'aperçu
+            document.getElementById('image-preview').src = data.url;
+            document.getElementById('image-preview-container').classList.remove('hidden');
+
+            // Cacher le loader
+            document.getElementById('upload-loading').classList.add('hidden');
+
+            // Reset le input file
+            input.value = '';
+        } else {
+            showError(data.error || 'Erreur lors de l\'upload');
+            document.getElementById('upload-loading').classList.add('hidden');
+            document.getElementById('upload-button-container').classList.remove('hidden');
+            input.value = '';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showError('Erreur lors de l\'upload de l\'image');
+        document.getElementById('upload-loading').classList.add('hidden');
+        document.getElementById('upload-button-container').classList.remove('hidden');
+        input.value = '';
+    });
+}
+
+// Supprimer l'image
+function removeImage() {
+    if (confirm('Es-tu sûr de vouloir supprimer cette image ?')) {
+        document.getElementById('image_url').value = '';
+        document.getElementById('image-preview').src = '';
+        document.getElementById('image-preview-container').classList.add('hidden');
+        document.getElementById('upload-button-container').classList.remove('hidden');
+        document.getElementById('upload-error').classList.add('hidden');
+    }
+}
+
+// Afficher un message d'erreur
+function showError(message) {
+    const errorDiv = document.getElementById('upload-error');
+    errorDiv.querySelector('p').textContent = message;
+    errorDiv.classList.remove('hidden');
+}
 </script>
 {% endblock %}

@@ -8,13 +8,23 @@ from functools import wraps
 from datetime import datetime, timedelta
 from sqlalchemy import func
 from app.models import db, User, Interpretation, PromoCode, SpiritualProfile, SiteContent, JournalEntry, BlogPost
+from werkzeug.utils import secure_filename
 import stripe
 import os
+import uuid
 
 bp = Blueprint('admin', __name__)
 
 # Configuration Stripe
 stripe.api_key = os.environ.get('STRIPE_SECRET_KEY', '')
+
+# Configuration upload
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+
+def allowed_file(filename):
+    """Vérifie si le fichier a une extension autorisée"""
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def admin_required(f):
@@ -709,3 +719,66 @@ def blog_toggle_publish(post_id):
         'message': 'Article {} {}'.format(post.title, 'publié' if post.is_published else 'dépublié'),
         'is_published': post.is_published
     })
+
+
+@bp.route('/blog/upload-image', methods=['POST'])
+@login_required
+@admin_required
+def blog_upload_image():
+    """Upload une image pour un article de blog"""
+
+    # Vérifier qu'un fichier a été envoyé
+    if 'image' not in request.files:
+        return jsonify({'success': False, 'error': 'Aucun fichier envoyé'}), 400
+
+    file = request.files['image']
+
+    # Vérifier que le fichier a un nom
+    if file.filename == '':
+        return jsonify({'success': False, 'error': 'Aucun fichier sélectionné'}), 400
+
+    # Vérifier l'extension
+    if not allowed_file(file.filename):
+        return jsonify({
+            'success': False,
+            'error': 'Type de fichier non autorisé. Utilisez: ' + ', '.join(ALLOWED_EXTENSIONS)
+        }), 400
+
+    # Vérifier la taille du fichier
+    file.seek(0, os.SEEK_END)
+    file_size = file.tell()
+    file.seek(0)  # Retour au début du fichier
+
+    if file_size > MAX_FILE_SIZE:
+        return jsonify({
+            'success': False,
+            'error': 'Fichier trop volumineux (max 5MB)'
+        }), 400
+
+    try:
+        # Générer un nom de fichier unique
+        ext = file.filename.rsplit('.', 1)[1].lower()
+        filename = '{}.{}'.format(uuid.uuid4().hex, ext)
+
+        # Chemin de sauvegarde
+        upload_dir = os.path.join(os.getcwd(), 'app', 'static', 'uploads', 'blog')
+        os.makedirs(upload_dir, exist_ok=True)
+        filepath = os.path.join(upload_dir, filename)
+
+        # Sauvegarder le fichier
+        file.save(filepath)
+
+        # Générer l'URL publique
+        image_url = '/static/uploads/blog/{}'.format(filename)
+
+        return jsonify({
+            'success': True,
+            'url': image_url,
+            'filename': filename
+        })
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': 'Erreur lors de l\'upload: {}'.format(str(e))
+        }), 500
