@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Import CSV - Email Marketing{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-16">
+    <div class="container mx-auto px-4 max-w-4xl">
+
+        <!-- En-tête -->
+        <div class="mb-8">
+            <a href="{{ url_for('emails.index') }}" class="text-purple-700 hover:text-purple-900 mb-4 inline-block">
+                ← Retour au dashboard
+            </a>
+            <h1 class="text-4xl font-bold text-purple-900 mb-2">📤 Import CSV</h1>
+            <p class="text-gray-600">Importe tes contacts depuis un fichier CSV (jusqu'à 70 000 lignes)</p>
+        </div>
+
+        <!-- Instructions -->
+        <div class="card-mystical rounded-xl p-6 shadow-lg mb-8">
+            <h2 class="text-2xl font-bold text-purple-900 mb-4">📋 Format du fichier CSV</h2>
+
+            <p class="text-gray-700 mb-4">Ton fichier CSV doit contenir les colonnes suivantes (ordre flexible) :</p>
+
+            <div class="bg-purple-50 p-4 rounded-lg mb-4">
+                <code class="text-sm">email,first_name,last_name</code>
+            </div>
+
+            <p class="text-gray-700 mb-4"><strong>Colonnes acceptées :</strong></p>
+            <ul class="list-disc ml-6 text-gray-700 space-y-2 mb-4">
+                <li><code>email</code> - Email du contact (obligatoire)</li>
+                <li><code>first_name</code> ou <code>prenom</code> - Prénom (optionnel)</li>
+                <li><code>last_name</code> ou <code>nom</code> - Nom de famille (optionnel)</li>
+            </ul>
+
+            <p class="text-sm text-gray-600">
+                💡 <strong>Astuce :</strong> Les doublons seront automatiquement ignorés. Les emails invalides aussi.
+            </p>
+        </div>
+
+        <!-- Exemple CSV -->
+        <div class="card-mystical rounded-xl p-6 shadow-lg mb-8">
+            <h3 class="text-xl font-bold text-purple-900 mb-3">📄 Exemple de fichier CSV</h3>
+
+            <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code>email,first_name,last_name
+marie.dubois@exemple.fr,Marie,Dubois
+pierre.martin@exemple.fr,Pierre,Martin
+sophie@exemple.fr,Sophie,</code></pre>
+
+            <p class="text-sm text-gray-600 mt-3">
+                ✅ Encodage recommandé : <strong>UTF-8</strong>
+            </p>
+        </div>
+
+        <!-- Formulaire d'upload -->
+        <form method="POST" enctype="multipart/form-data" class="card-mystical rounded-xl p-8 shadow-lg">
+            <h3 class="text-xl font-bold text-purple-900 mb-6">⬆️ Upload ton fichier CSV</h3>
+
+            <!-- Input file -->
+            <div class="mb-6">
+                <label for="file" class="block text-purple-900 font-medium mb-3">
+                    Fichier CSV <span class="text-red-500">*</span>
+                </label>
+
+                <div class="border-2 border-dashed border-purple-300 rounded-lg p-8 text-center">
+                    <div class="mb-4 text-5xl">📁</div>
+                    <input type="file"
+                           id="file"
+                           name="file"
+                           accept=".csv"
+                           required
+                           class="block w-full text-sm text-gray-600
+                                  file:mr-4 file:py-3 file:px-6
+                                  file:rounded-lg file:border-0
+                                  file:text-sm file:font-medium
+                                  file:bg-purple-600 file:text-white
+                                  hover:file:bg-purple-700
+                                  cursor-pointer">
+                    <p class="text-sm text-gray-600 mt-3">
+                        Format accepté : <strong>.csv</strong> uniquement
+                    </p>
+                    <p class="text-xs text-gray-500 mt-1">
+                        Taille max recommandée : 10MB (~70 000 lignes)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Warning -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <p class="text-yellow-900 text-sm">
+                    ⚠️ <strong>Attention :</strong> L'import peut prendre plusieurs minutes pour un gros fichier (70K lignes = ~2-3 minutes).
+                    Ne ferme pas cette page pendant l'import !
+                </p>
+            </div>
+
+            <!-- Boutons -->
+            <div class="flex items-center justify-between">
+                <a href="{{ url_for('emails.index') }}" class="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
+                    Annuler
+                </a>
+                <button type="submit" class="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-lg shadow-lg hover:shadow-xl transition font-medium">
+                    🚀 Importer les contacts
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock %}
