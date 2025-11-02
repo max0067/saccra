@@ -116,14 +116,25 @@ def import_contacts():
             flash('Aucun fichier sélectionné', 'error')
             return redirect(request.url)
 
-        if not file.filename.endswith('.csv'):
-            flash('Le fichier doit être au format CSV', 'error')
+        if not (file.filename.endswith('.csv') or file.filename.endswith('.txt') or file.filename.endswith('.tsv')):
+            flash('Le fichier doit être au format CSV, TSV ou TXT', 'error')
             return redirect(request.url)
 
         try:
-            # Lire le fichier CSV
-            stream = io.StringIO(file.stream.read().decode('utf-8'))
-            csv_reader = csv.DictReader(stream)
+            # Lire le fichier CSV/TSV
+            content = file.stream.read().decode('utf-8')
+            stream = io.StringIO(content)
+
+            # Auto-détecter le délimiteur (virgule, tabulation, point-virgule)
+            sample = stream.read(1024)
+            stream.seek(0)
+
+            try:
+                dialect = csv.Sniffer().sniff(sample, delimiters=',\t;')
+                csv_reader = csv.DictReader(stream, dialect=dialect)
+            except:
+                # Si la détection échoue, essayer avec tabulation par défaut
+                csv_reader = csv.DictReader(stream, delimiter='\t')
 
             imported = 0
             skipped = 0

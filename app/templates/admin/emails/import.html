@@ -39,14 +39,26 @@
 
         <!-- Exemple CSV -->
         <div class="card-mystical rounded-xl p-6 shadow-lg mb-8">
-            <h3 class="text-xl font-bold text-purple-900 mb-3">📄 Exemple de fichier CSV</h3>
+            <h3 class="text-xl font-bold text-purple-900 mb-3">📄 Exemples de fichiers acceptés</h3>
 
-            <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code>email,first_name,last_name
+            <div class="mb-4">
+                <p class="text-sm font-medium text-purple-900 mb-2">Format complet (virgules):</p>
+                <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code>email,first_name,last_name
 marie.dubois@exemple.fr,Marie,Dubois
 pierre.martin@exemple.fr,Pierre,Martin
 sophie@exemple.fr,Sophie,</code></pre>
+            </div>
+
+            <div class="mb-4">
+                <p class="text-sm font-medium text-purple-900 mb-2">Format simple (juste email avec tabulations):</p>
+                <pre class="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto"><code>email
+marie.dubois@exemple.fr
+pierre.martin@exemple.fr
+sophie@exemple.fr</code></pre>
+            </div>
 
             <p class="text-sm text-gray-600 mt-3">
+                ✅ Séparateurs supportés : <strong>virgule (,)</strong> ou <strong>tabulation (\t)</strong> ou <strong>point-virgule (;)</strong><br>
                 ✅ Encodage recommandé : <strong>UTF-8</strong>
             </p>
         </div>
@@ -58,7 +70,7 @@ sophie@exemple.fr,Sophie,</code></pre>
             <!-- Input file -->
             <div class="mb-6">
                 <label for="file" class="block text-purple-900 font-medium mb-3">
-                    Fichier CSV <span class="text-red-500">*</span>
+                    Fichier CSV/TSV/TXT <span class="text-red-500">*</span>
                 </label>
 
                 <div class="border-2 border-dashed border-purple-300 rounded-lg p-8 text-center">
@@ -66,7 +78,7 @@ sophie@exemple.fr,Sophie,</code></pre>
                     <input type="file"
                            id="file"
                            name="file"
-                           accept=".csv"
+                           accept=".csv,.txt,.tsv"
                            required
                            class="block w-full text-sm text-gray-600
                                   file:mr-4 file:py-3 file:px-6
