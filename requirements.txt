@@ -2,7 +2,7 @@ Flask==3.0.3
 Flask-SQLAlchemy==3.1.1
 Flask-Login==0.6.3
 Flask-Compress==1.15
-Flask-Caching==2.1.0
+Flask-Caching==1.10.1
 Werkzeug==3.0.3
 openai==1.51.2
 stripe==11.1.0
