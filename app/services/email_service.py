@@ -125,16 +125,12 @@ def send_welcome_email(user_email, user_name):
         bool: True si envoyé, False sinon
     """
     # Configuration SMTP depuis les variables d'environnement
-    smtp_server = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
-    smtp_port = int(os.environ.get('MAIL_PORT', '587'))
+    # Par défaut: localhost:25 (relay o2switch sans auth)
+    smtp_server = os.environ.get('MAIL_SERVER', 'localhost')
+    smtp_port = int(os.environ.get('MAIL_PORT', '25'))
     smtp_user = os.environ.get('MAIL_USERNAME', '')
     smtp_password = os.environ.get('MAIL_PASSWORD', '')
     sender_email = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@saccra.fr')
-
-    # Si pas de configuration SMTP, ne pas envoyer (mode silencieux)
-    if not smtp_user or not smtp_password:
-        print('SMTP non configuré - Email de bienvenue non envoyé')
-        return False
 
     try:
         # Créer le message
@@ -246,16 +242,17 @@ def send_admin_new_user_notification(user_email, user_name):
         bool: True si envoyé, False sinon
     """
     # Configuration SMTP depuis les variables d'environnement
-    smtp_server = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
-    smtp_port = int(os.environ.get('MAIL_PORT', '587'))
+    # Par défaut: localhost:25 (relay o2switch sans auth)
+    smtp_server = os.environ.get('MAIL_SERVER', 'localhost')
+    smtp_port = int(os.environ.get('MAIL_PORT', '25'))
     smtp_user = os.environ.get('MAIL_USERNAME', '')
     smtp_password = os.environ.get('MAIL_PASSWORD', '')
     sender_email = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@saccra.fr')
-    admin_email = os.environ.get('ADMIN_EMAIL', '')
+    admin_email = os.environ.get('ADMIN_EMAIL', 'maxenko06@gmail.com')
 
-    # Si pas de configuration SMTP ou pas d'email admin, ne pas envoyer
-    if not smtp_user or not smtp_password or not admin_email:
-        print('SMTP ou ADMIN_EMAIL non configuré - Notification admin non envoyée')
+    # Si pas d'email admin, ne pas envoyer
+    if not admin_email:
+        print('ADMIN_EMAIL non configuré - Notification admin non envoyée')
         return False
 
     try:
@@ -363,16 +360,12 @@ def send_password_reset_email(user_email, reset_url):
         bool: True si envoyé, False sinon
     """
     # Configuration SMTP depuis les variables d'environnement
-    smtp_server = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
-    smtp_port = int(os.environ.get('MAIL_PORT', '587'))
+    # Par défaut: localhost:25 (relay o2switch sans auth)
+    smtp_server = os.environ.get('MAIL_SERVER', 'localhost')
+    smtp_port = int(os.environ.get('MAIL_PORT', '25'))
     smtp_user = os.environ.get('MAIL_USERNAME', '')
     smtp_password = os.environ.get('MAIL_PASSWORD', '')
     sender_email = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@saccra.fr')
-
-    # Si pas de configuration SMTP, ne pas envoyer (mode silencieux)
-    if not smtp_user or not smtp_password:
-        print('SMTP non configuré - Email de réinitialisation non envoyé')
-        return False
 
     try:
         # Créer le message
