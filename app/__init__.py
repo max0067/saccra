@@ -4,21 +4,28 @@ Initialisation de l'application SACRA
 from flask import Flask
 from flask_login import LoginManager
 from flask_compress import Compress
+from flask_caching import Cache
 from config import Config
 from app.models import db, User
 
 login_manager = LoginManager()
 compress = Compress()
+cache = Cache()
 
 def create_app(config_class=Config):
     """Factory pour créer l'application Flask"""
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    # Configuration du cache (1 heure par défaut)
+    app.config['CACHE_TYPE'] = 'SimpleCache'
+    app.config['CACHE_DEFAULT_TIMEOUT'] = 3600
+
     # Initialiser les extensions
     db.init_app(app)
     login_manager.init_app(app)
     compress.init_app(app)  # Compression gzip automatique
+    cache.init_app(app)  # Cache intelligent pour IA
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Connecte-toi pour accéder à cette page 🌙'
 
