@@ -94,6 +94,10 @@
                                     class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium">
                                 🚀 Envoi par Batch
                             </button>
+                            <button onclick="sendTestEmail({{ campaign.id }})"
+                                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm">
+                                📧 Email de Test
+                            </button>
                             <button onclick="sendCampaign({{ campaign.id }})"
                                     class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition text-sm">
                                 📨 Test (100 emails)
@@ -199,6 +203,48 @@ function sendCampaign(campaignId) {
         alert('❌ Erreur lors de l\'envoi');
         btn.disabled = false;
         btn.textContent = '📨 Test (100 emails)';
+        console.error('Error:', error);
+    });
+}
+
+function sendTestEmail(campaignId) {
+    const testEmail = prompt('Adresse email pour le test ?\n(Par défaut: maxenko06@gmail.com)', 'maxenko06@gmail.com');
+
+    if (!testEmail) return;
+
+    if (!confirm(`Envoyer un email de test à ${testEmail} ?`)) {
+        return;
+    }
+
+    const btn = event.target;
+    btn.disabled = true;
+    btn.textContent = '⏳ Envoi...';
+
+    fetch(`/admin/emails/campaigns/${campaignId}/send-test`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: testEmail
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`✅ ${data.message}\n\nVérifie ta boîte mail (et les spams si besoin).`);
+            btn.disabled = false;
+            btn.textContent = '📧 Email de Test';
+        } else {
+            alert(`❌ Erreur : ${data.error}`);
+            btn.disabled = false;
+            btn.textContent = '📧 Email de Test';
+        }
+    })
+    .catch(error => {
+        alert('❌ Erreur lors de l\'envoi');
+        btn.disabled = false;
+        btn.textContent = '📧 Email de Test';
         console.error('Error:', error);
     });
 }

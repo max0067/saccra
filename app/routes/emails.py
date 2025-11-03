@@ -515,6 +515,103 @@ def campaign_send_batch(campaign_id):
         }), 500
 
 
+@bp.route('/campaigns/<int:campaign_id>/send-test', methods=['POST'])
+@login_required
+@admin_required
+def campaign_send_test(campaign_id):
+    """Envoyer un email de test à une adresse spécifique"""
+
+    campaign = EmailCampaign.query.get_or_404(campaign_id)
+
+    # Récupérer l'email de destination
+    test_email = request.json.get('email', '').strip()
+
+    if not test_email:
+        return jsonify({
+            'success': False,
+            'error': 'Adresse email requise'
+        }), 400
+
+    # Configuration SMTP
+    smtp_server = os.environ.get('MAIL_SERVER', 'localhost')
+    smtp_port = int(os.environ.get('MAIL_PORT', '25'))
+    smtp_user = os.environ.get('MAIL_USERNAME', '')
+    smtp_password = os.environ.get('MAIL_PASSWORD', '')
+    sender_email = os.environ.get('MAIL_DEFAULT_SENDER', 'contact@saccra.fr')
+
+    try:
+        # Créer le log AVANT l'envoi pour avoir l'ID (pour le pixel de tracking)
+        email_log = EmailLog(
+            contact_id=None,  # Pas de contact pour un test
+            campaign_id=campaign.id,
+            email_to=test_email,
+            subject=f"[TEST] {campaign.subject}",
+            status='pending',
+            sent_at=datetime.utcnow()
+        )
+        db.session.add(email_log)
+        db.session.flush()  # Obtenir l'ID sans commit
+
+        # Personnaliser le contenu avec des valeurs de test
+        html = campaign.html_content.replace('{{first_name}}', 'Testeur')
+        html = html.replace('{{email}}', test_email)
+
+        # Ajouter le pixel de tracking invisible
+        tracking_pixel = f'<img src="https://saccra.fr/api/track/email/open/{email_log.id}" width="1" height="1" style="display:none;" alt="" />'
+
+        # Insérer le pixel juste avant la fermeture du body (si existe)
+        if '</body>' in html:
+            html = html.replace('</body>', tracking_pixel + '</body>')
+        else:
+            # Sinon, ajouter à la fin
+            html += tracking_pixel
+
+        # Ajouter un bandeau [TEST] visible en haut
+        test_banner = '''
+        <div style="background-color: #fbbf24; color: #000; padding: 10px; text-align: center; font-weight: bold; margin-bottom: 20px;">
+            ⚠️ EMAIL DE TEST - Ceci est un aperçu de la campagne
+        </div>
+        '''
+
+        if '<body' in html:
+            # Insérer après la balise body
+            html = html.replace('<body>', f'<body>{test_banner}', 1)
+        else:
+            html = test_banner + html
+
+        # Créer le message
+        from email.mime.text import MIMEText
+        from email.mime.multipart import MIMEMultipart
+
+        message = MIMEMultipart('alternative')
+        message['Subject'] = f"[TEST] {campaign.subject}"
+        message['From'] = sender_email
+        message['To'] = test_email
+
+        part = MIMEText(html, 'html', 'utf-8')
+        message.attach(part)
+
+        # Envoyer
+        from app.services.email_service import _send_email
+        _send_email(message, smtp_server, smtp_port, smtp_user, smtp_password)
+
+        # Mettre à jour le statut après envoi réussi
+        email_log.status = 'sent'
+        db.session.commit()
+
+        return jsonify({
+            'success': True,
+            'message': f'Email de test envoyé à {test_email}'
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            'success': False,
+            'error': f'Erreur lors de l\'envoi: {str(e)}'
+        }), 500
+
+
 @bp.route('/campaigns/<int:campaign_id>/delete', methods=['POST'])
 @login_required
 @admin_required
