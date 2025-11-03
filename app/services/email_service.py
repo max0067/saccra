@@ -52,10 +52,12 @@ def generate_email_footer(email_address):
         str: HTML du footer
     """
     import hashlib
+    from datetime import datetime
 
     # Générer un hash de l'email pour le lien de désinscription
     email_hash = hashlib.sha256(email_address.encode()).hexdigest()[:16]
     unsubscribe_url = f"https://saccra.fr/admin/emails/unsubscribe/{email_hash}"
+    current_year = datetime.now().year
 
     footer_html = f"""
     <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; font-size: 12px; color: #6b7280;">
@@ -82,7 +84,7 @@ def generate_email_footer(email_address):
             <tr>
                 <td style="padding: 15px 0 0 0; text-align: center;">
                     <p style="margin: 0; color: #9ca3af;">
-                        © {import_datetime_year()} SACRA - Tous droits réservés
+                        © {current_year} SACRA - Tous droits réservés
                     </p>
                 </td>
             </tr>
@@ -90,7 +92,7 @@ def generate_email_footer(email_address):
     </div>
     """
 
-    return footer_html.replace('{import_datetime_year()}', str(__import__('datetime').datetime.now().year))
+    return footer_html
 
 def add_footer_to_html(html_content, email_address):
     """
