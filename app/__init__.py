@@ -3,10 +3,12 @@ Initialisation de l'application SACRA
 """
 from flask import Flask
 from flask_login import LoginManager
+from flask_compress import Compress
 from config import Config
 from app.models import db, User
 
 login_manager = LoginManager()
+compress = Compress()
 
 def create_app(config_class=Config):
     """Factory pour créer l'application Flask"""
@@ -16,6 +18,7 @@ def create_app(config_class=Config):
     # Initialiser les extensions
     db.init_app(app)
     login_manager.init_app(app)
+    compress.init_app(app)  # Compression gzip automatique
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Connecte-toi pour accéder à cette page 🌙'
 

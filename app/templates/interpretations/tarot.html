@@ -3,6 +3,10 @@
 {% block title %}Tirage de Tarot - SACRA{% endblock %}
 
 {% block content %}
+<!-- Spiritual Loader CSS/JS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/spiritual-loader.css') }}">
+<script src="{{ url_for('static', filename='js/spiritual-loader.js') }}"></script>
+
 <div class="container mx-auto px-4 py-12">
 
     <div class="max-w-3xl mx-auto">
@@ -78,11 +82,8 @@
             </form>
         </div>
 
-        <!-- Loader -->
-        <div id="loader" class="hidden text-center py-12">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-purple-200 border-t-purple-600"></div>
-            <p class="text-gray-700 mt-4">L'univers tire tes cartes et interprète ton tirage...</p>
-        </div>
+        <!-- Spiritual Loader -->
+        <div id="loader" class="hidden"></div>
 
         <!-- Résultat -->
         <div id="result" class="hidden fade-in">
@@ -213,8 +214,10 @@ document.getElementById('form').addEventListener('submit', async (e) => {
     submitBtn.disabled = true;
     submitBtn.textContent = 'Interprétation en cours...';
     tarotForm.style.display = 'none';
-    loader.classList.remove('hidden');
     result.classList.add('hidden');
+
+    // Afficher le loader spirituel
+    showSpiritualLoader('loader');
 
     try {
         const response = await fetch('{{ url_for("interpretations.tarot") }}', {
@@ -237,7 +240,7 @@ document.getElementById('form').addEventListener('submit', async (e) => {
             submitBtn.disabled = false;
             submitBtn.textContent = 'Recevoir mon tirage de tarot ✨';
             tarotForm.style.display = 'block';
-            loader.classList.add('hidden');
+            hideSpiritualLoader('loader');
             return;
         }
 
@@ -271,7 +274,7 @@ document.getElementById('form').addEventListener('submit', async (e) => {
         document.getElementById('spiritualMessage').textContent = data.interpretation.spiritual_message;
         document.getElementById('personalAdvice').textContent = data.interpretation.personal_advice;
 
-        loader.classList.add('hidden');
+        hideSpiritualLoader('loader');
         result.classList.remove('hidden');
         result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -280,7 +283,7 @@ document.getElementById('form').addEventListener('submit', async (e) => {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Recevoir mon tirage de tarot ✨';
         tarotForm.style.display = 'block';
-        loader.classList.add('hidden');
+        hideSpiritualLoader('loader');
     }
 });
 

@@ -3,6 +3,10 @@
 {% block title %}Signes & Synchronicités - SACRA{% endblock %}
 
 {% block content %}
+<!-- Spiritual Loader CSS/JS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/spiritual-loader.css') }}">
+<script src="{{ url_for('static', filename='js/spiritual-loader.js') }}"></script>
+
 <div class="container mx-auto px-4 py-12">
 
     <div class="max-w-3xl mx-auto">
@@ -93,8 +97,7 @@
         </div>
 
         <!-- Loader -->
-        <div id="loader" class="hidden text-center py-12">
-            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-purple-200 border-t-purple-600"></div>
+        <div id="loader" class="hidden"></div>
             <p class="text-gray-700 mt-4">L'univers décode ton signe...</p>
         </div>
 
@@ -115,7 +118,7 @@ document.getElementById('signForm').addEventListener('submit', async (e) => {
 
     btn.disabled = true;
     btn.textContent = 'Décodage en cours...';
-    loader.classList.remove('hidden');
+    showSpiritualLoader('loader');
     result.classList.add('hidden');
 
     try {
@@ -133,7 +136,7 @@ document.getElementById('signForm').addEventListener('submit', async (e) => {
             alert(data.error);
             btn.disabled = false;
             btn.textContent = 'Décoder ce signe ✨';
-            loader.classList.add('hidden');
+            hideSpiritualLoader('loader');
             return;
         }
 
@@ -141,7 +144,7 @@ document.getElementById('signForm').addEventListener('submit', async (e) => {
         document.getElementById('spiritualMessage').textContent = data.interpretation.spiritual_message;
         document.getElementById('personalAdvice').textContent = data.interpretation.personal_advice;
 
-        loader.classList.add('hidden');
+        hideSpiritualLoader('loader');
         result.classList.remove('hidden');
         result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -149,7 +152,7 @@ document.getElementById('signForm').addEventListener('submit', async (e) => {
         alert('Une erreur est survenue. Réessaye dans quelques instants.');
         btn.disabled = false;
         btn.textContent = 'Décoder ce signe ✨';
-        loader.classList.add('hidden');
+        hideSpiritualLoader('loader');
     }
 });
 </script>
