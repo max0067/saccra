@@ -87,10 +87,8 @@
             </div>
         </div>
 
-        <!-- Loader -->
+        <!-- Spiritual Loader -->
         <div id="loader" class="hidden"></div>
-            <p class="text-gray-700 mt-4">L'univers décode ton rêve...</p>
-        </div>
 
     </div>
 
@@ -110,8 +108,8 @@ document.getElementById('dreamForm').addEventListener('submit', async (e) => {
     // Afficher le loader
     btn.disabled = true;
     btn.textContent = 'Interprétation en cours...';
-    showSpiritualLoader('loader');
     result.classList.add('hidden');
+    showSpiritualLoader('loader');
 
     try {
         const response = await fetch('{{ url_for("interpretations.dream") }}', {

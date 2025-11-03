@@ -97,7 +97,8 @@
         </div>
 
         <!-- Loader -->
-        <div id="loader" class="hidden"></div>
+        <div id="loader" class="hidden text-center py-12">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-purple-200 border-t-purple-600"></div>
             <p class="text-gray-700 mt-4">L'univers décode ton signe...</p>
         </div>
 
@@ -118,7 +119,7 @@ document.getElementById('signForm').addEventListener('submit', async (e) => {
 
     btn.disabled = true;
     btn.textContent = 'Décodage en cours...';
-    showSpiritualLoader('loader');
+    loader.classList.remove('hidden');
     result.classList.add('hidden');
 
     try {
@@ -136,7 +137,7 @@ document.getElementById('signForm').addEventListener('submit', async (e) => {
             alert(data.error);
             btn.disabled = false;
             btn.textContent = 'Décoder ce signe ✨';
-            hideSpiritualLoader('loader');
+            loader.classList.add('hidden');
             return;
         }
 
@@ -144,7 +145,7 @@ document.getElementById('signForm').addEventListener('submit', async (e) => {
         document.getElementById('spiritualMessage').textContent = data.interpretation.spiritual_message;
         document.getElementById('personalAdvice').textContent = data.interpretation.personal_advice;
 
-        hideSpiritualLoader('loader');
+        loader.classList.add('hidden');
         result.classList.remove('hidden');
         result.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
@@ -152,7 +153,7 @@ document.getElementById('signForm').addEventListener('submit', async (e) => {
         alert('Une erreur est survenue. Réessaye dans quelques instants.');
         btn.disabled = false;
         btn.textContent = 'Décoder ce signe ✨';
-        hideSpiritualLoader('loader');
+        loader.classList.add('hidden');
     }
 });
 </script>
