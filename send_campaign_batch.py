@@ -243,6 +243,11 @@ def send_campaign_batch(campaign_id, batch_size=100, delay=60, max_total=None, r
                 # Commit du batch
                 db.session.commit()
 
+                # Mettre à jour les stats de la campagne en temps réel
+                campaign.total_sent = EmailLog.query.filter_by(campaign_id=campaign_id, status='sent').count()
+                campaign.total_opened = EmailLog.query.filter_by(campaign_id=campaign_id).filter(EmailLog.opened_at.isnot(None)).count()
+                db.session.commit()
+
                 # Sauvegarder la progression
                 save_progress(campaign_id, total_sent, total_failed, last_contact_id)
 
@@ -256,10 +261,6 @@ def send_campaign_batch(campaign_id, batch_size=100, delay=60, max_total=None, r
                 if i + batch_size < len(contacts):
                     print(f"   ⏳ Attente de {delay}s avant le prochain batch...")
                     time.sleep(delay)
-
-            # Mettre à jour les stats de la campagne
-            campaign.total_sent += total_sent
-            db.session.commit()
 
             # Succès complet
             clear_progress()

@@ -437,8 +437,9 @@ def campaign_send(campaign_id):
             print(f'Erreur envoi à {contact.email}: {e}')
             failed += 1
 
-    # Mettre à jour les stats de la campagne
-    campaign.total_sent += sent
+    # Mettre à jour les stats de la campagne en comptant les EmailLog réels
+    campaign.total_sent = EmailLog.query.filter_by(campaign_id=campaign.id, status='sent').count()
+    campaign.total_opened = EmailLog.query.filter_by(campaign_id=campaign.id).filter(EmailLog.opened_at.isnot(None)).count()
     db.session.commit()
 
     return jsonify({
