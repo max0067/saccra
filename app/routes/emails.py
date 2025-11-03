@@ -9,6 +9,9 @@ from app.models import db, EmailContact, EmailCampaign, EmailLog, User
 from werkzeug.utils import secure_filename
 import csv
 import io
+import subprocess
+import os
+import sys
 
 bp = Blueprint('emails', __name__, url_prefix='/admin/emails')
 
@@ -448,6 +451,68 @@ def campaign_send(campaign_id):
         'failed': failed,
         'message': f'{sent} emails envoyés, {failed} échecs'
     })
+
+
+@bp.route('/campaigns/<int:campaign_id>/send-batch', methods=['POST'])
+@login_required
+@admin_required
+def campaign_send_batch(campaign_id):
+    """Lancer l'envoi par batch en arrière-plan"""
+
+    campaign = EmailCampaign.query.get_or_404(campaign_id)
+
+    # Compter les contacts à envoyer
+    total_contacts = EmailContact.query.filter_by(is_subscribed=True, is_bounced=False).count()
+
+    if total_contacts == 0:
+        return jsonify({
+            'success': False,
+            'error': 'Aucun contact abonné disponible'
+        }), 400
+
+    # Récupérer les paramètres
+    batch_size = request.json.get('batch_size', 100)
+    delay = request.json.get('delay', 60)
+
+    # Construire la commande pour lancer le script batch
+    script_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'send_campaign_batch.py')
+    python_path = sys.executable
+
+    cmd = [
+        python_path,
+        script_path,
+        str(campaign_id),
+        '--batch-size', str(batch_size),
+        '--delay', str(delay),
+        '--no-confirm'
+    ]
+
+    try:
+        # Lancer le script en arrière-plan (détaché du serveur web)
+        # Utiliser nohup pour que le processus continue même si le serveur redémarre
+        with open('/dev/null', 'w') as devnull:
+            subprocess.Popen(
+                cmd,
+                stdout=devnull,
+                stderr=devnull,
+                stdin=subprocess.DEVNULL,
+                start_new_session=True,
+                cwd=os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+            )
+
+        return jsonify({
+            'success': True,
+            'message': f'Envoi lancé pour {total_contacts:,} contacts (batch de {batch_size})',
+            'total_contacts': total_contacts,
+            'batch_size': batch_size,
+            'estimated_batches': (total_contacts + batch_size - 1) // batch_size
+        })
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': f'Erreur lors du lancement: {str(e)}'
+        }), 500
 
 
 @bp.route('/campaigns/<int:campaign_id>/delete', methods=['POST'])

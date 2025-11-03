@@ -70,7 +70,7 @@ def clear_progress():
     if os.path.exists(PROGRESS_FILE):
         os.remove(PROGRESS_FILE)
 
-def send_campaign_batch(campaign_id, batch_size=100, delay=60, max_total=None, resume=False):
+def send_campaign_batch(campaign_id, batch_size=100, delay=60, max_total=None, resume=False, no_confirm=False):
     """
     Envoie une campagne par batch
 
@@ -80,6 +80,7 @@ def send_campaign_batch(campaign_id, batch_size=100, delay=60, max_total=None, r
         delay: Délai en secondes entre chaque batch
         max_total: Nombre maximum d'emails à envoyer (None = tous)
         resume: Reprendre un envoi interrompu
+        no_confirm: Ne pas demander de confirmation (pour lancement automatique)
     """
     app = create_app()
 
@@ -159,12 +160,13 @@ def send_campaign_batch(campaign_id, batch_size=100, delay=60, max_total=None, r
         print(f"   Batches: {total_batches}")
         print(f"   Temps total: ~{estimated_time_minutes:.1f} minutes ({estimated_time_minutes/60:.1f} heures)")
 
-        # Confirmation
-        print("\n" + "=" * 70)
-        response = input("🚀 Démarrer l'envoi ? (y/n): ")
-        if response.lower() != 'y':
-            print("❌ Envoi annulé")
-            return
+        # Confirmation (sauf si --no-confirm)
+        if not no_confirm:
+            print("\n" + "=" * 70)
+            response = input("🚀 Démarrer l'envoi ? (y/n): ")
+            if response.lower() != 'y':
+                print("❌ Envoi annulé")
+                return
 
         print("\n" + "=" * 70)
         print("ENVOI EN COURS...")
@@ -300,6 +302,8 @@ def main():
                        help='Nombre maximum d\'emails à envoyer')
     parser.add_argument('--resume', action='store_true',
                        help='Reprendre un envoi interrompu')
+    parser.add_argument('--no-confirm', action='store_true',
+                       help='Ne pas demander de confirmation (pour lancement automatique)')
 
     args = parser.parse_args()
 
@@ -308,7 +312,8 @@ def main():
         batch_size=args.batch_size,
         delay=args.delay,
         max_total=args.max_total,
-        resume=args.resume
+        resume=args.resume,
+        no_confirm=args.no_confirm
     )
 
 if __name__ == '__main__':
