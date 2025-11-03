@@ -208,6 +208,10 @@ def send_campaign_batch(campaign_id, batch_size=100, delay=60, max_total=None, r
                         )
                         html = html.replace('{{email}}', contact.email)
 
+                        # Ajouter le footer automatique avec lien de désinscription (RGPD)
+                        from app.services.email_service import add_footer_to_html
+                        html = add_footer_to_html(html, contact.email)
+
                         # Ajouter le pixel de tracking invisible à la fin du HTML
                         tracking_pixel = f'<img src="https://saccra.fr/api/track/email/open/{email_log.id}" width="1" height="1" style="display:none;" alt="" />'
 

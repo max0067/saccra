@@ -40,6 +40,79 @@ def _send_email(message, smtp_server, smtp_port, smtp_user, smtp_password):
                 server.login(smtp_user, smtp_password)
             server.send_message(message)
 
+def generate_email_footer(email_address):
+    """
+    Génère un footer HTML pour les emails marketing avec lien de désinscription
+    Conforme RGPD
+
+    Args:
+        email_address: str - Email du destinataire
+
+    Returns:
+        str: HTML du footer
+    """
+    import hashlib
+
+    # Générer un hash de l'email pour le lien de désinscription
+    email_hash = hashlib.sha256(email_address.encode()).hexdigest()[:16]
+    unsubscribe_url = f"https://saccra.fr/admin/emails/unsubscribe/{email_hash}"
+
+    footer_html = f"""
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 2px solid #e5e7eb; font-size: 12px; color: #6b7280;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="font-family: Arial, sans-serif;">
+            <tr>
+                <td style="padding: 10px 0;">
+                    <p style="margin: 0 0 10px 0;"><strong style="color: #7c3aed;">SACRA - Guidance Spirituelle</strong></p>
+                    <p style="margin: 0 0 5px 0;">📍 Adresse: France</p>
+                    <p style="margin: 0 0 15px 0;">📧 Contact: <a href="mailto:contact@saccra.fr" style="color: #7c3aed;">contact@saccra.fr</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 10px 0;">
+                    <p style="margin: 0 0 10px 0; color: #9ca3af;">
+                        Tu reçois cet email car tu es inscrit à notre liste de diffusion.
+                    </p>
+                    <p style="margin: 0;">
+                        <a href="{unsubscribe_url}" style="color: #7c3aed; text-decoration: underline;">
+                            Se désinscrire de cette liste
+                        </a>
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 15px 0 0 0; text-align: center;">
+                    <p style="margin: 0; color: #9ca3af;">
+                        © {import_datetime_year()} SACRA - Tous droits réservés
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </div>
+    """
+
+    return footer_html.replace('{import_datetime_year()}', str(__import__('datetime').datetime.now().year))
+
+def add_footer_to_html(html_content, email_address):
+    """
+    Ajoute automatiquement le footer à un contenu HTML
+
+    Args:
+        html_content: str - Contenu HTML de l'email
+        email_address: str - Email du destinataire
+
+    Returns:
+        str: HTML avec footer ajouté
+    """
+    footer = generate_email_footer(email_address)
+
+    # Insérer le footer avant </body> si existe, sinon à la fin
+    if '</body>' in html_content:
+        html_content = html_content.replace('</body>', footer + '</body>')
+    else:
+        html_content += footer
+
+    return html_content
+
 def send_welcome_email(user_email, user_name):
     """
     Envoie un email de bienvenue au nouvel utilisateur

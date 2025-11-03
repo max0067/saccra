@@ -409,6 +409,10 @@ def campaign_send(campaign_id):
             html = campaign.html_content.replace('{{first_name}}', contact.first_name or 'ami spirituel')
             html = html.replace('{{email}}', contact.email)
 
+            # Ajouter le footer automatique avec lien de désinscription (RGPD)
+            from app.services.email_service import add_footer_to_html
+            html = add_footer_to_html(html, contact.email)
+
             # Ajouter le pixel de tracking invisible
             tracking_pixel = f'<img src="https://saccra.fr/api/track/email/open/{email_log.id}" width="1" height="1" style="display:none;" alt="" />'
 
@@ -556,17 +560,7 @@ def campaign_send_test(campaign_id):
         html = campaign.html_content.replace('{{first_name}}', 'Testeur')
         html = html.replace('{{email}}', test_email)
 
-        # Ajouter le pixel de tracking invisible
-        tracking_pixel = f'<img src="https://saccra.fr/api/track/email/open/{email_log.id}" width="1" height="1" style="display:none;" alt="" />'
-
-        # Insérer le pixel juste avant la fermeture du body (si existe)
-        if '</body>' in html:
-            html = html.replace('</body>', tracking_pixel + '</body>')
-        else:
-            # Sinon, ajouter à la fin
-            html += tracking_pixel
-
-        # Ajouter un bandeau [TEST] visible en haut
+        # Ajouter un bandeau [TEST] visible en haut (AVANT le footer)
         test_banner = '''
         <div style="background-color: #fbbf24; color: #000; padding: 10px; text-align: center; font-weight: bold; margin-bottom: 20px;">
             ⚠️ EMAIL DE TEST - Ceci est un aperçu de la campagne
@@ -578,6 +572,20 @@ def campaign_send_test(campaign_id):
             html = html.replace('<body>', f'<body>{test_banner}', 1)
         else:
             html = test_banner + html
+
+        # Ajouter le footer automatique avec lien de désinscription (RGPD)
+        from app.services.email_service import add_footer_to_html
+        html = add_footer_to_html(html, test_email)
+
+        # Ajouter le pixel de tracking invisible
+        tracking_pixel = f'<img src="https://saccra.fr/api/track/email/open/{email_log.id}" width="1" height="1" style="display:none;" alt="" />'
+
+        # Insérer le pixel juste avant la fermeture du body (si existe)
+        if '</body>' in html:
+            html = html.replace('</body>', tracking_pixel + '</body>')
+        else:
+            # Sinon, ajouter à la fin
+            html += tracking_pixel
 
         # Créer le message
         from email.mime.text import MIMEText
@@ -628,3 +636,57 @@ def campaign_delete(campaign_id):
         'success': True,
         'message': f'Campagne "{name}" supprimée'
     })
+
+
+@bp.route('/unsubscribe/<string:email_hash>')
+def unsubscribe(email_hash):
+    """Page de désinscription publique (pas besoin de login)"""
+
+    # Décoder l'email depuis le hash
+    import hashlib
+
+    # Chercher le contact par l'email hashé
+    contacts = EmailContact.query.filter_by(is_subscribed=True).all()
+
+    contact = None
+    for c in contacts:
+        # Générer le hash pour chaque contact
+        hash_value = hashlib.sha256(c.email.encode()).hexdigest()[:16]
+        if hash_value == email_hash:
+            contact = c
+            break
+
+    if not contact:
+        return render_template('admin/emails/unsubscribe.html',
+                             already_unsubscribed=True,
+                             email=None)
+
+    return render_template('admin/emails/unsubscribe.html',
+                         contact=contact,
+                         email_hash=email_hash)
+
+
+@bp.route('/unsubscribe/<string:email_hash>/confirm', methods=['POST'])
+def unsubscribe_confirm(email_hash):
+    """Confirmation de désinscription"""
+
+    import hashlib
+
+    # Chercher le contact
+    contacts = EmailContact.query.all()
+
+    contact = None
+    for c in contacts:
+        hash_value = hashlib.sha256(c.email.encode()).hexdigest()[:16]
+        if hash_value == email_hash:
+            contact = c
+            break
+
+    if contact:
+        contact.is_subscribed = False
+        contact.unsubscribed_at = datetime.utcnow()
+        db.session.commit()
+
+    return render_template('admin/emails/unsubscribe.html',
+                         unsubscribed=True,
+                         email=contact.email if contact else None)
