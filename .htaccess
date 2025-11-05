@@ -4,11 +4,11 @@
 # Activer Passenger
 PassengerEnabled On
 
-# Chemin de l'application (À MODIFIER avec ton vrai chemin)
-PassengerAppRoot /home/TON_USER/sacra.fr
+# Chemin de l'application
+PassengerAppRoot /home/wrbh3411/dusselle.fr
 
-# Python de l'environnement virtuel (À MODIFIER avec ton vrai chemin)
-PassengerPython /home/TON_USER/sacra.fr/venv/bin/python3
+# Python de l'environnement virtuel
+PassengerPython /home/wrbh3411/dusselle.fr/venv/bin/python3
 
 # Environnement de production
 PassengerAppEnv production
@@ -26,8 +26,8 @@ PassengerMaxPoolSize 6
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
     # Rediriger www vers non-www (optionnel)
-    RewriteCond %{HTTP_HOST} ^www\.sacra\.fr$ [NC]
-    RewriteRule ^(.*)$ https://sacra.fr/$1 [L,R=301]
+    RewriteCond %{HTTP_HOST} ^www\.dusselle\.fr$ [NC]
+    RewriteRule ^(.*)$ https://dusselle.fr/$1 [L,R=301]
 </IfModule>
 
 # Sécurité : bloquer l'accès aux fichiers sensibles
